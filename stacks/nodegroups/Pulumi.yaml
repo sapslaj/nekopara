@@ -1,0 +1,5 @@
+name: nekopara.nodegroups
+runtime:
+  name: nodejs
+  options:
+    packagemanager: npm

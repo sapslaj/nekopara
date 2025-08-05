@@ -1,0 +1,5 @@
+name: nekopara.shortrack
+runtime:
+  name: nodejs
+  options:
+    packagemanager: npm

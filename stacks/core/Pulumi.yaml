@@ -1,0 +1,5 @@
+name: nekopara.core
+runtime:
+  name: nodejs
+  options:
+    packagemanager: npm

@@ -1,0 +1,5 @@
+name: nekopara.victoria-metrics
+runtime:
+  name: nodejs
+  options:
+    packagemanager: npm

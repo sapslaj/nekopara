@@ -1,0 +1,5 @@
+name: nekopara.traefik
+runtime:
+  name: nodejs
+  options:
+    packagemanager: npm

@@ -1,0 +1,5 @@
+name: nekopara.crds
+runtime:
+  name: nodejs
+  options:
+    packagemanager: npm

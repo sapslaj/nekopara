@@ -1,0 +1,5 @@
+name: nekopara.nfs-provisioner
+runtime:
+  name: nodejs
+  options:
+    packagemanager: npm
