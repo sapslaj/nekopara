@@ -57,6 +57,9 @@ const traefik = new kubernetes.helm.v3.Chart("traefik", {
   skipCRDRendering: true,
   namespace: namespace.metadata.name,
   values: {
+    image: {
+      registry: "public.ecr.aws/docker/library",
+    },
     deployment: {
       replicas: 4,
       initContainers: [

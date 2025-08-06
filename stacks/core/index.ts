@@ -13,7 +13,8 @@ const coredns = new kubernetes.helm.v3.Chart("coredns", {
   },
   values: {
     image: {
-      // repository: "k8s.gcr.io/coredns/coredns",
+      repository: "registry.k8s.io/coredns/coredns",
+      tag: "v1.12.2",
     },
     replicaCount: 3,
     prometheus: {
