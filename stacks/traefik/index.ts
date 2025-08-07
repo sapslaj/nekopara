@@ -2,14 +2,11 @@ import * as aws from "@pulumi/aws";
 import * as kubernetes from "@pulumi/kubernetes";
 import * as pulumi from "@pulumi/pulumi";
 import * as time from "@pulumiverse/time";
-import * as YAML from "yaml";
 
-import { getDnsFullName, getDnsHostName, newK3sProvider } from "../../components/k3s-shared";
+import { newK3sProvider } from "../../components/k3s-shared";
+import { DNSRecord } from "../../components/shimiko";
 
 const provider = newK3sProvider();
-
-const dnsFullName = getDnsFullName();
-const dnsHostName = getDnsHostName();
 
 const namespace = new kubernetes.core.v1.Namespace("traefik", {
   metadata: {
@@ -88,6 +85,13 @@ const traefik = new kubernetes.helm.v3.Chart("traefik", {
     ingressClass: {
       enabled: true,
       isDefaultClass: true,
+    },
+    updateStrategy: {
+      type: "RollingUpdate",
+      rollingUpdate: {
+        maxUnavailable: 1,
+        maxSurge: null,
+      },
     },
     providers: {
       kubernetesCRD: {
@@ -168,14 +172,19 @@ const traefik = new kubernetes.helm.v3.Chart("traefik", {
           certResolver: "letsencrypt",
           domains: [
             {
-              main: dnsFullName,
+              main: "*.sapslaj.xyz",
+            },
+            {
+              main: "sapslaj.cloud",
               sans: [
-                pulumi.interpolate`*.sapslaj.xyz`,
-                pulumi.interpolate`*.${dnsHostName}.sapslaj.xyz`,
+                pulumi.interpolate`*.sapslaj.cloud`,
               ],
             },
           ],
         },
+      },
+      metrics: {
+        port: 9182,
       },
     },
     service: {
@@ -229,4 +238,58 @@ const traefik = new kubernetes.helm.v3.Chart("traefik", {
   },
 }, {
   provider,
+});
+
+const allowList = new kubernetes.apiextensions.CustomResource("traefik-dashboard-ipallowlist", {
+  apiVersion: "traefik.io/v1alpha1",
+  kind: "Middleware",
+  metadata: {
+    name: "traefik-dashboard-ipallowlist",
+    namespace: namespace.metadata.name,
+  },
+  spec: {
+    ipAllowList: {
+      sourceRange: [
+        "172.24.4.0/24",
+        "172.24.5.0/24",
+      ],
+    },
+  },
+}, { provider });
+
+new kubernetes.apiextensions.CustomResource("traefik-dashboard", {
+  apiVersion: "traefik.io/v1alpha1",
+  kind: "IngressRoute",
+  metadata: {
+    name: "traefik-dashboard",
+    namespace: namespace.metadata.name,
+  },
+  spec: {
+    routes: [
+      {
+        match: "Host(`traefik.sapslaj.xyz`)",
+        kind: "Rule",
+        middlewares: [
+          {
+            name: allowList.metadata.name,
+            namespace: allowList.metadata.namespace,
+          },
+        ],
+        services: [
+          {
+            name: "api@internal",
+            kind: "TraefikService",
+          },
+        ],
+      },
+    ],
+  },
+}, {
+  provider,
+});
+
+new DNSRecord("traefik.sapslaj.xyz", {
+  name: "traefik",
+  type: "CNAME",
+  records: ["homelab.sapslaj.com."],
 });
