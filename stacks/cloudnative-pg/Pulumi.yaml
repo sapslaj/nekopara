@@ -1,0 +1,5 @@
+name: nekopara.cloudnative-pg
+runtime:
+  name: nodejs
+  options:
+    packagemanager: npm
