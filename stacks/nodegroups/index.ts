@@ -61,6 +61,40 @@ new NodeGroup("nga", {
 //   },
 // });
 
+new NodeGroup("inga", {
+  k3sProvider: provider,
+  k3sVersion: "v1.32.7+k3s1",
+  k3sToken,
+  dnsHostName,
+  dnsFullName,
+  serverUri,
+  privateKey,
+  distro: Distro.UBUNTU_24_04,
+  nodeCount: 2,
+  vmConfig: {
+    cpu: {
+      cores: 4,
+    },
+    memory: {
+      dedicated: 4 * 1024,
+    },
+  },
+  keepers: {
+    serial: "1",
+  },
+  labels: {
+    "k3s.sapslaj.xyz/role": "ingress",
+    "topology.kubernetes.io/region": "homelab",
+  },
+  taints: [
+    {
+      key: "k3s.sapslaj.xyz/role",
+      value: "ingress",
+      effect: "NoSchedule",
+    },
+  ],
+});
+
 // new NodeGroup("lha", {
 //   k3sProvider: provider,
 //   k3sVersion: "v1.31.5+k3s1",

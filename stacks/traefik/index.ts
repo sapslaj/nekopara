@@ -61,7 +61,8 @@ const traefik = new kubernetes.helm.v3.Chart("traefik", {
       registry: "public.ecr.aws/docker/library",
     },
     deployment: {
-      replicas: 4,
+      enabled: true,
+      kind: "DaemonSet",
       initContainers: [
         {
           name: "volume-permissions",
@@ -151,6 +152,7 @@ const traefik = new kubernetes.helm.v3.Chart("traefik", {
     ],
     ports: {
       web: {
+        hostPort: 80,
         redirections: {
           entryPoint: {
             to: "websecure",
@@ -160,6 +162,7 @@ const traefik = new kubernetes.helm.v3.Chart("traefik", {
         },
       },
       websecure: {
+        hostPort: 443,
         tls: {
           enabled: true,
           certResolver: "letsencrypt",
@@ -176,16 +179,7 @@ const traefik = new kubernetes.helm.v3.Chart("traefik", {
       },
     },
     service: {
-      enabled: true,
-      annotations: {
-        "svccontroller.k3s.cattle.io/tolerations": YAML.stringify([
-          {
-            effect: "NoSchedule",
-            key: "k3s.sapslaj.xyz/role",
-            operator: "Exists",
-          },
-        ]),
-      },
+      enabled: false,
     },
     persistence: {
       enabled: true,
@@ -210,24 +204,16 @@ const traefik = new kubernetes.helm.v3.Chart("traefik", {
         },
       },
     },
-    affinity: {
-      podAntiAffinity: {
-        preferredDuringSchedulingIgnoredDuringExecution: [
-          {
-            weight: 100,
-            podAffinityTerm: {
-              topologyKey: "kubernetes.io/hostname",
-              labelSelector: {
-                matchLabels: {
-                  "app.kubernetes.io/name": `{{ template "traefik.name" . }}`,
-                  "app.kubernetes.io/instance": `{{ .Release.Name }}-{{ include "traefik.namespace" . }}`,
-                },
-              },
-            },
-          },
-        ],
-      },
+    nodeSelector: {
+      "k3s.sapslaj.xyz/role": "ingress",
     },
+    tolerations: [
+      {
+        effect: "NoSchedule",
+        key: "k3s.sapslaj.xyz/role",
+        operator: "Exists",
+      },
+    ],
     topologySpreadConstraints: [
       {
         maxSkew: 1,
