@@ -45,7 +45,7 @@ const basicAuthUsers = [
       [username]: password,
     };
   },
-  {},
+  {} as Record<string, pulumi.Output<string>>,
 );
 
 const basicAuthSecret = new kubernetes.core.v1.Secret("victoria-metrics-ingress-basic-auth", {
@@ -53,7 +53,13 @@ const basicAuthSecret = new kubernetes.core.v1.Secret("victoria-metrics-ingress-
     name: "victoria-metrics-ingress-basic-auth",
     namespace: namespace.metadata.name,
   },
-  stringData: basicAuthUsers,
+  stringData: {
+    users: pulumi.concat(
+      Object.entries(basicAuthUsers).map(([username, password]) => {
+        return [username, ":", password, "\n"];
+      }).flat(),
+    ),
+  },
 }, { provider });
 
 const basicAuthMiddleware = new kubernetes.apiextensions.CustomResource("victoria-metrics-ingress-basic-auth", {
@@ -225,7 +231,7 @@ const victoriaMetrics = new kubernetes.helm.v3.Chart("victoria-metrics", {
           enabled: true,
           annotations: {
             "traefik.ingress.kubernetes.io/router.middlewares": pulumi
-              .interpolate`${basicAuthMiddleware.metadata.name}@kubernetescrd`,
+              .interpolate`${basicAuthMiddleware.metadata.namespace}-${basicAuthMiddleware.metadata.name}@kubernetescrd`,
           },
           ingressClassName: "traefik",
           hosts: [
@@ -236,7 +242,7 @@ const victoriaMetrics = new kubernetes.helm.v3.Chart("victoria-metrics", {
           enabled: true,
           annotations: {
             "traefik.ingress.kubernetes.io/router.middlewares": pulumi
-              .interpolate`${basicAuthMiddleware.metadata.name}@kubernetescrd`,
+              .interpolate`${basicAuthMiddleware.metadata.namespace}-${basicAuthMiddleware.metadata.name}@kubernetescrd`,
           },
           ingressClassName: "traefik",
           hosts: [
@@ -287,7 +293,7 @@ const victoriaLogs = new kubernetes.helm.v3.Chart("victoria-logs", {
         enabled: true,
         annotations: {
           "traefik.ingress.kubernetes.io/router.middlewares": pulumi
-            .interpolate`${basicAuthMiddleware.metadata.name}@kubernetescrd`,
+            .interpolate`${basicAuthMiddleware.metadata.namespace}-${basicAuthMiddleware.metadata.name}@kubernetescrd`,
         },
         hosts: [
           {
@@ -313,13 +319,13 @@ const victoriaLogs = new kubernetes.helm.v3.Chart("victoria-logs", {
         enabled: true,
         annotations: {
           "traefik.ingress.kubernetes.io/router.middlewares": pulumi
-            .interpolate`${basicAuthMiddleware.metadata.name}@kubernetescrd`,
+            .interpolate`${basicAuthMiddleware.metadata.namespace}-${basicAuthMiddleware.metadata.name}@kubernetescrd`,
         },
         hosts: [
           {
             name: "victoriametrics-vlinsert.sapslaj.xyz",
             path: [
-              "/select",
+              "/insert",
             ],
             port: "http",
           },
