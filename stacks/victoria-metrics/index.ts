@@ -62,7 +62,7 @@ const basicAuthSecret = new kubernetes.core.v1.Secret("victoria-metrics-ingress-
   },
   stringData: {
     users: pulumi.concat(
-      Object.entries(basicAuthUsers).map(([username, password]) => {
+      ...Object.entries(basicAuthUsers).map(([username, password]) => {
         return [username, ":", password, "\n"];
       }).flat(),
     ),
