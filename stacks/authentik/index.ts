@@ -3,7 +3,7 @@ import * as kubernetes from "@pulumi/kubernetes";
 import * as pulumi from "@pulumi/pulumi";
 import * as random from "@pulumi/random";
 
-import { newK3sProvider } from "../../components/k3s-shared";
+import { newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";
 
 const provider = newK3sProvider();
 
@@ -255,6 +255,9 @@ const authentik = new kubernetes.helm.v3.Chart("authentik", {
   },
 }, {
   provider,
+  transforms: [
+    transformSkipIngressAwait(),
+  ],
 });
 
 new aws.route53.Record("login.sapslaj.cloud", {
