@@ -175,7 +175,93 @@ const mediaPVC = new kubernetes.core.v1.PersistentVolumeClaim("authentik-media",
       },
     },
   },
-});
+}, { provider });
+
+const geoipPVC = new kubernetes.core.v1.PersistentVolumeClaim("authentik-geoip", {
+  metadata: {
+    name: "authentik-geoip",
+    namespace: namespace.metadata.name,
+    labels: {
+      "app.kubernetes.io/instance": "authentik",
+      "app.kubernetes.io/managed-by": "Pulumi",
+      "app.kubernetes.io/name": "authentik-geoip",
+      "app.kubernetes.io/part-of": "authentik",
+      "k3s.sapslaj.xyz/stack": "nekopara.authentik",
+    },
+  },
+  spec: {
+    accessModes: [
+      "ReadWriteMany",
+    ],
+    storageClassName: "nfs",
+    resources: {
+      requests: {
+        storage: "10Gi",
+      },
+    },
+  },
+}, { provider });
+
+new kubernetes.batch.v1.CronJob("authentik-geoip-update", {
+  metadata: {
+    name: "authentik-geoip-update",
+    namespace: namespace.metadata.name,
+    labels: {
+      "app.kubernetes.io/instance": "authentik",
+      "app.kubernetes.io/managed-by": "Pulumi",
+      "app.kubernetes.io/name": "authentik-geoip-update",
+      "app.kubernetes.io/part-of": "authentik",
+      "k3s.sapslaj.xyz/stack": "nekopara.authentik",
+    },
+  },
+  spec: {
+    schedule: "@weekly",
+    jobTemplate: {
+      spec: {
+        template: {
+          spec: {
+            restartPolicy: "OnFailure",
+            containers: [
+              {
+                name: "authentik-geoip-update",
+                image: "public.ecr.aws/docker/library/alpine:latest",
+                command: [
+                  "/bin/sh",
+                  "-c",
+                  [
+                    "set -euxo pipefail",
+                    "apk add wget",
+                    "wget https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-ASN.mmdb",
+                    "wget https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-City.mmdb",
+                    "wget https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-Country.mmdb",
+                    "mv ./GeoLite2-ASN.mmdb /geoip/",
+                    "mv ./GeoLite2-City.mmdb /geoip/",
+                    "mv ./GeoLite2-Country.mmdb /geoip/",
+                    "",
+                  ].join("\n"),
+                ],
+                volumeMounts: [
+                  {
+                    name: "geoip",
+                    mountPath: "/geoip",
+                  },
+                ],
+              },
+            ],
+            volumes: [
+              {
+                name: "geoip",
+                persistentVolumeClaim: {
+                  claimName: geoipPVC.metadata.name,
+                },
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+}, { provider });
 
 const authentik = new kubernetes.helm.v3.Chart("authentik", {
   chart: "authentik",
@@ -243,12 +329,22 @@ const authentik = new kubernetes.helm.v3.Chart("authentik", {
           name: "media",
           mountPath: "/media",
         },
+        {
+          name: "geoip",
+          mountPath: "/geoip",
+        },
       ],
       volumes: [
         {
           name: "media",
           persistentVolumeClaim: {
             claimName: mediaPVC.metadata.name,
+          },
+        },
+        {
+          name: "geoip",
+          persistentVolumeClaim: {
+            claimName: geoipPVC.metadata.name,
           },
         },
       ],
