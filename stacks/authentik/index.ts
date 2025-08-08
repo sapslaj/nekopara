@@ -152,6 +152,31 @@ const configSecret = new kubernetes.core.v1.Secret("authentik", {
   },
 }, { provider });
 
+const mediaPVC = new kubernetes.core.v1.PersistentVolumeClaim("authentik-media", {
+  metadata: {
+    name: "authentik-media",
+    namespace: namespace.metadata.name,
+    labels: {
+      "app.kubernetes.io/instance": "authentik",
+      "app.kubernetes.io/managed-by": "Pulumi",
+      "app.kubernetes.io/name": "authentik-media",
+      "app.kubernetes.io/part-of": "authentik",
+      "k3s.sapslaj.xyz/stack": "nekopara.authentik",
+    },
+  },
+  spec: {
+    accessModes: [
+      "ReadWriteMany",
+    ],
+    storageClassName: "nfs",
+    resources: {
+      requests: {
+        storage: "10Gi",
+      },
+    },
+  },
+});
+
 const authentik = new kubernetes.helm.v3.Chart("authentik", {
   chart: "authentik",
   version: "2025.6.4",
@@ -211,6 +236,20 @@ const authentik = new kubernetes.helm.v3.Chart("authentik", {
         {
           name: "AUTHENTIK_REDIS__HOST",
           value: valkeyService.metadata.name,
+        },
+      ],
+      volumeMounts: [
+        {
+          name: "media",
+          mountPath: "/media",
+        },
+      ],
+      volumes: [
+        {
+          name: "media",
+          persistentVolumeClaim: {
+            claimName: mediaPVC.metadata.name,
+          },
         },
       ],
     },
