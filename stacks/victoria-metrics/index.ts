@@ -423,9 +423,7 @@ new kubernetes.apiextensions.CustomResource("static-scrape-node-exporter", {
           "tohru.sapslaj.xyz:9100",
           "koyuki.sapslaj.xyz:9100",
           "mitsuru.sapslaj.xyz:9100",
-          "shimiko.sapslaj.xyz:9100",
           "misc.sapslaj.xyz:9100",
-          "oci.sapslaj.xyz:9100",
         ],
       },
     ],
@@ -448,7 +446,6 @@ new kubernetes.apiextensions.CustomResource("static-scrape-standalone-docker", {
         targets: [
           "eris.sapslaj.xyz:9323",
           "koyuki.sapslaj.xyz:9323",
-          "oci.sapslaj.xyz:9100",
         ],
       },
     ],
@@ -471,7 +468,6 @@ new kubernetes.apiextensions.CustomResource("static-scrape-standalone-docker-cad
         targets: [
           "eris.sapslaj.xyz:9338",
           "koyuki.sapslaj.xyz:9338",
-          "oci.sapslaj.xyz:9100",
         ],
       },
     ],
@@ -512,7 +508,6 @@ new kubernetes.apiextensions.CustomResource("static-scrape-standalone-docker-wat
         targets: [
           "eris.sapslaj.xyz:9420",
           "koyuki.sapslaj.xyz:9420",
-          "oci.sapslaj.xyz:9100",
         ],
       },
     ],
@@ -687,27 +682,6 @@ new kubernetes.apiextensions.CustomResource("static-scrape-morbius", {
       {
         targets: [
           "koyuki.sapslaj.xyz:9269",
-        ],
-      },
-    ],
-  },
-}, {
-  provider,
-});
-
-new kubernetes.apiextensions.CustomResource("static-scrape-zonepop", {
-  apiVersion: "operator.victoriametrics.com/v1beta1",
-  kind: "VMStaticScrape",
-  metadata: {
-    name: "zonepop",
-    namespace: namespace.metadata.name,
-  },
-  spec: {
-    jobName: "zonepop",
-    targetEndpoints: [
-      {
-        targets: [
-          "shimiko.sapslaj.xyz:9412",
         ],
       },
     ],
