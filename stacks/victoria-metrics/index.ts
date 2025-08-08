@@ -695,6 +695,27 @@ new kubernetes.apiextensions.CustomResource("static-scrape-morbius", {
   provider,
 });
 
+new kubernetes.apiextensions.CustomResource("static-scrape-zonepop", {
+  apiVersion: "operator.victoriametrics.com/v1beta1",
+  kind: "VMStaticScrape",
+  metadata: {
+    name: "zonepop",
+    namespace: namespace.metadata.name,
+  },
+  spec: {
+    jobName: "zonepop",
+    targetEndpoints: [
+      {
+        targets: [
+          "shimiko.sapslaj.xyz:9412",
+        ],
+      },
+    ],
+  },
+}, {
+  provider,
+});
+
 new kubernetes.helm.v3.Chart("blackbox-exporter", {
   chart: "prometheus-blackbox-exporter",
   fetchOpts: {
