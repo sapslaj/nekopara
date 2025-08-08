@@ -9,6 +9,7 @@
     "@kubernetes/client-node": "^1.3.0",
     "@muhlba91/pulumi-proxmoxve": "^7.0.0",
     "@nodesecure/fs-walk": "^2.0.0",
+    "@pulumi/authentik": "file:sdks/authentik",
     "@pulumi/aws": "^6.68.0",
     "@pulumi/dynamic": "^1.0.0-alpha.1657294496",
     "@pulumi/kubernetes": "^4.21.1",
