@@ -54,3 +54,23 @@ export function newK3sProvider(
     ...args,
   }, opts);
 }
+
+export function transformSkipIngressAwait(): pulumi.ResourceTransform {
+  return (args) => {
+    if (args.type === "kubernetes:networking.k8s.io/v1:Ingress" || args.props.kind === "Ingress") {
+      return {
+        props: {
+          ...args.props,
+          metadata: {
+            ...args.props.metadata,
+            annotations: {
+              ...args.props.metadata?.annotations,
+              "pulumi.com/skipAwait": "true",
+            },
+          },
+        },
+        opts: args.opts,
+      };
+    }
+  };
+}

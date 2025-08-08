@@ -3,13 +3,70 @@ import * as pulumi from "@pulumi/pulumi";
 import * as random from "@pulumi/random";
 import * as YAML from "yaml";
 
-import { newK3sProvider } from "../../components/k3s-shared";
+import { newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";
+import { DNSRecord } from "../../components/shimiko";
 
 const provider = newK3sProvider();
 
 const namespace = new kubernetes.core.v1.Namespace("victoria-metrics", {
   metadata: {
     name: "victoria-metrics",
+  },
+}, { provider });
+
+[
+  "victoriametrics-vlinsert",
+  "victoriametrics-vlselect",
+  "victoriametrics-vminsert",
+  "victoriametrics-vmselect",
+].map((name) => {
+  new DNSRecord(name, {
+    name,
+    type: "CNAME",
+    records: ["homelab.sapslaj.com."],
+  });
+});
+
+const basicAuthUsers = [
+  "grafana",
+].map((username) => {
+  const randomPassword = new random.RandomPassword(username, {
+    length: 31,
+    special: false,
+  });
+  return {
+    username,
+    password: randomPassword.bcryptHash,
+  };
+}).reduce(
+  (obj, { username, password }) => {
+    return {
+      ...obj,
+      [username]: password,
+    };
+  },
+  {},
+);
+
+const basicAuthSecret = new kubernetes.core.v1.Secret("victoria-metrics-ingress-basic-auth", {
+  metadata: {
+    name: "victoria-metrics-ingress-basic-auth",
+    namespace: namespace.metadata.name,
+  },
+  stringData: basicAuthUsers,
+}, { provider });
+
+const basicAuthMiddleware = new kubernetes.apiextensions.CustomResource("victoria-metrics-ingress-basic-auth", {
+  apiVersion: "traefik.io/v1alpha1",
+  kind: "Middleware",
+  metadata: {
+    name: "victoria-metrics-ingress-basic-auth",
+    namespace: namespace.metadata.name,
+  },
+  spec: {
+    basicAuth: {
+      secret: basicAuthSecret.metadata.name,
+    },
   },
 }, { provider });
 
@@ -160,6 +217,33 @@ const victoriaMetrics = new kubernetes.helm.v3.Chart("victoria-metrics", {
           },
         },
       },
+      ingress: {
+        storage: {
+          enabled: false,
+        },
+        select: {
+          enabled: true,
+          annotations: {
+            "traefik.ingress.kubernetes.io/router.middlewares": pulumi
+              .interpolate`${basicAuthMiddleware.metadata.name}@kubernetescrd`,
+          },
+          ingressClassName: "traefik",
+          hosts: [
+            "victoriametrics-vmselect.sapslaj.xyz",
+          ],
+        },
+        insert: {
+          enabled: true,
+          annotations: {
+            "traefik.ingress.kubernetes.io/router.middlewares": pulumi
+              .interpolate`${basicAuthMiddleware.metadata.name}@kubernetescrd`,
+          },
+          ingressClassName: "traefik",
+          hosts: [
+            "victoriametrics-vminsert.sapslaj.xyz",
+          ],
+        },
+      },
     },
     grafana: {
       enabled: false,
@@ -170,6 +254,9 @@ const victoriaMetrics = new kubernetes.helm.v3.Chart("victoria-metrics", {
   provider,
   dependsOn: [
     victoriaMetricsOperator,
+  ],
+  transforms: [
+    transformSkipIngressAwait(),
   ],
 });
 
@@ -196,6 +283,22 @@ const victoriaLogs = new kubernetes.helm.v3.Chart("victoria-logs", {
         enabled: true,
         minAvailable: 1,
       },
+      ingress: {
+        enabled: true,
+        annotations: {
+          "traefik.ingress.kubernetes.io/router.middlewares": pulumi
+            .interpolate`${basicAuthMiddleware.metadata.name}@kubernetescrd`,
+        },
+        hosts: [
+          {
+            name: "victoriametrics-vlselect.sapslaj.xyz",
+            path: [
+              "/select",
+            ],
+            port: "http",
+          },
+        ],
+      },
       vmServiceScrape: {
         enabled: true,
       },
@@ -205,6 +308,22 @@ const victoriaLogs = new kubernetes.helm.v3.Chart("victoria-logs", {
       podDisruptionBudget: {
         enabled: true,
         minAvailable: 1,
+      },
+      ingress: {
+        enabled: true,
+        annotations: {
+          "traefik.ingress.kubernetes.io/router.middlewares": pulumi
+            .interpolate`${basicAuthMiddleware.metadata.name}@kubernetescrd`,
+        },
+        hosts: [
+          {
+            name: "victoriametrics-vlinsert.sapslaj.xyz",
+            path: [
+              "/select",
+            ],
+            port: "http",
+          },
+        ],
       },
       vmServiceScrape: {
         enabled: true,
@@ -265,6 +384,9 @@ const victoriaLogs = new kubernetes.helm.v3.Chart("victoria-logs", {
   dependsOn: [
     victoriaMetricsOperator,
     victoriaMetrics,
+  ],
+  transforms: [
+    transformSkipIngressAwait(),
   ],
 });
 
@@ -616,18 +738,18 @@ new kubernetes.helm.v3.Chart("blackbox-exporter", {
       },
     },
     ingress: {
-      enabled: true,
-      hosts: [
-        {
-          host: "blackbox-exporter.sapslaj.xyz",
-          paths: [
-            {
-              path: "/",
-              pathType: "ImplementationSpecific",
-            },
-          ],
-        },
-      ],
+      // enabled: true,
+      // hosts: [
+      //   {
+      //     host: "blackbox-exporter.sapslaj.xyz",
+      //     paths: [
+      //       {
+      //         path: "/",
+      //         pathType: "ImplementationSpecific",
+      //       },
+      //     ],
+      //   },
+      // ],
     },
     serviceMonitor: {
       selfMonitor: {
