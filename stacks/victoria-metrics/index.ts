@@ -1,3 +1,4 @@
+import * as aws from "@pulumi/aws";
 import * as kubernetes from "@pulumi/kubernetes";
 import * as pulumi from "@pulumi/pulumi";
 import * as random from "@pulumi/random";
@@ -29,10 +30,16 @@ const namespace = new kubernetes.core.v1.Namespace("victoria-metrics", {
 
 const basicAuthUsers = [
   "grafana",
+  "remotewrite",
 ].map((username) => {
   const randomPassword = new random.RandomPassword(username, {
     length: 31,
     special: false,
+  });
+  new aws.ssm.Parameter(username, {
+    type: "SecureString",
+    name: `/nekopara/victoria-metrics/ingress-user/${username}/password`,
+    value: randomPassword.result,
   });
   return {
     username,
