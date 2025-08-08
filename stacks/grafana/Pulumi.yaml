@@ -3,3 +3,9 @@ runtime:
   name: nodejs
   options:
     packagemanager: npm
+packages:
+  authentik:
+    source: terraform-provider
+    version: 0.13.0
+    parameters:
+      - goauthentik/authentik
