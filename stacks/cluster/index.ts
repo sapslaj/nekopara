@@ -527,8 +527,7 @@ nodes["c1"] = new ControlPlaneNode("c1", {
   privateKey,
   k3sVersion: "v1.32.7+k3s1",
   distro: Distro.UBUNTU_24_04,
-  // serverUri: pulumi.interpolate`https://172.24.4.75:6443`,
-  serverUri: "cluster-init",
+  serverUri: pulumi.interpolate`https://172.24.4.123:6443`,
   serverArgs: [
     "--disable-helm-controller",
     "--disable traefik",
@@ -561,7 +560,7 @@ nodes["c2"] = new ControlPlaneNode("c2", {
   privateKey,
   k3sVersion: "v1.32.7+k3s1",
   distro: Distro.UBUNTU_24_04,
-  serverUri: pulumi.interpolate`https://${nodes["c1"].vm.ipv4}:6443`,
+  serverUri: pulumi.interpolate`https://172.24.4.136:6443`,
   serverArgs: [
     "--disable-helm-controller",
     "--disable traefik",
@@ -596,7 +595,7 @@ nodes["c3"] = new ControlPlaneNode("c3", {
   privateKey,
   k3sVersion: "v1.32.7+k3s1",
   distro: Distro.UBUNTU_24_04,
-  serverUri: pulumi.interpolate`https://${nodes["c1"].vm.ipv4}:6443`,
+  serverUri: pulumi.interpolate`https://172.24.4.142:6443`,
   serverArgs: [
     "--disable-helm-controller",
     "--disable traefik",
@@ -621,7 +620,7 @@ nodes["c3"] = new ControlPlaneNode("c3", {
     },
   },
 }, {
-  dependsOn: nodes["c1"].service,
+  dependsOn: nodes["c2"].service,
 });
 
 const nlbs: Record<string, NLBNode> = {};
