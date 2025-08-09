@@ -533,6 +533,7 @@ export class ProxmoxVM extends pulumi.ComponentResource {
         ...config,
         cpu: {
           cores: 2,
+          type: "x86-64-v2-AES",
           ...cpu,
           flags: cpu.flags === undefined ? undefined : proxmoxCpuFlags(cpu.flags),
         },
