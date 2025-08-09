@@ -1,0 +1,5 @@
+name: nekopara.opensearch-operator
+runtime:
+  name: nodejs
+  options:
+    packagemanager: npm
