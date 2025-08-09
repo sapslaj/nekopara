@@ -273,6 +273,7 @@ export interface NodeConfigInputs {
   labels?: pulumi.Input<Record<string, pulumi.Input<string>>>;
   taints?: pulumi.Input<pulumi.Input<NodeConfigTaint>[]>;
   unschedulable?: pulumi.Input<boolean>;
+  drain?: pulumi.Input<boolean>;
 }
 
 export class NodeConfig extends pulumi.dynamic.Resource {
@@ -297,6 +298,7 @@ export interface NodeProps {
   labels?: pulumi.Input<Record<string, pulumi.Input<string>>>;
   taints?: pulumi.Input<pulumi.Input<NodeConfigTaint>[]>;
   unschedulable?: pulumi.Input<boolean>;
+  drain?: pulumi.Input<boolean>;
   vmConfig?: ProxmoxVMProps;
   diskConfig?: Partial<ProxmoxVMDiskConfig>;
   serverArgs?: pulumi.Input<string>[];
@@ -321,7 +323,7 @@ export class Node extends pulumi.ComponentResource {
       parent: this,
     });
 
-    const nodeConfig = props.vmConfig ?? {};
+    const vmConfig = props.vmConfig ?? {};
 
     this.vm = new ProxmoxVM(id, {
       name: pulumi.all({ randomIdResult: this.randomId.id, dnsHostName: props.dnsHostName }).apply(
@@ -352,21 +354,21 @@ export class Node extends pulumi.ComponentResource {
           privateKey: props.privateKey,
           addPrivateKeyToUserdata: true,
         }),
-        ...(nodeConfig.traits ?? []),
+        ...(vmConfig.traits ?? []),
       ],
       connectionArgs: {
         user: props.distro.username,
-        ...nodeConfig.connectionArgs,
+        ...vmConfig.connectionArgs,
       },
       cpu: {
         cores: 4,
-        ...nodeConfig.cpu,
+        ...vmConfig.cpu,
       },
       memory: {
         dedicated: 4096,
-        ...nodeConfig.memory,
+        ...vmConfig.memory,
       },
-      ...nodeConfig,
+      ...vmConfig,
     }, {
       parent: this,
     });
@@ -584,6 +586,7 @@ export class Node extends pulumi.ComponentResource {
       labels: props.labels,
       taints: props.taints,
       unschedulable: props.unschedulable,
+      drain: props.drain,
     }, {
       parent: this,
       dependsOn: [
