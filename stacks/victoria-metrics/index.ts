@@ -423,7 +423,6 @@ new kubernetes.apiextensions.CustomResource("static-scrape-node-exporter", {
           "tohru.sapslaj.xyz:9100",
           "koyuki.sapslaj.xyz:9100",
           "mitsuru.sapslaj.xyz:9100",
-          "misc.sapslaj.xyz:9100",
         ],
       },
     ],
