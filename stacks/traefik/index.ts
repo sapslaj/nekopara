@@ -127,16 +127,16 @@ const traefik = new kubernetes.helm.v3.Chart("traefik", {
         enabled: true,
       },
     },
-    // tracing: {
-    //   otlp: {
-    //     enabled: true,
-    //     grpc: {
-    //       enabled: true,
-    //       endpoint: "signoz-otel-collector.signoz.svc.cluster.local:4317",
-    //       insecure: true,
-    //     },
-    //   },
-    // },
+    tracing: {
+      otlp: {
+        enabled: true,
+        grpc: {
+          enabled: true,
+          endpoint: "jaeger-collector.jaeger.svc.cluster.local:4317",
+          insecure: true,
+        },
+      },
+    },
     global: {
       checkNewVersion: false,
       sendAnonymousUsage: false,
