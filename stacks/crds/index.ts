@@ -62,22 +62,9 @@ const cloudnativePGCRDs = new kubernetes.helm.v3.Chart("cloudnative-pg-crds", {
   provider,
 });
 
-const opensearchOperatorCRDs = new kubernetes.helm.v3.Chart("opensearch-k8s-operator", {
-  chart: "opensearch-operator",
-  fetchOpts: {
-    repo: "https://opensearch-project.github.io/opensearch-k8s-operator/",
-  },
-  version: "2.8.0",
+const opensearchOperatorCRDs = new kubernetes.kustomize.v2.Directory("opensearch-k8s-operator", {
   namespace: "kube-system",
-  values: {},
-  transformations: [
-    (obj: any, opts: pulumi.CustomResourceOptions) => {
-      if (obj.kind !== "CustomResourceDefinition") {
-        obj.apiVersion = "v1";
-        obj.kind = "List";
-      }
-    },
-  ],
+  directory: "./crds/opensearch-k8s-operator/",
 }, {
   provider,
 });

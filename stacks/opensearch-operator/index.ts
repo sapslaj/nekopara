@@ -19,6 +19,12 @@ const chart = new kubernetes.helm.v3.Chart("opensearch-operator", {
   namespace: namespace.metadata.name,
   skipCRDRendering: true,
   values: {
+    manager: {
+      image: {
+        repository: "oci.sapslaj.xyz/opensearch-operator",
+        tag: "b76658a251dcc1c6038b7627996205e5d0f2d82c",
+      },
+    },
     installCRDs: false,
   },
 }, {
