@@ -1,0 +1,5 @@
+name: nekopara.netbox
+runtime:
+  name: nodejs
+  options:
+    packagemanager: npm
