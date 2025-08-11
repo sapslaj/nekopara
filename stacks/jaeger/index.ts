@@ -2,7 +2,7 @@ import * as kubernetes from "@pulumi/kubernetes";
 import * as pulumi from "@pulumi/pulumi";
 import * as YAML from "yaml";
 
-import { newK3sProvider } from "../../components/k3s-shared";
+import { newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";
 
 const provider = newK3sProvider();
 
@@ -118,6 +118,11 @@ const chart = new kubernetes.helm.v3.Chart("jaeger", {
         anonymous: true,
       },
     },
+    agent: {
+      serviceMonitor: {
+        enabled: true,
+      },
+    },
     collector: {
       service: {
         otlp: {
@@ -130,6 +135,32 @@ const chart = new kubernetes.helm.v3.Chart("jaeger", {
             port: 4318,
           },
         },
+      },
+      ingress: {
+        enabled: true,
+        ingressClassName: "traefik",
+        annotations: {
+          "traefik.ingress.kubernetes.io/router.middlewares":
+            "victoria-metrics-victoria-metrics-ingress-basic-auth@kubernetescrd",
+        },
+        hosts: [
+          {
+            host: "jaeger-collector-otlp-grpc.sapslaj.xyz",
+            servicePort: "otlp-grpc",
+          },
+          {
+            host: "jaeger-collector-otlp-http.sapslaj.xyz",
+            servicePort: "otlp-http",
+          },
+        ],
+      },
+      serviceMonitor: {
+        enabled: true,
+      },
+    },
+    query: {
+      serviceMonitor: {
+        enabled: true,
       },
     },
     esIndexCleaner: {
@@ -153,16 +184,17 @@ const chart = new kubernetes.helm.v3.Chart("jaeger", {
                 access: "proxy",
                 name: "Jaeger",
                 type: "jaeger",
-                // url: "http://victoria-logs-victoria-logs-single-server.victoria-metrics.svc.cluster.local.:9428",
-                // url: `{{ include "vm.url" (dict "helm" . "appKey" "vlselect" "style" "plain") }}`,
-                url: `http://{{ template "jaeger.query.name" . }}.{{ .Release.Namespace }}.svc.cluster.local:80`
+                url: `http://{{ template "jaeger.query.name" . }}.{{ .Release.Namespace }}.svc.cluster.local:80`,
               },
             ],
           }),
         },
       },
-    ]
+    ],
   },
 }, {
   provider,
+  transforms: [
+    transformSkipIngressAwait(),
+  ],
 });
