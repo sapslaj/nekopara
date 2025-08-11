@@ -30,12 +30,10 @@ def main():
                     import * as kubernetes from "@pulumi/kubernetes";
                     import * as pulumi from "@pulumi/pulumi";
 
-                    import { getDnsFullName, getDnsHostName, newK3sProvider } from "../../components/k3s-shared";
-                    import { DNSRecord } from "../../components/shimiko/DNSRecord";
+                    import { newK3sProvider } from "../../components/k3s-shared";
+                    import { IngressDNS } from "../../components/k8s/IngressDNS";
 
                     const provider = newK3sProvider();
-                    const dnsFullName = getDnsFullName();
-                    const dnsHostName = getDnsHostName();
 
                     const namespace = new kubernetes.core.v1.Namespace("{name}", {
                       metadata: {
@@ -57,10 +55,8 @@ def main():
                       provider,
                     });
 
-                    const dns = new DNSRecord("{name}", {
-                      name: pulumi.interpolate`{name}.${dnsHostName}`,
-                      records: [dnsFullName],
-                      type: "CNAME",
+                    const dns = new IngressDNS("{name}", {
+                      hostname: "{name}",
                     });
                 """.replace("{name}", args.name),
             ).lstrip()
