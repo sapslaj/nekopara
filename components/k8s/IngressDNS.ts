@@ -1,11 +1,7 @@
 import * as aws from "@pulumi/aws";
 import * as cloudflare from "@pulumi/cloudflare";
-import * as kubernetes from "@pulumi/kubernetes";
 import * as pulumi from "@pulumi/pulumi";
-import * as std from "@pulumi/std";
 
-import * as authentik from "@pulumi/authentik";
-import { getDnsFullName, getDnsHostName, newK3sProvider } from "../k3s-shared";
 import { DNSRecord } from "../shimiko/DNSRecord";
 
 export interface IngressDNSProps {
@@ -19,7 +15,7 @@ export class IngressDNS extends pulumi.ComponentResource {
   constructor(name: string, props: IngressDNSProps = {}, opts: pulumi.ComponentResourceOptions = {}) {
     super("sapslaj:nekopara:IngressDNS", name, {}, opts);
 
-    const hostname = pulumi.output(props.hostname ?? name).apply((hostname) => {
+    this.hostname = pulumi.output(props.hostname ?? name).apply((hostname) => {
       if (!hostname.includes(".")) {
         hostname += ".sapslaj.xyz";
       }
@@ -73,8 +69,8 @@ export class IngressDNS extends pulumi.ComponentResource {
       } else {
         throw new Error(`unsupported zone for hostname ${hostname}`);
       }
-    });
 
-    this.hostname = pulumi.output(hostname);
+      return hostname;
+    });
   }
 }
