@@ -77,26 +77,6 @@ const opensearch = new kubernetes.apiextensions.CustomResource("jaeger-opensearc
   },
 }, { provider });
 
-new kubernetes.core.v1.Pod("debug", {
-  metadata: {
-    name: "debug",
-    namespace: namespace.metadata.name,
-  },
-  spec: {
-    containers: [
-      {
-        name: "debug",
-        image: "ubuntu:latest",
-        command: [
-          "/bin/bash",
-          "-c",
-          "while :; do sleep 3600 ; done",
-        ],
-      },
-    ],
-  },
-}, { provider });
-
 const chart = new kubernetes.helm.v3.Chart("jaeger", {
   chart: "jaeger",
   fetchOpts: {
