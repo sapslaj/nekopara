@@ -1,6 +1,6 @@
 import * as kubernetes from "@pulumi/kubernetes";
 
-import { newK3sProvider } from "../../components/k3s-shared";
+import { newK3sProvider, transformPatchForce } from "../../components/k3s-shared";
 
 const provider = newK3sProvider();
 
@@ -22,11 +22,14 @@ const chart = new kubernetes.helm.v3.Chart("opensearch-operator", {
     manager: {
       image: {
         repository: "oci.sapslaj.xyz/opensearch-operator",
-        tag: "b76658a251dcc1c6038b7627996205e5d0f2d82c",
+        tag: "2d956a3b5ff1883169d5265489d5c579c18e4e27",
       },
     },
     installCRDs: false,
   },
 }, {
   provider,
+  transforms: [
+    transformPatchForce(),
+  ],
 });
