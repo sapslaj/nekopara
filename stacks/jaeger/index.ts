@@ -3,6 +3,8 @@ import * as pulumi from "@pulumi/pulumi";
 import * as YAML from "yaml";
 
 import { newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";
+import { AuthentikProxyIngress } from "../../components/k8s/AuthentikProxyIngress";
+import { IngressDNS } from "../../components/k8s/IngressDNS";
 
 const provider = newK3sProvider();
 
@@ -50,11 +52,11 @@ const opensearch = new kubernetes.apiextensions.CustomResource("jaeger-opensearc
         ],
         resources: {
           requests: {
-            memory: "2Gi",
+            memory: "8Gi",
             cpu: "2",
           },
           limits: {
-            memory: "2Gi",
+            memory: "8Gi",
             cpu: "2",
           },
         },
@@ -104,6 +106,12 @@ const chart = new kubernetes.helm.v3.Chart("jaeger", {
       },
     },
     collector: {
+      extraEnv: [
+        {
+          name: "JAEGER_LOG_LEVEL",
+          value: "debug",
+        },
+      ],
       service: {
         otlp: {
           grpc: {
@@ -177,4 +185,18 @@ const chart = new kubernetes.helm.v3.Chart("jaeger", {
   transforms: [
     transformSkipIngressAwait(),
   ],
+});
+
+new IngressDNS("jaeger-collector-otlp-grpc.sapslaj.xyz");
+new IngressDNS("jaeger-collector-otlp-http.sapslaj.xyz");
+
+new AuthentikProxyIngress("jaeger-ui", {
+  name: "Jaeger",
+  namespace: namespace.metadata.name,
+  hostname: "jaeger.sapslaj.xyz",
+  service: {
+    kind: "Service",
+    name: "jaeger-query",
+    port: 80,
+  },
 });
