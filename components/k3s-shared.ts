@@ -74,3 +74,29 @@ export function transformSkipIngressAwait(): pulumi.ResourceTransform {
     }
   };
 }
+
+export function transformPatchForce(): pulumi.ResourceTransform {
+  return (args) => {
+    if (args.type.startsWith("kubernetes:")) {
+      if (args.type.startsWith("kubernetes:helm") || args.type.startsWith("kubernetes:kustomize")) {
+        return {
+          ...args,
+        };
+      }
+
+      return {
+        props: {
+          ...args.props,
+          metadata: {
+            ...args.props.metadata,
+            annotations: {
+              ...args.props.metadata?.annotations,
+              "pulumi.com/patchForce": "true",
+            },
+          },
+        },
+        opts: args.opts,
+      };
+    }
+  };
+}
