@@ -1,3 +1,13 @@
+import * as proxmoxve from "@muhlba91/pulumi-proxmoxve";
+
+import { Autoupdate, AutoupdateProps } from "../mid/Autoupdate";
+import { BaselineUsers, BaselineUsersProps } from "../mid/BaselineUsers";
+import { MidTarget, MidTargetProps } from "../mid/MidTarget";
+import { NASClient, NASClientProps } from "../mid/NASClient";
+import { OpenTelemetryCollector, OpenTelemetryCollectorProps } from "../mid/OpenTelemetryCollector";
+import { PrometheusNodeExporter, PrometheusNodeExporterProps } from "../mid/PrometheusNodeExporter";
+import { Selfheal, SelfhealProps } from "../mid/Selfheal";
+import { Vector, VectorProps } from "../mid/Vector";
 import { CloudImageTrait, CloudImageTraitConfig, CloudImageTraitConfigDownloadFileConfig } from "./CloudImageTrait";
 import { DNSRecordTrait, DNSRecordTraitConfig } from "./DNSRecordTrait";
 import { PrivateKeyTrait, PrivateKeyTraitConfig } from "./PrivateKeyTrait";
@@ -66,6 +76,17 @@ export enum VLAN {
   INTERNAL = 5,
 }
 
+export interface BaseConfigTraitMidConfig {
+  autoupdate?: AutoupdateProps & { enabled?: boolean };
+  baselineUsers?: BaselineUsersProps & { enabled?: boolean };
+  midTarget?: MidTargetProps & { enabled?: boolean };
+  nasClient?: NASClientProps & { enabled?: boolean };
+  openTelemetryCollector?: OpenTelemetryCollectorProps & { enabled?: boolean };
+  prometheusNodeExporter?: PrometheusNodeExporterProps & { enabled?: boolean };
+  selfheal?: SelfhealProps & { enabled?: boolean };
+  vector?: VectorProps & { enabled?: boolean };
+}
+
 export interface BaseConfigTraitConfig {
   /**
    * @default VLAN.SERVERS
@@ -82,6 +103,8 @@ export interface BaseConfigTraitConfig {
     | Partial<CloudImageTraitConfig> & {
       downloadFileConfig?: Partial<CloudImageTraitConfigDownloadFileConfig>;
     };
+
+  mid?: boolean | BaseConfigTraitMidConfig;
 
   dnsRecord?: boolean | DNSRecordTraitConfig;
 
@@ -208,5 +231,106 @@ export class BaseConfigTrait implements ProxmoxVMTrait {
     }
 
     return newProps;
+  }
+
+  forResource(
+    machine: proxmoxve.vm.VirtualMachine,
+    args: proxmoxve.vm.VirtualMachineArgs,
+    name: string,
+    parent: ProxmoxVM,
+  ): void {
+    if (this.config.mid !== false) {
+      let midBaseConfig: BaseConfigTraitMidConfig = {};
+      if (typeof this.config.mid === "object") {
+        midBaseConfig = this.config.mid;
+      }
+      let midTarget: MidTarget | undefined = undefined;
+      if (midBaseConfig.midTarget?.enabled !== false) {
+        midTarget = new MidTarget(`${name}-${this.name}`, {
+          connection: parent.connection,
+          ...midBaseConfig.midTarget,
+        }, {
+          deletedWith: machine,
+          parent,
+        });
+      }
+
+      if (midBaseConfig.autoupdate?.enabled !== false) {
+        new Autoupdate(`${name}-${this.name}`, {
+          connection: parent.connection,
+          ...midBaseConfig.autoupdate,
+        }, {
+          deletedWith: machine,
+          dependsOn: midTarget,
+          parent,
+        });
+      }
+
+      if (midBaseConfig.baselineUsers?.enabled !== false) {
+        new BaselineUsers(`${name}-${this.name}`, {
+          connection: parent.connection,
+          ...midBaseConfig.baselineUsers,
+        }, {
+          deletedWith: machine,
+          dependsOn: midTarget,
+          parent,
+        });
+      }
+
+      if (midBaseConfig.nasClient?.enabled === true) {
+        new NASClient(`${name}-${this.name}`, {
+          connection: parent.connection,
+          ...midBaseConfig.nasClient,
+        }, {
+          deletedWith: machine,
+          dependsOn: midTarget,
+          parent,
+        });
+      }
+
+      if (midBaseConfig.openTelemetryCollector?.enabled !== false) {
+        new OpenTelemetryCollector(`${name}-${this.name}`, {
+          connection: parent.connection,
+          ...midBaseConfig.openTelemetryCollector,
+        }, {
+          deletedWith: machine,
+          dependsOn: midTarget,
+          parent,
+        });
+      }
+
+      if (midBaseConfig.prometheusNodeExporter?.enabled !== false) {
+        new PrometheusNodeExporter(`${name}-${this.name}`, {
+          connection: parent.connection,
+          ...midBaseConfig.prometheusNodeExporter,
+        }, {
+          deletedWith: machine,
+          dependsOn: midTarget,
+          parent,
+        });
+      }
+
+      if (midBaseConfig.selfheal?.enabled === true) {
+        new Selfheal(`${name}-${this.name}`, {
+          connection: parent.connection,
+          ...midBaseConfig.selfheal,
+        }, {
+          deletedWith: machine,
+          dependsOn: midTarget,
+          parent,
+        });
+      }
+
+      if (midBaseConfig.vector?.enabled !== false) {
+        new Vector(`${name}-${this.name}`, {
+          connection: parent.connection,
+          ...midBaseConfig.vector,
+        }, {
+          deletedWith: machine,
+          dependsOn: midTarget,
+          parent,
+        });
+      }
+    }
   }
 }
