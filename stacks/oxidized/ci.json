@@ -1,0 +1,10 @@
+{
+  "dependencies": [
+    "authentik",
+    "cluster",
+    "core",
+    "crds",
+    "nfs-provisioner",
+    "nodegroups"
+  ]
+}

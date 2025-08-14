@@ -22,6 +22,8 @@
     "@pulumiverse/time": "^0.1.1",
     "@sapslaj/pulumi-mid": "^0.0.14",
     "dedent": "^1.5.3",
+    "graphology": "^0.26.0",
+    "graphology-dag": "^0.4.1",
     "node-ssh": "^13.2.0",
     "yaml": "^2.7.0"
   }

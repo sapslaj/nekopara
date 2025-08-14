@@ -1,8 +1,8 @@
 import * as tls from "@pulumi/tls";
 
+import { Distro } from "../../components/homelab-config";
 import { NodeGroup } from "../../components/k3s-cluster/nodes";
 import { getDnsFullName, getDnsHostName, getK3sToken, getServerUri, newK3sProvider } from "../../components/k3s-shared";
-import { Distro } from "../../components/proxmox-vm/BaseConfigTrait";
 
 const privateKey = new tls.PrivateKey("nodes", {
   algorithm: "ED25519",

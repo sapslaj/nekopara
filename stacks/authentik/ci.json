@@ -1,0 +1,12 @@
+{
+  "dependencies": [
+    "cloudnative-pg",
+    "cluster",
+    "core",
+    "crds",
+    "nfs-provisioner",
+    "nodegroups",
+    "shortrack",
+    "traefik"
+  ]
+}

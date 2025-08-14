@@ -1,0 +1,41 @@
+name: deploy
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+env:
+  NODE_AUTH_TOKEN: ${{ secrets.GH_ACTIONS_READ_TOKEN }}
+  PULUMI_CONFIG_PASSPHRASE: ""
+  PROXMOX_VE_ENDPOINT: ${{ vars.PROXMOX_VE_ENDPOINT }}
+  PROXMOX_VE_USERNAME: ${{ vars.PROXMOX_VE_USERNAME }}
+  PROXMOX_VE_PASSWORD: ${{ secrets.PROXMOX_VE_PASSWORD }}
+  PROXMOX_VE_INSECURE: "true"
+  VYOS_HOST: ${{ vars.VYOS_HOST }}
+  VYOS_USERNAME: ${{ vars.VYOS_USERNAME }}
+  VYOS_PASSWORD: ${{ secrets.VYOS_PASSWORD }}
+
+jobs:
+  generate-jobs:
+    name: Generate jobs
+    runs-on: ubuntu-latest
+    outputs:
+      jobs: ${{ steps.generate.outputs.jobs }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+          cache-dependency-path: package-lock.json
+          registry-url: https://npm.pkg.github.com
+      - run: npm ci --ignore-scripts
+      - run: npx tsx ./hack/ci-jobs.ts
+        id: generate
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs:
+      - generate-jobs
+    steps: ${{ fromJSON(needs.generate-jobs.outputs.jobs) }}

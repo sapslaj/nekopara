@@ -1,0 +1,10 @@
+{
+  "dependencies": [
+    "cloudnative-pg",
+    "cluster",
+    "core",
+    "crds",
+    "nodegroups",
+    "shortrack"
+  ]
+}

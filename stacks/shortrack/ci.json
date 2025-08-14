@@ -1,0 +1,8 @@
+{
+  "dependencies": [
+    "cluster",
+    "core",
+    "crds",
+    "nodegroups"
+  ]
+}
