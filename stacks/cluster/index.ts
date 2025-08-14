@@ -3,9 +3,9 @@ import * as random from "@pulumi/random";
 import * as tls from "@pulumi/tls";
 import * as mid from "@sapslaj/pulumi-mid";
 
+import { Distro, IDistro } from "../../components/homelab-config";
 import { BaselineUsers } from "../../components/mid/BaselineUsers";
 import { MidTarget } from "../../components/mid/MidTarget";
-import { Distro, IDistro } from "../../components/proxmox-vm/BaseConfigTrait";
 import { CloudImageTrait } from "../../components/proxmox-vm/CloudImageTrait";
 import { PrivateKeyTrait } from "../../components/proxmox-vm/PrivateKeyTrait";
 import { ProxmoxVM, ProxmoxVMDiskConfig, ProxmoxVMProps } from "../../components/proxmox-vm/ProxmoxVM";
