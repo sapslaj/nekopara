@@ -1,6 +1,6 @@
-import * as random from "@pulumi/random";
 import * as kubernetes from "@pulumi/kubernetes";
 import * as pulumi from "@pulumi/pulumi";
+import * as random from "@pulumi/random";
 
 import { getDnsFullName, getDnsHostName, newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";
 import { IngressDNS } from "../../components/k8s/IngressDNS";
@@ -155,12 +155,31 @@ const secretKey = new random.RandomPassword("netbox-secret-key", {
   length: 64,
 });
 
+// just a placeholder because the Helm chart insists there has to be a secret
+// for the superuser
+const superuserSecret = new kubernetes.core.v1.Secret("netbox-superuser", {
+  metadata: {
+    name: "netbox-superuser",
+    namespace: namespace.metadata.name,
+  },
+  type: "kubernetes.io/basic-auth",
+  data: {
+    api_token: "",
+    email: "",
+    password: "",
+    username: "",
+  },
+}, { provider });
+
 const chart = new kubernetes.helm.v4.Chart("netbox", {
   chart: "oci://ghcr.io/netbox-community/netbox-chart/netbox",
   version: "6.1.6",
   namespace: namespace.metadata.name,
   skipCrds: true,
   values: {
+    superuser: {
+      existingSecret: superuserSecret.metadata.name,
+    },
     secretKey: secretKey.result,
     persistence: {
       enabled: true,
