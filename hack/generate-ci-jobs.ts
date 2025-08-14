@@ -48,7 +48,7 @@ interface StackConfig {
   for (const stack of topologicalSort(graph)) {
     workflow.jobs[`deploy-${stack}`] = {
       "runs-on": "ubuntu-latest",
-      "needs": stackConfigs[stack].dependencies,
+      "needs": stackConfigs[stack].dependencies.map((dep) => `deploy-${dep}`),
       "steps": [
         {
           uses: "actions/checkout@v4",
