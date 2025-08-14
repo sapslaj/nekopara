@@ -182,6 +182,9 @@ const chart = new kubernetes.helm.v3.Chart("jaeger", {
   },
 }, {
   provider,
+  dependsOn: [
+    opensearch,
+  ],
   transforms: [
     transformSkipIngressAwait(),
   ],
