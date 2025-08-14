@@ -289,26 +289,6 @@ jobs:
           registry-url: https://npm.pkg.github.com
       - id: deploy-grafana
         run: echo fake-deploying stack grafana...
-  deploy-jaeger:
-    runs-on: ubuntu-latest
-    needs:
-      - deploy-authentik
-      - deploy-cluster
-      - deploy-core
-      - deploy-crds
-      - deploy-nodegroups
-      - deploy-opensearch-operator
-      - deploy-shortrack
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22.x
-          cache: npm
-          cache-dependency-path: package-lock.json
-          registry-url: https://npm.pkg.github.com
-      - id: deploy-jaeger
-        run: echo fake-deploying stack jaeger...
   deploy-oxidized:
     runs-on: ubuntu-latest
     needs:
