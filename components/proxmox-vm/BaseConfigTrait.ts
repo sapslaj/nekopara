@@ -1,5 +1,6 @@
 import * as proxmoxve from "@muhlba91/pulumi-proxmoxve";
 
+import { Distro, IDistro, VLAN } from "../homelab-config";
 import { Autoupdate, AutoupdateProps } from "../mid/Autoupdate";
 import { BaselineUsers, BaselineUsersProps } from "../mid/BaselineUsers";
 import { MidTarget, MidTargetProps } from "../mid/MidTarget";
@@ -14,77 +15,55 @@ import { PrivateKeyTrait, PrivateKeyTraitConfig } from "./PrivateKeyTrait";
 import { ProxmoxVM, ProxmoxVMProps } from "./ProxmoxVM";
 import { ProxmoxVMTrait } from "./ProxmoxVMTrait";
 
-export interface IDistro {
-  url: string;
-  username: string;
-  ansibleInstallCommand?: string;
-}
-
-export class Distro implements IDistro {
-  static UBUNTU_24_04 = new Distro({
-    // url: "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img",
-    url: "https://misc.sapslaj.xyz/cloudimages/ubuntu/noble-server-cloudimg-amd64.img",
-    username: "ubuntu",
-    ansibleInstallCommand: [
-      "export DEBIAN_FRONTEND=noninteractive",
-      "with_backoff sudo apt-get update",
-      "with_backoff sudo apt-get install -y ansible git",
-    ].join(" && "),
-  });
-
-  static UBUNTU_NOBLE = Distro.UBUNTU_24_04;
-
-  static DEBIAN_12 = new Distro({
-    // url: "https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-genericcloud-amd64.qcow2",
-    url: "https://misc.sapslaj.xyz/cloudimages/debian/debian-12-genericcloud-amd64.qcow2",
-    username: "debian",
-    ansibleInstallCommand: [
-      "export DEBIAN_FRONTEND=noninteractive",
-      "with_backoff sudo apt-get update",
-      "with_backoff sudo apt-get install -y ansible git",
-    ].join(" && "),
-  });
-
-  static DEBIAN_BOOKWORM = Distro.DEBIAN_12;
-
-  static ALPINE_3_21_2 = new Distro({
-    // url: "https://dl-cdn.alpinelinux.org/alpine/v3.21/releases/cloud/nocloud_alpine-3.21.2-x86_64-bios-tiny-r0.qcow2",
-    url: "https://misc.sapslaj.xyz/cloudimages/alpine/nocloud_alpine-3.21.2-x86_64-bios-tiny-r0.qcow2",
-    username: "alpine",
-    ansibleInstallCommand: "with_backoff sudo apk add ansible git",
-  });
-
-  static ALPINE_3_21 = Distro.ALPINE_3_21_2;
-  static ALPINE_3 = Distro.ALPINE_3_21;
-
-  url: string;
-  username: string;
-  ansibleInstallCommand?: string;
-
-  constructor(distro: IDistro) {
-    this.url = distro.url;
-    this.username = distro.username;
-    this.ansibleInstallCommand = distro.ansibleInstallCommand;
-  }
-}
-
-export enum VLAN {
-  NATIVE = 1,
-  MANAGEMENT = 2,
-  JAIL = 3,
-  SERVERS = 4,
-  INTERNAL = 5,
-}
-
 export interface BaseConfigTraitMidConfig {
-  autoupdate?: AutoupdateProps & { enabled?: boolean };
-  baselineUsers?: BaselineUsersProps & { enabled?: boolean };
-  midTarget?: MidTargetProps & { enabled?: boolean };
-  nasClient?: NASClientProps & { enabled?: boolean };
-  openTelemetryCollector?: OpenTelemetryCollectorProps & { enabled?: boolean };
-  prometheusNodeExporter?: PrometheusNodeExporterProps & { enabled?: boolean };
-  selfheal?: SelfhealProps & { enabled?: boolean };
-  vector?: VectorProps & { enabled?: boolean };
+  autoupdate?: AutoupdateProps & {
+    /**
+     * @default true
+     */
+    enabled?: boolean;
+  };
+  baselineUsers?: BaselineUsersProps & {
+    /**
+     * @default true
+     */
+    enabled?: boolean;
+  };
+  midTarget?: MidTargetProps & {
+    /**
+     * @default true
+     */
+    enabled?: boolean;
+  };
+  nasClient?: NASClientProps & {
+    /**
+     * @default false
+     */
+    enabled?: boolean;
+  };
+  openTelemetryCollector?: OpenTelemetryCollectorProps & {
+    /**
+     * @default true
+     */
+    enabled?: boolean;
+  };
+  prometheusNodeExporter?: PrometheusNodeExporterProps & {
+    /**
+     * @default true
+     */
+    enabled?: boolean;
+  };
+  selfheal?: SelfhealProps & {
+    /**
+     * @default false
+     */
+    enabled?: boolean;
+  };
+  vector?: VectorProps & {
+    /**
+     * @default true
+     */
+    enabled?: boolean;
+  };
 }
 
 export interface BaseConfigTraitConfig {
