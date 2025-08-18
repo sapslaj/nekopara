@@ -122,6 +122,122 @@ class ControlPlaneNode extends pulumi.ComponentResource {
       retainOnDelete: true,
     });
 
+    const nfsCommon = new mid.resource.Apt(`${id}-nfs-common`, {
+      connection: this.vm.connection,
+      name: "nfs-common",
+    }, {
+      deletedWith: this.vm,
+      parent: this,
+    });
+
+    const openiscsi = new mid.resource.Apt(`${id}-open-iscsi`, {
+      connection: this.vm.connection,
+      name: "open-iscsi",
+    }, {
+      deletedWith: this.vm,
+      parent: this,
+    });
+
+    const exosMount = new mid.resource.AnsibleTaskList(`${id}-exos-mount`, {
+      connection: this.vm.connection,
+      tasks: {
+        create: [
+          {
+            module: "mount",
+            args: {
+              src: "172.24.4.10:/mnt/exos",
+              path: "/mnt/exos",
+              fstype: "nfs4",
+              state: "mounted",
+            },
+          },
+        ],
+        delete: [
+          {
+            module: "mount",
+            args: {
+              path: "/mnt/exos",
+              state: "unmounted",
+            },
+          },
+        ],
+      },
+    }, {
+      deletedWith: this.vm,
+      parent: this,
+      dependsOn: [
+        nfsCommon,
+      ],
+    });
+
+    const volumesSetup = new mid.resource.AnsibleTaskList(`${id}-volumes-setup`, {
+      connection: this.vm.connection,
+      tasks: {
+        create: [
+          {
+            module: "file",
+            args: {
+              path: "/mnt/exos/volumes/nekopara",
+              state: "directory",
+            },
+          },
+          {
+            module: "file",
+            args: {
+              path: "/mnt/exos/volumes/nekopara/nfs",
+              state: "directory",
+            },
+          },
+          {
+            module: "file",
+            args: {
+              path: "/mnt/exos/volumes/nekopara/etcd-snapshots",
+              state: "directory",
+            },
+          },
+        ],
+      },
+    }, {
+      deletedWith: this.vm,
+      parent: this,
+      dependsOn: [
+        exosMount,
+      ],
+    });
+
+    const etcdSnapshotsMount = new mid.resource.AnsibleTaskList(`${id}-etcd-snapshots-mount`, {
+      connection: this.vm.connection,
+      tasks: {
+        create: [
+          {
+            module: "mount",
+            args: {
+              path: "/var/lib/rancher/k3s/server/db/snapshots",
+              src: "/mnt/exos/volumes/nekopara/etcd-snapshots",
+              opts: "bind",
+              state: "mounted",
+              fstype: "none",
+            },
+          },
+        ],
+        delete: [
+          {
+            module: "mount",
+            args: {
+              path: "/var/lib/rancher/k3s/server/db/snapshots",
+              state: "unmounted",
+            },
+          },
+        ],
+      },
+    }, {
+      deletedWith: this.vm,
+      parent: this,
+      dependsOn: [
+        volumesSetup,
+      ],
+    });
+
     const nodeLabels: Record<string, pulumi.Input<string>> = props.labels ?? {};
     if (nodeLabels["topology.kubernetes.io/zone"] === undefined) {
       nodeLabels["topology.kubernetes.io/zone"] = this.vm.nodeName;
@@ -301,6 +417,9 @@ class ControlPlaneNode extends pulumi.ComponentResource {
     }, {
       parent: this,
       retainOnDelete: true,
+      dependsOn: [
+        etcdSnapshotsMount,
+      ],
     });
   }
 }
