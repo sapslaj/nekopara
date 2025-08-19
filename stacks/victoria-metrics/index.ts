@@ -453,7 +453,7 @@ new kubernetes.apiextensions.CustomResource("static-scrape-homeassistant", {
     jobName: "homeassistant",
     targetEndpoints: [
       {
-        path: "/v1/metrics",
+        path: "/api/prometheus",
         bearerTokenSecret: {
           name: hassToken.metadata.name,
           key: "HASS_TOKEN",
