@@ -96,7 +96,7 @@ const grafana = new kubernetes.helm.v3.Chart("grafana", {
     persistence: {
       type: "pvc",
       enabled: true,
-      storageClassName: "shortrack-aqua-exos",
+      storageClassName: "shortrack-mitsuru-red",
     },
     extraSecretMounts: [
       {
