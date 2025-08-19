@@ -62,7 +62,7 @@ const opensearch = new kubernetes.apiextensions.CustomResource("jaeger-opensearc
         },
         persistence: {
           pvc: {
-            storageClass: "shortrack-aqua-exos",
+            storageClass: "shortrack-mitsuru-red",
             accessModes: [
               "ReadWriteOnce",
             ],
