@@ -28,11 +28,11 @@ const postgresql = new kubernetes.apiextensions.CustomResource("netbox-postgresq
     },
   },
   spec: {
-    instances: 1,
+    instances: 2,
     enableSuperuserAccess: true,
     storage: {
       size: "10Gi",
-      storageClass: "shortrack-aqua-exos",
+      storageClass: "shortrack-mitsuru-red",
     },
     monitoring: {
       enablePodMonitor: true,
