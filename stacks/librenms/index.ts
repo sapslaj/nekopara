@@ -108,7 +108,7 @@ const dbPVC = new kubernetes.core.v1.PersistentVolumeClaim("librenms-db", {
     },
   },
   spec: {
-    storageClassName: "shortrack-aqua-exos",
+    storageClassName: "shortrack-mitsuru-red",
     accessModes: [
       "ReadWriteOnce",
     ],
@@ -373,7 +373,7 @@ const dataPVC = new kubernetes.core.v1.PersistentVolumeClaim("librenms-data", {
     },
   },
   spec: {
-    storageClassName: "shortrack-aqua-exos",
+    storageClassName: "shortrack-mitsuru-red",
     accessModes: [
       "ReadWriteOnce",
     ],
