@@ -2,8 +2,40 @@ import * as aws from "@pulumi/aws";
 import * as kubernetes from "@pulumi/kubernetes";
 import * as pulumi from "@pulumi/pulumi";
 import * as random from "@pulumi/random";
+import * as std from "@pulumi/std";
+import * as time from "@pulumiverse/time";
 
+import { iamPolicyDocument } from "../../components/aws-utils";
 import { newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";
+
+const iamUser = new aws.iam.User(`authentik-${pulumi.getStack()}`, {});
+
+const iamKeyRotation = new time.Rotating("authentik-iam-key", {
+  rotationDays: 30,
+});
+
+const iamKey = new aws.iam.AccessKey("authentik", {
+  user: iamUser.name,
+}, {
+  deleteBeforeReplace: false,
+  dependsOn: [iamKeyRotation],
+});
+
+new aws.iam.UserPolicy("authentik", {
+  user: iamUser.name,
+  policy: iamPolicyDocument({
+    statements: [
+      {
+        actions: ["ses:SendRawEmail"],
+        resources: ["*"],
+      },
+    ],
+  }),
+});
+
+const sesIdentity = new aws.sesv2.EmailIdentity("authentik", {
+  emailIdentity: "login@sapslaj.cloud",
+});
 
 const provider = newK3sProvider();
 
@@ -140,11 +172,14 @@ const configSecret = new kubernetes.core.v1.Secret("authentik", {
     },
   },
   stringData: {
-    // TODO:
-    // AUTHENTIK_EMAIL__PORT: "",
-    // AUTHENTIK_EMAIL__TIMEOUT: "",
+    AUTHENTIK_EMAIL__HOST: "email-smtp.us-east-1.amazonaws.com",
+    AUTHENTIK_EMAIL__PORT: "587",
+    AUTHENTIK_EMAIL__TIMEOUT: "10",
     // AUTHENTIK_EMAIL__USE_SSL: "",
-    // AUTHENTIK_EMAIL__USE_TLS: "",
+    AUTHENTIK_EMAIL__FROM: sesIdentity.emailIdentity,
+    AUTHENTIK_EMAIL__USE_TLS: "true",
+    AUTHENTIK_EMAIL__USERNAME: iamKey.id,
+    AUTHENTIK_EMAIL__PASSWORD: iamKey.sesSmtpPasswordV4,
     AUTHENTIK_ENABLED: "true",
     AUTHENTIK_ERROR_REPORTING__ENABLED: "false",
     AUTHENTIK_SECRET_KEY: secretKey.result,
@@ -273,6 +308,13 @@ const authentik = new kubernetes.helm.v3.Chart("authentik", {
   namespace: namespace.metadata.name,
   values: {
     global: {
+      podAnnotations: {
+        "checksum/secret": std.sha256Output({
+          input: std.jsonencodeOutput({
+            input: configSecret.data,
+          }).result,
+        }).result,
+      },
       env: [
         {
           name: "AUTHENTIK_POSTGRESQL__HOST",
@@ -392,6 +434,9 @@ const authentik = new kubernetes.helm.v3.Chart("authentik", {
   provider,
   transforms: [
     transformSkipIngressAwait(),
+  ],
+  dependsOn: [
+    configSecret,
   ],
 });
 
