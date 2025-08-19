@@ -252,6 +252,7 @@ const pushGatewayService = new kubernetes.core.v1.Service("librenms-prometheus-p
     ports: [
       {
         port: 9091,
+        name: "http",
       },
     ],
   },
