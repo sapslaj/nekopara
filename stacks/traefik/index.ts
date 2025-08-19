@@ -129,9 +129,7 @@ const traefik = new kubernetes.helm.v3.Chart("traefik", {
     },
     tracing: {
       otlp: {
-        // TODO: re-enable once Jaeger is back up
-        // enabled: true,
-        enabled: false,
+        enabled: true,
         grpc: {
           enabled: true,
           endpoint: "jaeger-collector.jaeger.svc.cluster.local:4317",
