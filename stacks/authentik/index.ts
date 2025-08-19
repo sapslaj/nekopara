@@ -61,7 +61,7 @@ const postgresql = new kubernetes.apiextensions.CustomResource("authentik-postgr
     enableSuperuserAccess: true,
     storage: {
       size: "10Gi",
-      storageClass: "shortrack-aqua-exos",
+      storageClass: "shortrack-mitsuru-red",
     },
     monitoring: {
       enablePodMonitor: true,
