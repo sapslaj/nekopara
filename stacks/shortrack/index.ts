@@ -28,3 +28,16 @@ new kubernetes.storage.v1.StorageClass("shortrack-aqua-exos", {
     fsType: "ext4",
   },
 }, { provider });
+
+new kubernetes.storage.v1.StorageClass("shortrack-mitsuru-red", {
+  metadata: {
+    name: "shortrack-mitsuru-red",
+  },
+  provisioner: "shortrack.sapslaj.xyz",
+  parameters: {
+    poolName: "mitsuru-red",
+    serverAddr: "172.24.4.11:29581",
+    targetPortal: "172.24.4.11:3260",
+    fsType: "ext4",
+  },
+}, { provider });
