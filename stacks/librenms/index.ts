@@ -2,12 +2,11 @@ import * as kubernetes from "@pulumi/kubernetes";
 import * as pulumi from "@pulumi/pulumi";
 import * as random from "@pulumi/random";
 
-import { getDnsFullName, getDnsHostName, newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";
+import { newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";
 import { IngressDNS } from "../../components/k8s/IngressDNS";
+import { Valkey } from "../../components/k8s/Valkey";
 
 const provider = newK3sProvider();
-const dnsFullName = getDnsFullName();
-const dnsHostName = getDnsHostName();
 
 const namespace = new kubernetes.core.v1.Namespace("librenms", {
   metadata: {
@@ -15,76 +14,38 @@ const namespace = new kubernetes.core.v1.Namespace("librenms", {
   },
 }, { provider });
 
-const redisService = new kubernetes.core.v1.Service("librenms-redis", {
-  metadata: {
-    name: "librenms-redis",
-    namespace: namespace.metadata.name,
-    labels: {
-      "app.kubernetes.io/component": "redis",
-      "app.kubernetes.io/instance": "librenms-redis",
-      "app.kubernetes.io/name": "librenms-redis",
-      "app.kubernetes.io/managed-by": "Pulumi",
-      "k3s.sapslaj.xyz/stack": "nekopara.librenms",
-    },
+const valkey = new Valkey("librenms-valkey", {
+  name: "librenms-valkey",
+  namespace: namespace.metadata.name,
+  labels: {
+    "app.kubernetes.io/component": "valkey",
+    "app.kubernetes.io/instance": "librenms-valkey",
+    "app.kubernetes.io/name": "librenms-valkey",
+    "app.kubernetes.io/managed-by": "Pulumi",
+    "k3s.sapslaj.xyz/stack": "nekopara.librenms",
   },
-  spec: {
-    selector: {
-      "app.kubernetes.io/component": "redis",
-      "app.kubernetes.io/instance": "librenms-redis",
-      "app.kubernetes.io/name": "librenms-redis",
-    },
-    ports: [
-      {
-        port: 6379,
-      },
-    ],
-  },
-}, { provider });
-
-const redis = new kubernetes.apps.v1.StatefulSet("librenms-redis", {
-  metadata: {
-    name: "librenms-redis",
-    namespace: namespace.metadata.name,
-    labels: {
-      "app.kubernetes.io/component": "redis",
-      "app.kubernetes.io/instance": "librenms-redis",
-      "app.kubernetes.io/name": "librenms-redis",
-      "app.kubernetes.io/managed-by": "Pulumi",
-      "k3s.sapslaj.xyz/stack": "nekopara.librenms",
-    },
-  },
-  spec: {
-    replicas: 1,
-    serviceName: redisService.metadata.name,
-    selector: {
-      matchLabels: redisService.spec.selector,
-    },
-    template: {
-      metadata: {
-        labels: {
-          "app.kubernetes.io/component": "redis",
-          "app.kubernetes.io/instance": "librenms-redis",
-          "app.kubernetes.io/name": "librenms-redis",
-          "app.kubernetes.io/managed-by": "Pulumi",
-          "k3s.sapslaj.xyz/stack": "nekopara.librenms",
+  volumeClaimTemplates: [
+    {
+      name: "data",
+      mountPath: "/data",
+      spec: {
+        storageClassName: "shortrack-mitsuru-red",
+        accessModes: [
+          "ReadWriteOnce",
+        ],
+        resources: {
+          requests: {
+            storage: "10Gi",
+          },
         },
       },
-      spec: {
-        containers: [
-          {
-            name: "redis",
-            image: "redis:5.0-alpine",
-            ports: [
-              {
-                containerPort: 6379,
-              },
-            ],
-          },
-        ],
-      },
     },
+  ],
+}, {
+  providers: {
+    kubernetes: provider,
   },
-}, { provider });
+});
 
 const dbPassword = new random.RandomPassword("db-password", {
   length: 16,
@@ -186,7 +147,7 @@ const db = new kubernetes.apps.v1.StatefulSet("librenms-db", {
         containers: [
           {
             name: "mariadb",
-            image: "mariadb:10.5",
+            image: "proxy.oci.sapslaj.xyz/docker-hub/mariadb:10.5",
             args: [
               "mysqld",
               "--innodb-file-per-table=1",
@@ -289,7 +250,7 @@ const pushGateway = new kubernetes.apps.v1.Deployment("librenms-prometheus-pushg
         containers: [
           {
             name: "pushgateway",
-            image: "prom/pushgateway:latest",
+            image: "proxy.oci.sapslaj.xyz/docker-hub/prom/pushgateway:latest",
             ports: [
               {
                 name: "http",
@@ -299,7 +260,7 @@ const pushGateway = new kubernetes.apps.v1.Deployment("librenms-prometheus-pushg
           },
           {
             name: "cleaner",
-            image: "jorinvo/prometheus-pushgateway-cleaner",
+            image: "proxy.oci.sapslaj.xyz/docker-hub/jorinvo/prometheus-pushgateway-cleaner",
             args: [
               "--report-metrics",
               "--metric-url",
@@ -404,7 +365,7 @@ const appEnv = new kubernetes.core.v1.ConfigMap("librenms-app-env", {
     DB_USER: "librenms",
     // yikes.
     DB_PASSWORD: dbPassword.result,
-    REDIS_HOST: redisService.metadata.name,
+    REDIS_HOST: valkey.readWriteService.metadata.name,
     REDIS_PORT: "6379",
     REDIS_DB: "0",
   },
@@ -476,7 +437,7 @@ const app = new kubernetes.apps.v1.StatefulSet("librenms", {
         containers: [
           {
             name: "librenms",
-            image: "librenms/librenms:latest",
+            image: "proxy.oci.sapslaj.xyz/docker-hub/librenms/librenms:latest",
             ports: [
               {
                 containerPort: 8000,
@@ -506,7 +467,7 @@ const app = new kubernetes.apps.v1.StatefulSet("librenms", {
           },
           {
             name: "dispatcher",
-            image: "librenms/librenms:latest",
+            image: "proxy.oci.sapslaj.xyz/docker-hub/librenms/librenms:latest",
             env: [
               {
                 name: "SIDECAR_DISPATCHER",
