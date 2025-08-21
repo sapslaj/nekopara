@@ -2,13 +2,11 @@ import * as kubernetes from "@pulumi/kubernetes";
 import * as pulumi from "@pulumi/pulumi";
 import * as random from "@pulumi/random";
 
-import { getDnsFullName, getDnsHostName, newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";
+import { newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";
 import { IngressDNS } from "../../components/k8s/IngressDNS";
-import { DNSRecord } from "../../components/shimiko/DNSRecord";
+import { Valkey } from "../../components/k8s/Valkey";
 
 const provider = newK3sProvider();
-const dnsFullName = getDnsFullName();
-const dnsHostName = getDnsHostName();
 
 const namespace = new kubernetes.core.v1.Namespace("netbox", {
   metadata: {
@@ -66,89 +64,37 @@ const postgresql = new kubernetes.apiextensions.CustomResource("netbox-postgresq
   },
 }, { provider });
 
-const valkeyService = new kubernetes.core.v1.Service("netbox-valkey", {
-  metadata: {
-    name: "netbox-valkey",
-    namespace: namespace.metadata.name,
-    labels: {
-      "app.kubernetes.io/component": "valkey",
-      "app.kubernetes.io/instance": "netbox-valkey",
-      "app.kubernetes.io/name": "netbox-valkey",
-      "app.kubernetes.io/managed-by": "Pulumi",
-      "k3s.sapslaj.xyz/stack": "nekopara.netbox",
-    },
+const valkey = new Valkey("netbox-valkey", {
+  name: "netbox-valkey",
+  namespace: namespace.metadata.name,
+  labels: {
+    "app.kubernetes.io/component": "valkey",
+    "app.kubernetes.io/instance": "netbox-valkey",
+    "app.kubernetes.io/name": "netbox-valkey",
+    "app.kubernetes.io/managed-by": "Pulumi",
+    "k3s.sapslaj.xyz/stack": "nekopara.netbox",
   },
-  spec: {
-    selector: {
-      "app.kubernetes.io/component": "valkey",
-      "app.kubernetes.io/instance": "netbox-valkey",
-      "app.kubernetes.io/name": "netbox-valkey",
-    },
-    ports: [
-      {
-        name: "tcp-valkey",
-        port: 6379,
-        protocol: "TCP",
-        targetPort: "tcp-valkey",
-      },
-    ],
-  },
-}, { provider });
-
-const valkey = new kubernetes.apps.v1.StatefulSet("netbox-valkey", {
-  metadata: {
-    name: "netbox-valkey",
-    namespace: namespace.metadata.name,
-    labels: {
-      "app.kubernetes.io/component": "valkey",
-      "app.kubernetes.io/instance": "netbox-valkey",
-      "app.kubernetes.io/name": "netbox-valkey",
-      "app.kubernetes.io/managed-by": "Pulumi",
-      "k3s.sapslaj.xyz/stack": "nekopara.netbox",
-    },
-  },
-  spec: {
-    replicas: 1,
-    serviceName: valkeyService.metadata.name,
-    selector: {
-      matchLabels: valkeyService.spec.selector,
-    },
-    template: {
-      metadata: {
-        labels: {
-          "app.kubernetes.io/component": "valkey",
-          "app.kubernetes.io/instance": "netbox-valkey",
-          "app.kubernetes.io/name": "netbox-valkey",
-          "app.kubernetes.io/managed-by": "Pulumi",
-          "k3s.sapslaj.xyz/stack": "nekopara.netbox",
+  volumeClaimTemplates: [
+    {
+      name: "data",
+      mountPath: "/data",
+      spec: {
+        storageClassName: "shortrack-mitsuru-red",
+        accessModes: [
+          "ReadWriteOnce",
+        ],
+        resources: {
+          requests: {
+            storage: "10Gi",
+          },
         },
       },
-      spec: {
-        containers: [
-          {
-            name: "valkey",
-            image: "valkey/valkey:8",
-            ports: [
-              {
-                name: "tcp-valkey",
-                containerPort: 6379,
-                protocol: "TCP",
-              },
-            ],
-          },
-        ],
-      },
     },
-    persistentVolumeClaimRetentionPolicy: {
-      whenDeleted: "Delete",
-      whenScaled: "Delete",
-    },
-  },
-}, {
-  provider,
-  dependsOn: [
-    valkeyService,
   ],
+}, {
+  providers: {
+    kubernetes: provider,
+  },
 });
 
 const secretKey = new random.RandomPassword("netbox-secret-key", {
@@ -163,17 +109,21 @@ const superuserSecret = new kubernetes.core.v1.Secret("netbox-superuser", {
     namespace: namespace.metadata.name,
   },
   type: "kubernetes.io/basic-auth",
-  data: {
-    api_token: "",
-    email: "",
-    password: "",
-    username: "",
+  stringData: {
+    api_token: new random.RandomBytes("netbox-superadmin", {
+      length: 64,
+    }).hex,
+    email: "admin@sapslaj.com",
+    password: new random.RandomPassword("netbox-superadmin", {
+      length: 64,
+    }).result,
+    username: "superuser",
   },
 }, { provider });
 
 const chart = new kubernetes.helm.v4.Chart("netbox", {
   chart: "oci://ghcr.io/netbox-community/netbox-chart/netbox",
-  version: "6.1.6",
+  version: "6.1.12",
   namespace: namespace.metadata.name,
   skipCrds: true,
   values: {
@@ -219,10 +169,10 @@ const chart = new kubernetes.helm.v4.Chart("netbox", {
       enabled: false,
     },
     tasksDatabase: {
-      host: "netbox-valkey",
+      host: valkey.readWriteService.metadata.name,
     },
     cachingDatabase: {
-      host: "netbox-valkey",
+      host: valkey.readWriteService.metadata.name,
     },
   },
 }, {
