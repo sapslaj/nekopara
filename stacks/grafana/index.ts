@@ -84,6 +84,17 @@ const grafana = new kubernetes.helm.v3.Chart("grafana", {
   namespace: namespace.metadata.name,
   skipCRDRendering: true,
   values: {
+    image: {
+      registry: "proxy.oci.sapslaj.xyz/docker-hub",
+    },
+    testFramework: {
+      image: {
+        registry: "proxy.oci.sapslaj.xyz/docker-hub",
+      },
+    },
+    downloadDashboardsImage: {
+      registry: "proxy.oci.sapslaj.xyz/docker-hub",
+    },
     serviceMonitor: {
       enabled: true,
     },
@@ -97,6 +108,11 @@ const grafana = new kubernetes.helm.v3.Chart("grafana", {
       type: "pvc",
       enabled: true,
       storageClassName: "shortrack-mitsuru-red",
+    },
+    initChownData: {
+      image: {
+        registry: "proxy.oci.sapslaj.xyz/docker-hub",
+      },
     },
     extraSecretMounts: [
       {
@@ -145,6 +161,11 @@ const grafana = new kubernetes.helm.v3.Chart("grafana", {
       plugins: {
         enabled: true,
         searchNamespace: "ALL",
+      },
+    },
+    imageRenderer: {
+      image: {
+        registry: "proxy.oci.sapslaj.xyz/docker-hub",
       },
     },
     useStatefulSet: true,

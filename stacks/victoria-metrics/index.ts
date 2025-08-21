@@ -357,6 +357,9 @@ const victoriaLogs = new kubernetes.helm.v3.Chart("victoria-logs", {
     },
     vector: {
       enabled: true,
+      image: {
+        repository: "proxy.oci.sapslaj.xyz/docker-hub/timberio/vector",
+      },
       tolerations: [
         {
           effect: "NoSchedule",

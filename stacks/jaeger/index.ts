@@ -26,7 +26,7 @@ const opensearch = new kubernetes.apiextensions.CustomResource("jaeger-opensearc
   },
   spec: {
     general: {
-      image: "docker.io/opensearchproject/opensearch:2.3.0",
+      image: "public.ecr.aws/opensearchproject/opensearch:2.3.0",
       vendor: "Opensearch",
       version: "2.3.0",
       serviceName: "jaeger-opensearch",
@@ -101,11 +101,17 @@ const chart = new kubernetes.helm.v3.Chart("jaeger", {
       },
     },
     agent: {
+      image: {
+        registry: "proxy.oci.sapslaj.xyz/docker-hub",
+      },
       serviceMonitor: {
         enabled: true,
       },
     },
     collector: {
+      image: {
+        registry: "proxy.oci.sapslaj.xyz/docker-hub",
+      },
       extraEnv: [
         {
           name: "JAEGER_LOG_LEVEL",
@@ -147,12 +153,18 @@ const chart = new kubernetes.helm.v3.Chart("jaeger", {
       },
     },
     query: {
+      image: {
+        registry: "proxy.oci.sapslaj.xyz/docker-hub",
+      },
       serviceMonitor: {
         enabled: true,
       },
     },
     esIndexCleaner: {
       enabled: true,
+      image: {
+        registry: "proxy.oci.sapslaj.xyz/docker-hub",
+      },
     },
     extraObjects: [
       {
