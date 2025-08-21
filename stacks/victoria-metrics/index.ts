@@ -476,7 +476,7 @@ new kubernetes.helm.v3.Chart("blackbox-exporter", {
   fetchOpts: {
     repo: "https://prometheus-community.github.io/helm-charts",
   },
-  version: "7.6.1",
+  version: "11.2.2",
   skipCRDRendering: true,
   namespace: namespace.metadata.name,
   values: {
