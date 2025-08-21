@@ -359,7 +359,7 @@ new kubernetes.apiextensions.CustomResource("librenms-prometheus-pushgateway-ser
       },
     ],
   },
-});
+}, { provider });
 
 const dataPVC = new kubernetes.core.v1.PersistentVolumeClaim("librenms-data", {
   metadata: {
@@ -408,7 +408,7 @@ const appEnv = new kubernetes.core.v1.ConfigMap("librenms-app-env", {
     REDIS_PORT: "6379",
     REDIS_DB: "0",
   },
-});
+}, { provider });
 
 const appService = new kubernetes.core.v1.Service("librenms", {
   metadata: {
@@ -539,7 +539,7 @@ const app = new kubernetes.apps.v1.StatefulSet("librenms", {
       },
     },
   },
-});
+}, { provider });
 
 const allowList = new kubernetes.apiextensions.CustomResource("librenms-ipallowlist", {
   apiVersion: "traefik.io/v1alpha1",
@@ -607,4 +607,8 @@ new kubernetes.networking.v1.Ingress("librenms", {
 
 new IngressDNS("librenms.sapslaj.xyz", {
   hostname: "librenms.sapslaj.xyz",
+}, {
+  providers: {
+    kubernetes: provider,
+  },
 });
