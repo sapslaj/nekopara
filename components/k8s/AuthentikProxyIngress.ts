@@ -149,7 +149,7 @@ export class AuthentikProxyIngress extends pulumi.ComponentResource {
             priority: 15,
             services: [
               {
-                name: `ak-outpost-${slug}`,
+                name: pulumi.interpolate`ak-outpost-${slug}`,
                 namespace: "authentik",
                 kind: "Service",
                 port: 9000,
