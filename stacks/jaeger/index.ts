@@ -190,8 +190,17 @@ const chart = new kubernetes.helm.v3.Chart("jaeger", {
   ],
 });
 
-new IngressDNS("jaeger-collector-otlp-grpc.sapslaj.xyz");
-new IngressDNS("jaeger-collector-otlp-http.sapslaj.xyz");
+new IngressDNS("jaeger-collector-otlp-grpc.sapslaj.xyz", {}, {
+  providers: {
+    kubernetes: provider,
+  },
+});
+
+new IngressDNS("jaeger-collector-otlp-http.sapslaj.xyz", {}, {
+  providers: {
+    kubernetes: provider,
+  },
+});
 
 new AuthentikProxyIngress("jaeger-ui", {
   name: "Jaeger",
@@ -201,5 +210,9 @@ new AuthentikProxyIngress("jaeger-ui", {
     kind: "Service",
     name: "jaeger-query",
     port: 80,
+  },
+}, {
+  providers: {
+    kubernetes: provider,
   },
 });

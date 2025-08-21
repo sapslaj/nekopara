@@ -234,4 +234,8 @@ const chart = new kubernetes.helm.v4.Chart("netbox", {
 
 new IngressDNS("netbox.sapslaj.cloud", {
   hostname: "netbox.sapslaj.cloud",
+}, {
+  providers: {
+    kubernetes: provider,
+  },
 });
