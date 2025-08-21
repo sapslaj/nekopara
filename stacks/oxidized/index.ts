@@ -4,13 +4,10 @@ import * as random from "@pulumi/random";
 import * as std from "@pulumi/std";
 import * as YAML from "yaml";
 
-import { getDnsFullName, getDnsHostName, newK3sProvider } from "../../components/k3s-shared";
-import { DNSRecord } from "../../components/shimiko/DNSRecord";
-import * as authentik from "../../sdks/authentik";
+import { newK3sProvider } from "../../components/k3s-shared";
+import { AuthentikProxyIngress } from "../../components/k8s/AuthentikProxyIngress";
 
 const provider = newK3sProvider();
-const dnsFullName = getDnsFullName();
-const dnsHostName = getDnsHostName();
 
 const namespace = new kubernetes.core.v1.Namespace("oxidized", {
   metadata: {
@@ -197,7 +194,7 @@ const deployment = new kubernetes.apps.v1.Deployment("oxidized", {
         containers: [
           {
             name: "oxidized",
-            image: "oxidized/oxidized:0.29.0",
+            image: "proxy.oci.sapslaj.xyz/docker-hub/oxidized/oxidized:0.29.0",
             args: [
               "oxidized",
             ],
@@ -273,162 +270,17 @@ const service = new kubernetes.core.v1.Service("oxidized", {
   },
 }, { provider });
 
-const authentikProvider = new authentik.ProviderProxy("oxidized", {
+new AuthentikProxyIngress("oxidized", {
   name: "Oxidized",
-  mode: "forward_single",
-  externalHost: "https://oxidized.sapslaj.xyz",
-  authorizationFlow: authentik.getFlowOutput({
-    slug: "default-provider-authorization-implicit-consent",
-  }).id,
-  invalidationFlow: authentik.getFlowOutput({
-    slug: "default-provider-invalidation-flow",
-  }).id,
-});
-
-const authentikApplication = new authentik.Application("oxidized", {
-  name: "Oxidized",
-  slug: "oxidized",
-  protocolProvider: authentikProvider.providerProxyId.apply((id) => parseInt(id)),
-});
-
-const authentikOutpost = new authentik.Outpost("oxidized", {
-  name: "Oxidized",
-  protocolProviders: [
-    authentikProvider.providerProxyId.apply((id) => parseInt(id)),
-  ],
-  type: "proxy",
-  serviceConnection: authentik.getServiceConnectionKubernetesOutput({
-    name: "Local Kubernetes Cluster",
-  }).id,
-  config: std.jsonencodeOutput({
-    input: {
-      authentik_host: "https://login.sapslaj.cloud",
-      kubernetes_namespace: "authentik",
-    },
-  }).result,
-});
-
-const forwardAuthMiddleware = new kubernetes.apiextensions.CustomResource("authentik-forward-auth", {
-  apiVersion: "traefik.io/v1alpha1",
-  kind: "Middleware",
-  metadata: {
-    name: "authentik-forward-auth",
-    namespace: namespace.metadata.name,
-    labels: {
-      "app.kubernetes.io/component": "oxidized",
-      "app.kubernetes.io/managed-by": "Pulumi",
-      "app.kubernetes.io/part-of": "oxidized",
-      "app.kubernetes.io/name": "authentik-forward-auth",
-      "k3s.sapslaj.xyz/stack": "nekopara.oxidized",
-    },
-  },
-  spec: {
-    forwardAuth: {
-      address: "http://ak-outpost-oxidized.authentik.svc.cluster.local:9000/outpost.goauthentik.io/auth/traefik",
-      trustForwardHeader: true,
-      authResponseHeaders: [
-        "X-authentik-username",
-        "X-authentik-groups",
-        "X-authentik-entitlements",
-        "X-authentik-email",
-        "X-authentik-name",
-        "X-authentik-uid",
-        "X-authentik-jwt",
-        "X-authentik-meta-jwks",
-        "X-authentik-meta-outpost",
-        "X-authentik-meta-provider",
-        "X-authentik-meta-app",
-        "X-authentik-meta-version",
-      ],
-    },
-  },
-}, { provider });
-
-new kubernetes.apiextensions.CustomResource("oxidized-ingressroute", {
-  apiVersion: "traefik.io/v1alpha1",
-  kind: "IngressRoute",
-  metadata: {
-    name: "oxidized",
-    namespace: namespace.metadata.name,
-  },
-  spec: {
-    routes: [
-      {
-        match: "Host(`oxidized.sapslaj.xyz`)",
-        kind: "Rule",
-        middlewares: [
-          {
-            name: forwardAuthMiddleware.metadata.name,
-            namespace: forwardAuthMiddleware.metadata.namespace,
-          },
-        ],
-        priority: 10,
-        services: [
-          {
-            name: service.metadata.name,
-            kind: "Service",
-            port: 8888,
-          },
-        ],
-      },
-      {
-        match: "Host(`oxidized.sapslaj.xyz`) && PathPrefix(`/outpost.goauthentik.io/`)",
-        kind: "Rule",
-        priority: 15,
-        services: [
-          {
-            name: "ak-outpost-oxidized",
-            namespace: "authentik",
-            kind: "Service",
-            port: 9000,
-          },
-        ],
-      },
-    ],
+  namespace: namespace.metadata.name,
+  hostname: "oxidized.sapslaj.xyz",
+  service: {
+    kind: "Service",
+    name: service.metadata.name,
+    port: 8888,
   },
 }, {
-  provider,
-});
-
-// const ingress = new kubernetes.networking.v1.Ingress("oxidized", {
-//   metadata: {
-//     name: "oxidized",
-//     namespace: namespace.metadata.name,
-//     labels: {
-//       "app.kubernetes.io/component": "oxidized",
-//       "app.kubernetes.io/managed-by": "Pulumi",
-//       "app.kubernetes.io/part-of": "oxidized",
-//       "app.kubernetes.io/name": "oxidized",
-//       "k3s.sapslaj.xyz/stack": "nekopara.oxidized",
-//     },
-//   },
-//   spec: {
-//     rules: [
-//       {
-//         host: "oxidized.sapslaj.xyz",
-//         http: {
-//           paths: [
-//             {
-//               path: "/",
-//               pathType: "Prefix",
-//               backend: {
-//                 service: {
-//                   name: service.metadata.name,
-//                   port: {
-//                     number: 8888,
-//                   },
-//                 },
-//               },
-//             },
-//           ],
-//         },
-//       },
-//     ],
-//   },
-// });
-
-const dns = new DNSRecord("oxidized", {
-  name: "oxidized",
-  records: ["homelab.sapslaj.com."],
-  type: "CNAME",
+  providers: {
+    kubernetes: provider,
+  },
 });
