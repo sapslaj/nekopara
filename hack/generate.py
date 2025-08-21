@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import json
 import os
 import textwrap
 
@@ -61,6 +62,23 @@ def main():
                 """.replace("{name}", args.name),
             ).lstrip()
         )
+
+    with open(f"stacks/{args.name}/ci.json", "w") as f:
+        ci = {
+            "dependencies": [
+                "authentik",
+                "cloudnative-pg",
+                "cluster",
+                "core",
+                "crds",
+                "nodegroups",
+                "shortrack",
+            ]
+        }
+        s = json.dumps(ci, indent=2)
+        if not s.endswith("\n"):
+            s += "\n"
+        f.write(s)
 
 
 if __name__ == "__main__":

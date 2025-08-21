@@ -25,6 +25,7 @@
     "graphology": "^0.26.0",
     "graphology-dag": "^0.4.1",
     "node-ssh": "^13.2.0",
+    "termost": "^1.8.0",
     "yaml": "^2.7.0"
   }
 }
