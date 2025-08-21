@@ -7,6 +7,8 @@ import * as time from "@pulumiverse/time";
 
 import { iamPolicyDocument } from "../../components/aws-utils";
 import { newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";
+import { IngressDNS } from "../../components/k8s/IngressDNS";
+import { Valkey } from "../../components/k8s/Valkey";
 
 const iamUser = new aws.iam.User(`authentik-${pulumi.getStack()}`, {});
 
@@ -69,89 +71,37 @@ const postgresql = new kubernetes.apiextensions.CustomResource("authentik-postgr
   },
 }, { provider });
 
-const valkeyService = new kubernetes.core.v1.Service("authentik-valkey", {
-  metadata: {
-    name: "authentik-valkey",
-    namespace: namespace.metadata.name,
-    labels: {
-      "app.kubernetes.io/component": "valkey",
-      "app.kubernetes.io/instance": "authentik-valkey",
-      "app.kubernetes.io/name": "authentik-valkey",
-      "app.kubernetes.io/managed-by": "Pulumi",
-      "k3s.sapslaj.xyz/stack": "nekopara.authentik",
-    },
+const valkey = new Valkey("authentik-valkey", {
+  name: "authentik-valkey",
+  namespace: namespace.metadata.name,
+  labels: {
+    "app.kubernetes.io/component": "valkey",
+    "app.kubernetes.io/instance": "authentik-valkey",
+    "app.kubernetes.io/name": "authentik-valkey",
+    "app.kubernetes.io/managed-by": "Pulumi",
+    "k3s.sapslaj.xyz/stack": "nekopara.authentik",
   },
-  spec: {
-    selector: {
-      "app.kubernetes.io/component": "valkey",
-      "app.kubernetes.io/instance": "authentik-valkey",
-      "app.kubernetes.io/name": "authentik-valkey",
-    },
-    ports: [
-      {
-        name: "tcp-valkey",
-        port: 6379,
-        protocol: "TCP",
-        targetPort: "tcp-valkey",
-      },
-    ],
-  },
-}, { provider });
-
-const valkey = new kubernetes.apps.v1.StatefulSet("authentik-valkey", {
-  metadata: {
-    name: "authentik-valkey",
-    namespace: namespace.metadata.name,
-    labels: {
-      "app.kubernetes.io/component": "valkey",
-      "app.kubernetes.io/instance": "authentik-valkey",
-      "app.kubernetes.io/name": "authentik-valkey",
-      "app.kubernetes.io/managed-by": "Pulumi",
-      "k3s.sapslaj.xyz/stack": "nekopara.authentik",
-    },
-  },
-  spec: {
-    replicas: 1,
-    serviceName: valkeyService.metadata.name,
-    selector: {
-      matchLabels: valkeyService.spec.selector,
-    },
-    template: {
-      metadata: {
-        labels: {
-          "app.kubernetes.io/component": "valkey",
-          "app.kubernetes.io/instance": "authentik-valkey",
-          "app.kubernetes.io/name": "authentik-valkey",
-          "app.kubernetes.io/managed-by": "Pulumi",
-          "k3s.sapslaj.xyz/stack": "nekopara.authentik",
+  volumeClaimTemplates: [
+    {
+      name: "data",
+      mountPath: "/data",
+      spec: {
+        storageClassName: "shortrack-mitsuru-red",
+        accessModes: [
+          "ReadWriteOnce",
+        ],
+        resources: {
+          requests: {
+            storage: "10Gi",
+          },
         },
       },
-      spec: {
-        containers: [
-          {
-            name: "valkey",
-            image: "valkey/valkey:8",
-            ports: [
-              {
-                name: "tcp-valkey",
-                containerPort: 6379,
-                protocol: "TCP",
-              },
-            ],
-          },
-        ],
-      },
     },
-    persistentVolumeClaimRetentionPolicy: {
-      whenDeleted: "Delete",
-      whenScaled: "Delete",
-    },
-  },
-}, {
-  provider,
-  dependsOn: [
-    valkeyService,
   ],
+}, {
+  providers: {
+    kubernetes: provider,
+  },
 });
 
 const secretKey = new random.RandomPassword("authentik-secret-key", {
@@ -363,7 +313,7 @@ const authentik = new kubernetes.helm.v3.Chart("authentik", {
         },
         {
           name: "AUTHENTIK_REDIS__HOST",
-          value: valkeyService.metadata.name,
+          value: valkey.readWriteService.metadata.name,
         },
       ],
       volumeMounts: [
@@ -440,14 +390,4 @@ const authentik = new kubernetes.helm.v3.Chart("authentik", {
   ],
 });
 
-new aws.route53.Record("login.sapslaj.cloud", {
-  name: "login.sapslaj.cloud",
-  type: "CNAME",
-  records: [
-    "homelab.sapslaj.com",
-  ],
-  ttl: 300,
-  zoneId: aws.route53.getZoneOutput({
-    name: "sapslaj.cloud",
-  }).zoneId,
-});
+new IngressDNS("login.sapslaj.cloud");
