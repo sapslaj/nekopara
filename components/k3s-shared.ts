@@ -42,17 +42,22 @@ export function getServerUri(): pulumi.Output<string> {
   return getDefaultClusterStack().getOutput("serverUri") as pulumi.Output<string>;
 }
 
+let defaultK3sProviders: Record<string, kubernetes.Provider> = {};
+
 export function newK3sProvider(
   name: string = "k3s",
   args: Partial<kubernetes.ProviderArgs> = {},
   opts: pulumi.ResourceOptions = {},
 ): kubernetes.Provider {
-  return new kubernetes.Provider(name, {
-    kubeconfig: getKubeconfig(),
-    clusterIdentifier: getDnsHostName(),
-    deleteUnreachable: true,
-    ...args,
-  }, opts);
+  if (!(name in defaultK3sProviders)) {
+    defaultK3sProviders[name] = new kubernetes.Provider(name, {
+      kubeconfig: getKubeconfig(),
+      clusterIdentifier: getDnsHostName(),
+      deleteUnreachable: true,
+      ...args,
+    }, opts);
+  }
+  return defaultK3sProviders[name];
 }
 
 export function transformSkipIngressAwait(): pulumi.ResourceTransform {
