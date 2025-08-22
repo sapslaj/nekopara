@@ -3,6 +3,7 @@ import * as pulumi from "@pulumi/pulumi";
 
 import { newK3sProvider } from "../../components/k3s-shared";
 import { AuthentikProxyIngress } from "../../components/k8s/AuthentikProxyIngress";
+import { IngressDNS } from "../../components/k8s/IngressDNS";
 
 const provider = newK3sProvider();
 
@@ -20,6 +21,7 @@ interface ExternalServiceProps {
   targetHostname: pulumi.Input<string>;
   targetPort: pulumi.Input<number>;
   authHeader?: boolean;
+  authentikProxy?: boolean;
 }
 
 class ExternalService extends pulumi.ComponentResource {
@@ -66,27 +68,63 @@ class ExternalService extends pulumi.ComponentResource {
       });
     }
 
-    new AuthentikProxyIngress(name, {
-      name: props.title,
-      namespace: props.namespace,
-      slug: props.name,
-      hostname: props.hostname,
-      service: {
-        kind: "Service",
-        name: props.name,
-        port: props.targetPort,
-      },
-      additionalMiddlewares: props.authHeader
-        ? [
-          {
-            name: pulumi.output(props.name).apply((name) => `${name}-basic-auth`),
-            namespace: props.namespace,
-          },
-        ]
-        : [],
-    }, {
-      parent: this,
-    });
+    if (props.authentikProxy) {
+      new AuthentikProxyIngress(name, {
+        name: props.title,
+        namespace: props.namespace,
+        slug: props.name,
+        hostname: props.hostname,
+        service: {
+          kind: "Service",
+          name: props.name,
+          port: props.targetPort,
+        },
+        additionalMiddlewares: props.authHeader
+          ? [
+            {
+              name: pulumi.output(props.name).apply((name) => `${name}-basic-auth`),
+              namespace: props.namespace,
+            },
+          ]
+          : [],
+      }, {
+        parent: this,
+      });
+    } else {
+      new kubernetes.apiextensions.CustomResource(`${name}-ingressroute`, {
+        apiVersion: "traefik.io/v1alpha1",
+        kind: "IngressRoute",
+        metadata: {
+          name: props.name,
+          namespace: props.namespace,
+        },
+        spec: {
+          routes: [
+            {
+              match: pulumi.concat("Host(`", props.hostname, "`)"),
+              kind: "Rule",
+              priority: 10,
+              services: [
+                {
+                  namespace: props.namespace,
+                  kind: "Service",
+                  name: props.name,
+                  port: props.targetPort,
+                },
+              ],
+            },
+          ],
+        },
+      }, {
+        parent: this,
+      });
+
+      new IngressDNS(name, {
+        hostname: props.hostname,
+      }, {
+        parent: this,
+      });
+    }
   }
 }
 
@@ -98,6 +136,7 @@ new ExternalService("lidarr", {
   targetHostname: "koyuki.sapslaj.xyz",
   targetPort: 8687,
   authHeader: true,
+  authentikProxy: true,
 }, {
   providers: {
     kubernetes: provider,
@@ -112,6 +151,7 @@ new ExternalService("qbittorrent", {
   targetHostname: "koyuki.sapslaj.xyz",
   targetPort: 8080,
   authHeader: false,
+  authentikProxy: true,
 }, {
   providers: {
     kubernetes: provider,
@@ -126,6 +166,7 @@ new ExternalService("radarr", {
   targetHostname: "koyuki.sapslaj.xyz",
   targetPort: 7878,
   authHeader: true,
+  authentikProxy: true,
 }, {
   providers: {
     kubernetes: provider,
@@ -140,6 +181,22 @@ new ExternalService("sonarr", {
   targetHostname: "koyuki.sapslaj.xyz",
   targetPort: 8989,
   authHeader: true,
+  authentikProxy: true,
+}, {
+  providers: {
+    kubernetes: provider,
+  },
+});
+
+new ExternalService("jellyfin", {
+  title: "Jellyfin",
+  name: "jellyfin",
+  namespace: namespace.metadata.name,
+  hostname: "jellyfin.sapslaj.cloud",
+  targetHostname: "koyuki.sapslaj.xyz",
+  targetPort: 8096,
+  authHeader: false,
+  authentikProxy: false,
 }, {
   providers: {
     kubernetes: provider,
