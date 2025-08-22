@@ -96,7 +96,7 @@ new ExternalService("lidarr", {
   namespace: namespace.metadata.name,
   hostname: "lidarr.sapslaj.cloud",
   targetHostname: "koyuki.sapslaj.xyz",
-  targetPort: 8686,
+  targetPort: 8687,
   authHeader: true,
 }, {
   providers: {
