@@ -3,7 +3,7 @@ import * as pulumi from "@pulumi/pulumi";
 import * as random from "@pulumi/random";
 
 import { newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";
-import { DNSRecord } from "../../components/shimiko/DNSRecord";
+import { IngressDNS } from "../../components/k8s/IngressDNS";
 import * as authentik from "../../sdks/authentik";
 
 const provider = newK3sProvider();
@@ -199,8 +199,10 @@ const grafana = new kubernetes.helm.v3.Chart("grafana", {
   ],
 });
 
-new DNSRecord("grafana", {
-  name: "grafana",
-  records: ["homelab.sapslaj.com."],
-  type: "CNAME",
+new IngressDNS("grafana.sapslaj.xyz", {
+  hostname: "grafana.sapslaj.xyz",
+}, {
+  providers: {
+    kubernetes: provider,
+  },
 });
