@@ -37,7 +37,7 @@ class ExternalService extends pulumi.ComponentResource {
         ports: [
           {
             name: "http",
-            port: 80,
+            port: props.targetPort,
             targetPort: props.targetPort,
           },
         ],
@@ -74,7 +74,7 @@ class ExternalService extends pulumi.ComponentResource {
       service: {
         kind: "Service",
         name: props.name,
-        port: 80,
+        port: props.targetPort,
       },
       additionalMiddlewares: props.authHeader
         ? [
