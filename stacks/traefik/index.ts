@@ -4,7 +4,7 @@ import * as pulumi from "@pulumi/pulumi";
 import * as time from "@pulumiverse/time";
 
 import { newK3sProvider } from "../../components/k3s-shared";
-import { DNSRecord } from "../../components/shimiko";
+import { IngressDNS } from "../../components/k8s/IngressDNS";
 
 const provider = newK3sProvider();
 
@@ -288,8 +288,4 @@ new kubernetes.apiextensions.CustomResource("traefik-dashboard", {
   provider,
 });
 
-new DNSRecord("traefik.sapslaj.xyz", {
-  name: "traefik",
-  type: "CNAME",
-  records: ["homelab.sapslaj.com."],
-});
+new IngressDNS("traefik.sapslaj.xyz");
