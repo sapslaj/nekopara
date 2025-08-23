@@ -18,6 +18,10 @@ const clientID = new random.RandomId("client-id", {
   byteLength: 16,
 });
 
+const authentikGroupAccess = new authentik.Group("grafana-access", {
+  name: "Grafana Access",
+});
+
 const authentikGroupAdmins = new authentik.Group("grafana-admins", {
   name: "Grafana Admins",
 });
@@ -62,6 +66,12 @@ const authentikApplication = new authentik.Application("grafana", {
   name: "Grafana",
   slug: "grafana",
   protocolProvider: authentikProvider.providerOauth2Id.apply((id) => parseInt(id)),
+});
+
+new authentik.PolicyBinding("grafana-access", {
+  order: 100,
+  target: authentikApplication.uuid,
+  group: authentikGroupAccess.id,
 });
 
 const oauthSecret = new kubernetes.core.v1.Secret("grafana-auth-generic-oauth-secret", {

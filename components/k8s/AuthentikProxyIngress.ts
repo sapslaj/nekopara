@@ -21,6 +21,8 @@ export interface AuthentikProxyIngressProps {
 export class AuthentikProxyIngress extends pulumi.ComponentResource {
   providerProxy: authentik.ProviderProxy;
   application: authentik.Application;
+  accessGroup: authentik.Group;
+  accessGroupPolicyBinding: authentik.PolicyBinding;
   outpost: authentik.Outpost;
   forwardAuthMiddleware: kubernetes.apiextensions.CustomResource;
   ingressRoute: kubernetes.apiextensions.CustomResource;
@@ -61,6 +63,20 @@ export class AuthentikProxyIngress extends pulumi.ComponentResource {
       name: props.name,
       slug,
       protocolProvider: this.providerProxy.providerProxyId.apply((id) => parseInt(id)),
+    }, {
+      parent: this,
+    });
+
+    this.accessGroup = new authentik.Group(name, {
+      name: pulumi.interpolate`${props.name} Access`,
+    }, {
+      parent: this,
+    });
+
+    this.accessGroupPolicyBinding = new authentik.PolicyBinding(name, {
+      order: 100,
+      target: this.application.uuid,
+      group: this.accessGroup.id,
     }, {
       parent: this,
     });

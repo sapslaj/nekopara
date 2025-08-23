@@ -55,6 +55,16 @@ const authentikApplication = new authentik.Application("netbox", {
   protocolProvider: authentikProvider.providerOauth2Id.apply((id) => parseInt(id)),
 });
 
+const authentikGroupAccess = new authentik.Group("netbox-access", {
+  name: "NetBox Access",
+});
+
+new authentik.PolicyBinding("netbox-access", {
+  order: 100,
+  target: authentikApplication.uuid,
+  group: authentikGroupAccess.id,
+});
+
 const oidcSecret = new kubernetes.core.v1.Secret("netbox-oidc", {
   metadata: {
     name: "netbox-oidc",
