@@ -202,3 +202,18 @@ new ExternalService("jellyfin", {
     kubernetes: provider,
   },
 });
+
+new ExternalService("homeassistant", {
+  title: "homeassistant",
+  name: "homeassistant",
+  namespace: namespace.metadata.name,
+  hostname: "homeassistant.sapslaj.cloud",
+  targetHostname: "homeassistant.sapslaj.xyz",
+  targetPort: 8123,
+  authHeader: false,
+  authentikProxy: false,
+}, {
+  providers: {
+    kubernetes: provider,
+  },
+});
