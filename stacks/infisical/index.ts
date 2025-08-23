@@ -109,6 +109,9 @@ const chart = new kubernetes.helm.v3.Chart("infisical", {
       enabled: true,
       hostName: "infisical.sapslaj.cloud",
       ingressClassName: "traefik",
+      annotations: {
+        "traefik.ingress.kubernetes.io/router.middlewares": "traefik-anubis@kubernetescrd",
+      },
       nginx: {
         enabled: false,
       },
@@ -131,6 +134,7 @@ const chart = new kubernetes.helm.v3.Chart("infisical", {
     (obj: any, opts: pulumi.CustomResourceOptions) => {
       if (obj.kind === "Deployment" && obj.metadata?.name === "infisical-infisical") {
         delete obj.metadata.annotations["updatedAt"];
+        delete obj.spec.template.metadata.annotations["updatedAt"];
         obj.spec.template.spec.containers[0].env.push({
           name: "REDIS_URL",
           value: "redis://infisical-valkey-rw:6379",

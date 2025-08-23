@@ -16,6 +16,7 @@ export interface AuthentikProxyIngressProps {
     port: pulumi.Input<number>;
   };
   additionalMiddlewares?: any[];
+  enableAnubis?: boolean;
 }
 
 export class AuthentikProxyIngress extends pulumi.ComponentResource {
@@ -149,6 +150,12 @@ export class AuthentikProxyIngress extends pulumi.ComponentResource {
                 name: this.forwardAuthMiddleware.metadata.name,
                 namespace: this.forwardAuthMiddleware.metadata.namespace,
               },
+              ...(props.enableAnubis === false ? [] : [
+                {
+                  name: "anubis",
+                  namespace: "traefik",
+                },
+              ]),
               ...(props.additionalMiddlewares ?? []),
             ],
             priority: 10,

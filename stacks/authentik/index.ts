@@ -359,6 +359,10 @@ const authentik = new kubernetes.helm.v3.Chart("authentik", {
       },
       ingress: {
         enabled: true,
+        annotations: {
+          "traefik.ingress.kubernetes.io/router.middlewares": "traefik-anubis@kubernetescrd",
+        },
+        ingressClassName: "traefik",
         hosts: [
           "login.sapslaj.cloud",
         ],

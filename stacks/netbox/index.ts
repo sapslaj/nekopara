@@ -238,6 +238,9 @@ const chart = new kubernetes.helm.v4.Chart("netbox", {
     ingress: {
       enabled: true,
       className: "traefik",
+      annotations: {
+        "traefik.ingress.kubernetes.io/router.middlewares": "traefik-anubis@kubernetescrd",
+      },
       hosts: [
         {
           host: "netbox.sapslaj.cloud",

@@ -46,7 +46,7 @@ const authentikProvider = new authentik.ProviderOauth2("grafana", {
   allowedRedirectUris: [
     {
       matching_mode: "strict",
-      url: "https://grafana.sapslaj.xyz/login/generic_oauth",
+      url: "https://grafana.sapslaj.cloud/login/generic_oauth",
     },
   ],
   propertyMappings: [
@@ -110,8 +110,11 @@ const grafana = new kubernetes.helm.v3.Chart("grafana", {
     },
     ingress: {
       enabled: true,
+      annotations: {
+        "traefik.ingress.kubernetes.io/router.middlewares": "traefik-anubis@kubernetescrd",
+      },
       hosts: [
-        "grafana.sapslaj.xyz",
+        "grafana.sapslaj.cloud",
       ],
     },
     persistence: {
@@ -138,7 +141,7 @@ const grafana = new kubernetes.helm.v3.Chart("grafana", {
     ],
     "grafana.ini": {
       server: {
-        root_url: "https://grafana.sapslaj.xyz/",
+        root_url: "https://grafana.sapslaj.cloud/",
       },
       auth: {
         signout_redirect_url: pulumi
@@ -209,10 +212,89 @@ const grafana = new kubernetes.helm.v3.Chart("grafana", {
   ],
 });
 
-new IngressDNS("grafana.sapslaj.xyz", {
-  hostname: "grafana.sapslaj.xyz",
-}, {
-  providers: {
-    kubernetes: provider,
+const xyzRedirect = new kubernetes.apiextensions.CustomResource("xyz-redirect-middleware", {
+  apiVersion: "traefik.io/v1alpha1",
+  kind: "Middleware",
+  metadata: {
+    name: "xyz-redirect",
+    namespace: namespace.metadata.name,
   },
-});
+  spec: {
+    redirectRegex: {
+      regex: "grafana.sapslaj.xyz/(.+)",
+      replacement: "grafana.sapslaj.cloud/${1}",
+    },
+  },
+}, { provider });
+
+new kubernetes.networking.v1.Ingress("xyz-redirect", {
+  metadata: {
+    name: "xyz-redirect",
+    namespace: namespace.metadata.name,
+    annotations: {
+      "pulumi.com/skipAwait": "true",
+      "traefik.ingress.kubernetes.io/router.middlewares": pulumi.concat(
+        xyzRedirect.metadata.namespace,
+        "-",
+        xyzRedirect.metadata.name,
+        "@kubernetescrd",
+      ),
+    },
+  },
+  spec: {
+    ingressClassName: "traefik",
+    rules: [
+      {
+        host: "grafana.sapslaj.xyz",
+        http: {
+          paths: [
+            {
+              path: "/",
+              pathType: "Prefix",
+              backend: {
+                service: {
+                  name: "grafana",
+                  port: {
+                    number: 80,
+                  },
+                },
+              },
+            },
+          ],
+        },
+      },
+    ],
+  },
+}, { provider });
+
+// new kubernetes.apiextensions.CustomResource("xyz-redirect-ingressroute", {
+//   apiVersion: "traefik.io/v1alpha1",
+//   kind: "IngressRoute",
+//   metadata: {
+//     name: "xyz-redirect",
+//     namespace: namespace.metadata.name,
+//   },
+//   spec: {
+//     routes: [
+//       {
+//         match: "Host(`grafana.sapslaj.xyz`)",
+//         kind: "Rule",
+//         middlewares: [
+//           {
+//             name: xyzRedirect.metadata.name,
+//             namespace: xyzRedirect.metadata.namespace,
+//           },
+//         ],
+//         services: [
+//           {
+//             name: "grafana",
+//             kind: "Service",
+//           },
+//         ],
+//       },
+//     ],
+//   },
+// }, { provider });
+
+new IngressDNS("grafana.sapslaj.xyz");
+new IngressDNS("grafana.sapslaj.cloud");
