@@ -19,7 +19,6 @@
     "@pulumi/random": "^4.16.8",
     "@pulumi/std": "^1.7.3",
     "@pulumi/tls": "^5.0.10",
-    "@pulumi/vault": "^7.2.1",
     "@pulumiverse/time": "^0.1.1",
     "@sapslaj/pulumi-mid": "^0.0.14",
     "dedent": "^1.5.3",
