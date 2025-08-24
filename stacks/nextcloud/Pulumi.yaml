@@ -1,0 +1,5 @@
+name: nekopara.nextcloud
+runtime:
+  name: nodejs
+  options:
+    packagemanager: npm
