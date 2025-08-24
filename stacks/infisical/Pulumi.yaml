@@ -1,5 +1,0 @@
-name: nekopara.infisical
-runtime:
-  name: nodejs
-  options:
-    packagemanager: npm
