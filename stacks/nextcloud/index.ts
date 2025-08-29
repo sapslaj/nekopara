@@ -181,9 +181,18 @@ const adminSecret = new kubernetes.core.v1.Secret("nextcloud-admin", {
   },
 }, { provider });
 
-new WeedBucket("nextcloud-data", {
-  bucket: "nextcloud-data",
-});
+const collaboraAdminSecret = new kubernetes.core.v1.Secret("nextcloud-collabora-admin", {
+  metadata: {
+    name: "nextcloud-collabora-admin",
+    namespace: namespace.metadata.name,
+  },
+  stringData: {
+    username: "nextcloudadmin",
+    password: new random.RandomPassword("nextcloud-collabora-admin", {
+      length: 64,
+    }).result,
+  },
+}, { provider });
 
 const chart = new kubernetes.helm.v3.Chart("nextcloud", {
   chart: "nextcloud",
@@ -204,7 +213,7 @@ const chart = new kubernetes.helm.v3.Chart("nextcloud", {
       enabled: true,
       className: "traefik",
       annotations: {
-        "traefik.ingress.kubernetes.io/router.middlewares": "traefik-anubis@kubernetescrd",
+        // "traefik.ingress.kubernetes.io/router.middlewares": "traefik-anubis@kubernetescrd",
       },
     },
     nextcloud: {
@@ -280,7 +289,62 @@ const chart = new kubernetes.helm.v3.Chart("nextcloud", {
       },
     },
     collabora: {
-      enabled: false,
+      enabled: true,
+      image: {
+        repository: "proxy.oci.sapslaj.xyz/docker-hub/collabora/code",
+      },
+      collabora: {
+        extra_params: "--o:ssl.enable=false --o:ssl.termination=true",
+        server_name: "nextcloud-collabora.sapslaj.cloud",
+        existingSecret: {
+          enabled: true,
+          secretName: collaboraAdminSecret.metadata.name,
+          usernameKey: "username",
+          passwordKey: "password",
+        },
+      },
+      prometheus: {
+        servicemonitor: {
+          enabled: true,
+        },
+        rules: {
+          enabled: false,
+        },
+      },
+      grafana: {
+        dashboards: {
+          enabled: true,
+        },
+      },
+      deployment: {
+        customFonts: {
+          enabled: true,
+          pvc: {
+            accessMode: "ReadWriteMany",
+            storageClassName: "nfs",
+          },
+          image: {
+            repository: "proxy.oci.sapslaj.xyz/docker-hub/alpine",
+          },
+        },
+      },
+      ingress: {
+        enabled: true,
+        className: "traefik",
+        hosts: [
+          // TODO: block certain subpaths
+          {
+            host: "nextcloud-collabora.sapslaj.cloud",
+            paths: [
+              {
+                path: "/",
+                pathType: "Prefix",
+              },
+            ],
+          },
+        ],
+      },
+      replicaCount: 2,
     },
     cronjob: {
       enabled: true,
@@ -344,3 +408,4 @@ const chart = new kubernetes.helm.v3.Chart("nextcloud", {
 });
 
 new IngressDNS("nextcloud.sapslaj.cloud");
+new IngressDNS("nextcloud-collabora.sapslaj.cloud");
