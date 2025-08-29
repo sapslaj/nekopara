@@ -1,0 +1,5 @@
+name: nekopara.gitea
+runtime:
+  name: nodejs
+  options:
+    packagemanager: npm
