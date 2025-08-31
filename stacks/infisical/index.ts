@@ -1,7 +1,9 @@
+import * as aws from "@pulumi/aws";
 import * as kubernetes from "@pulumi/kubernetes";
 import * as pulumi from "@pulumi/pulumi";
 import * as random from "@pulumi/random";
 
+import { iamPolicyDocument } from "../../components/aws-utils";
 import { newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";
 import { IngressDNS } from "../../components/k8s/IngressDNS";
 import { Valkey } from "../../components/k8s/Valkey";
@@ -13,6 +15,40 @@ const namespace = new kubernetes.core.v1.Namespace("infisical", {
     name: "infisical",
   },
 }, { provider });
+
+const iamUser = new aws.iam.User(`authentik-${pulumi.getStack()}`, {});
+
+new aws.iam.UserPolicy("authentik", {
+  user: iamUser.name,
+  policy: iamPolicyDocument({
+    statements: [
+      {
+        actions: ["ses:SendRawEmail"],
+        resources: ["*"],
+      },
+    ],
+  }),
+});
+
+const awsSecret = new kubernetes.core.v1.Secret("infisical-aws-credentials", {
+  metadata: {
+    name: "infisical-aws-credentials",
+    namespace: namespace.metadata.name,
+    annotations: {
+      "aws-credentials-secret-injector.sapslaj.cloud/user-name": iamUser.name,
+    },
+  },
+}, {
+  provider,
+  ignoreChanges: [
+    "data",
+    "stringData",
+  ],
+});
+
+const sesIdentity = new aws.sesv2.EmailIdentity("infisical", {
+  emailIdentity: "infisical@sapslaj.cloud",
+});
 
 const valkey = new Valkey("infisical", {
   name: "infisical-valkey",
@@ -151,6 +187,9 @@ const deployment = new kubernetes.apps.v1.Deployment("infisical", {
       "app.kubernetes.io/part-of": "infisical",
       "k3s.sapslaj.xyz/stack": "nekopara.infisical",
     },
+    annotations: {
+      "reloader.stakater.com/auto": "true",
+    },
   },
   spec: {
     replicas: 2,
@@ -201,11 +240,50 @@ const deployment = new kubernetes.apps.v1.Deployment("infisical", {
                   },
                 },
               },
+              {
+                name: "SMTP_HOST",
+                value: "email-smtp.us-east-1.amazonaws.com",
+              },
+              {
+                name: "SMTP_USERNAME",
+                valueFrom: {
+                  secretKeyRef: {
+                    name: awsSecret.metadata.name,
+                    key: "AWS_ACCESS_KEY_ID",
+                  },
+                },
+              },
+              {
+                name: "SMTP_PASSWORD",
+                valueFrom: {
+                  secretKeyRef: {
+                    name: awsSecret.metadata.name,
+                    key: "AWS_SES_SMTP_PASSWORD_V4",
+                  },
+                },
+              },
+              {
+                name: "SMTP_PORT",
+                value: "465",
+              },
+              {
+                name: "SMTP_FROM_ADDRESS",
+                value: sesIdentity.emailIdentity,
+              },
+              {
+                name: "SMTP_FROM_NAME",
+                value: "Infisical",
+              },
             ],
             envFrom: [
               {
                 secretRef: {
                   name: secret.metadata.name,
+                },
+              },
+              {
+                secretRef: {
+                  name: awsSecret.metadata.name,
                 },
               },
             ],
