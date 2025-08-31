@@ -1,0 +1,5 @@
+name: nekopara.immich
+runtime:
+  name: nodejs
+  options:
+    packagemanager: npm
