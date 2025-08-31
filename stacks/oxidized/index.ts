@@ -279,6 +279,7 @@ new AuthentikProxyIngress("oxidized", {
     name: service.metadata.name,
     port: 8888,
   },
+  enableAnubis: false,
 }, {
   providers: {
     kubernetes: provider,

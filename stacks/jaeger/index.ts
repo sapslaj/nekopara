@@ -223,6 +223,7 @@ new AuthentikProxyIngress("jaeger-ui", {
     name: "jaeger-query",
     port: 80,
   },
+  enableAnubis: false,
 }, {
   providers: {
     kubernetes: provider,
