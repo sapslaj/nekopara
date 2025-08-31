@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"crypto/hmac"
+	"crypto/sha256"
 	"encoding/base64"
 	"fmt"
 	"log/slog"
@@ -9,9 +11,7 @@ import (
 	"slices"
 	"time"
 
-	"github.com/aws/aws-sdk-go-v2/config"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
-	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
 	"github.com/spotahome/kooper/v2/controller"
 	kooperlog "github.com/spotahome/kooper/v2/log"
@@ -30,9 +30,45 @@ const (
 
 	Finalizer = "aws-credentials-secret-injector.sapslaj.cloud/finalizer"
 
-	AWS_ACCESS_KEY_ID     = "AWS_ACCESS_KEY_ID"
-	AWS_SECRET_ACCESS_KEY = "AWS_SECRET_ACCESS_KEY"
+	AWS_ACCESS_KEY_ID        = "AWS_ACCESS_KEY_ID"
+	AWS_SECRET_ACCESS_KEY    = "AWS_SECRET_ACCESS_KEY"
+	AWS_SES_SMTP_PASSWORD_V4 = "AWS_SES_SMTP_PASSWORD_V4"
 )
+
+func generateSesSmtpPassword(secretAccessKey string) string {
+	key := secretAccessKey
+	region := "us-east-1"
+	date := "11111111"
+	service := "ses"
+	terminal := "aws4_request"
+	message := "SendRawEmail"
+	version := byte(0x04)
+
+	kDate := hmac.New(sha256.New, []byte("AWS4"+key))
+	kDate.Write([]byte(date))
+	kDateBytes := kDate.Sum(nil)
+
+	kRegion := hmac.New(sha256.New, kDateBytes)
+	kRegion.Write([]byte(region))
+	kRegionBytes := kRegion.Sum(nil)
+
+	kService := hmac.New(sha256.New, kRegionBytes)
+	kService.Write([]byte(service))
+	kServiceBytes := kService.Sum(nil)
+
+	kTerminal := hmac.New(sha256.New, kServiceBytes)
+	kTerminal.Write([]byte(terminal))
+	kTerminalBytes := kTerminal.Sum(nil)
+
+	kMessage := hmac.New(sha256.New, kTerminalBytes)
+	kMessage.Write([]byte(message))
+	kMessageBytes := kMessage.Sum(nil)
+
+	signatureAndVersion := append([]byte{version}, kMessageBytes...)
+	smtpPassword := base64.StdEncoding.EncodeToString(signatureAndVersion)
+
+	return smtpPassword
+}
 
 type KooperLogger struct {
 	Logger *slog.Logger
@@ -71,20 +107,13 @@ func main() {
 		AddSource: true,
 	}))
 
-	awscfg, err := awsconfig.LoadDefaultConfig(
-		context.Background(),
-		config.WithCredentialsProvider(
-			credentials.NewStaticCredentialsProvider(
-				os.Getenv("AWS_ACCESS_KEY_ID"),
-				os.Getenv("AWS_SECRET_ACCESS_KEY"),
-				"",
-			),
-		),
-	)
+	awscfg, err := awsconfig.LoadDefaultConfig(context.Background())
 	if err != nil {
 		logger.Error("error loading AWS configuration", slog.Any("error", err))
 		os.Exit(1)
 	}
+
+	iamClient := iam.NewFromConfig(awscfg)
 
 	k8scfg, err := rest.InClusterConfig()
 	if err != nil {
@@ -128,8 +157,6 @@ func main() {
 			handlerLogger = handlerLogger.With(
 				slog.String("user_name", userName),
 			)
-
-			iamClient := iam.NewFromConfig(awscfg)
 
 			if secret.GetDeletionTimestamp() != nil {
 				handlerLogger.InfoContext(ctx, "deleting secret")
@@ -249,32 +276,16 @@ func main() {
 
 			secret.ObjectMeta.Annotations[ExpiresAtAnnotation] = time.Now().Add(time.Hour).Format(time.RFC3339)
 
-			secret.Data[AWS_ACCESS_KEY_ID] = []byte(base64.StdEncoding.EncodeToString([]byte(*createAccessKeyOutput.AccessKey.AccessKeyId)))
-			secret.Data[AWS_SECRET_ACCESS_KEY] = []byte(base64.StdEncoding.EncodeToString([]byte(*createAccessKeyOutput.AccessKey.SecretAccessKey)))
+			sesSmtpPassword := generateSesSmtpPassword(*createAccessKeyOutput.AccessKey.SecretAccessKey)
+
+			secret.Data[AWS_ACCESS_KEY_ID] = []byte(*createAccessKeyOutput.AccessKey.AccessKeyId)
+			secret.Data[AWS_SECRET_ACCESS_KEY] = []byte(*createAccessKeyOutput.AccessKey.SecretAccessKey)
+			secret.Data[AWS_SES_SMTP_PASSWORD_V4] = []byte(sesSmtpPassword)
 
 			secret, err = k8sClient.CoreV1().Secrets(secret.GetNamespace()).Update(ctx, secret, metav1.UpdateOptions{})
 			if err != nil {
 				handlerLogger.ErrorContext(ctx, "error updating secret", slog.Any("error", err))
 				return err
-			}
-
-			if secret.GetNamespace() == "aws-credentials-secret-injector" && secret.GetName() == "aws-credentials-secret-injector" {
-				handlerLogger.InfoContext(ctx, "detected update for aws-credentials-secret-injector, re-initializing AWS config.")
-				awscfg, err = awsconfig.LoadDefaultConfig(
-					context.Background(),
-					config.WithCredentialsProvider(
-						credentials.NewStaticCredentialsProvider(
-							*createAccessKeyOutput.AccessKey.AccessKeyId,
-							*createAccessKeyOutput.AccessKey.SecretAccessKey,
-							"",
-						),
-					),
-				)
-				if err != nil {
-					handlerLogger.Error("error loading AWS configuration", slog.Any("error", err))
-					return err
-				}
-				iamClient = iam.NewFromConfig(awscfg)
 			}
 
 			if oldAccessKeyID != "" {

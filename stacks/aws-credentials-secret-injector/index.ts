@@ -44,6 +44,9 @@ const awsSecret = new kubernetes.core.v1.Secret("aws-credentials-secret-injector
   metadata: {
     name: "aws-credentials-secret-injector",
     namespace: namespace.metadata.name,
+    annotations: {
+      "aws-credentials-secret-injector.sapslaj.cloud/user-name": iamUser.name,
+    },
   },
   // aws-credentials-secret-injector manages its own credentials rotation
 }, {
@@ -135,6 +138,9 @@ new kubernetes.apps.v1.Deployment("aws-credentials-secret-injector", {
       "app.kubernetes.io/name": "aws-credentials-secret-injector",
       "app.kubernetes.io/part-of": "aws-credentials-secret-injector",
       "k3s.sapslaj.xyz/stack": "nekopara.aws-credentials-secret-injector",
+    },
+    annotations: {
+      "reloader.stakater.com/auto": "true",
     },
   },
   spec: {
