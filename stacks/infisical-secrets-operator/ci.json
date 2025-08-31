@@ -1,0 +1,12 @@
+{
+  "dependencies": [
+    "authentik",
+    "cloudnative-pg",
+    "cluster",
+    "core",
+    "crds",
+    "infisical",
+    "nodegroups",
+    "shortrack"
+  ]
+}

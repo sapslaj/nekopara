@@ -1,0 +1,5 @@
+name: nekopara.infisical-secrets-operator
+runtime:
+  name: nodejs
+  options:
+    packagemanager: npm

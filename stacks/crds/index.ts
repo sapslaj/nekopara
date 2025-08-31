@@ -68,3 +68,26 @@ const opensearchOperatorCRDs = new kubernetes.kustomize.v2.Directory("opensearch
 }, {
   provider,
 });
+
+const chart = new kubernetes.helm.v3.Chart("infisical-secrets-operator", {
+  chart: "secrets-operator",
+  fetchOpts: {
+    repo: "https://dl.cloudsmith.io/public/infisical/helm-charts/helm/charts/",
+  },
+  version: "0.10.3",
+  namespace: "kube-system",
+  skipCRDRendering: false,
+  values: {
+    installCRDs: true,
+  },
+  transformations: [
+    (obj: any, opts: pulumi.CustomResourceOptions) => {
+      if (obj.kind !== "CustomResourceDefinition") {
+        obj.apiVersion = "v1";
+        obj.kind = "List";
+      }
+    },
+  ],
+}, {
+  provider,
+});

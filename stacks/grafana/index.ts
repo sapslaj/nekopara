@@ -267,34 +267,5 @@ new kubernetes.networking.v1.Ingress("xyz-redirect", {
   },
 }, { provider });
 
-// new kubernetes.apiextensions.CustomResource("xyz-redirect-ingressroute", {
-//   apiVersion: "traefik.io/v1alpha1",
-//   kind: "IngressRoute",
-//   metadata: {
-//     name: "xyz-redirect",
-//     namespace: namespace.metadata.name,
-//   },
-//   spec: {
-//     routes: [
-//       {
-//         match: "Host(`grafana.sapslaj.xyz`)",
-//         kind: "Rule",
-//         middlewares: [
-//           {
-//             name: xyzRedirect.metadata.name,
-//             namespace: xyzRedirect.metadata.namespace,
-//           },
-//         ],
-//         services: [
-//           {
-//             name: "grafana",
-//             kind: "Service",
-//           },
-//         ],
-//       },
-//     ],
-//   },
-// }, { provider });
-
 new IngressDNS("grafana.sapslaj.xyz");
 new IngressDNS("grafana.sapslaj.cloud");
