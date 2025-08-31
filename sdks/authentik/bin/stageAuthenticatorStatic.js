@@ -54,8 +54,8 @@ class StageAuthenticatorStatic extends pulumi.CustomResource {
       name,
       resourceInputs,
       opts,
-      false, /*dependency*/
-      utilities.getPackage(),
+      false,
+      /*dependency*/ utilities.getPackage(),
     );
   }
 }
