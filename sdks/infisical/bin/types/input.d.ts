@@ -1,0 +1,1609 @@
+import * as pulumi from "@pulumi/pulumi";
+import * as inputs from "../types/input";
+export interface AccessApprovalPolicyApprover {
+  /**
+   * The ID of the approver
+   */
+  id?: pulumi.Input<string>;
+  /**
+   * The type of approver. Either group or user
+   */
+  type: pulumi.Input<string>;
+  /**
+   * The username of the approver. By default, this is the email
+   */
+  username?: pulumi.Input<string>;
+}
+export interface AppConnection1passwordCredentials {
+  /**
+   * The API token to use for authentication. For more details, refer to the documentation here infisical.com/docs/integrations/app-connections/1password
+   */
+  apiToken: pulumi.Input<string>;
+  /**
+   * The URL of the 1Password Connect instance to connect to. For more details, refer to the documentation here infisical.com/docs/integrations/app-connections/1password
+   */
+  instanceUrl: pulumi.Input<string>;
+}
+export interface AppConnectionAwsCredentials {
+  /**
+   * The AWS Access Key ID used to authenticate requests to AWS services. Required for access-key access method. For more details, refer to the documentation here infisical.com/docs/integrations/app-connections/aws#access-key
+   */
+  accessKeyId?: pulumi.Input<string>;
+  /**
+   * The Amazon Resource Name (ARN) of the IAM role to assume for performing operations. Infisical will assume this role using AWS Security Token Service (STS). Required for assume-role access method. For more details, refer to the documentation here infisical.com/docs/integrations/app-connections/aws#assume-role-recommended
+   */
+  roleArn?: pulumi.Input<string>;
+  /**
+   * The AWS Secret Access Key associated with the Access Key ID to authenticate requests to AWS services. Required for access-key access method. For more details, refer to the documentation here infisical.com/docs/integrations/app-connections/aws#access-key
+   */
+  secretAccessKey?: pulumi.Input<string>;
+}
+export interface AppConnectionAzureClientSecretsCredentials {
+  /**
+   * The Azure application (client) ID. Required for client-secret method. For more details, refer to the documentation here infisical.com/docs/integrations/app-connections/azure-client-secrets
+   */
+  clientId: pulumi.Input<string>;
+  /**
+   * The Azure client secret. Required for client-secret method. For more details, refer to the documentation here infisical.com/docs/integrations/app-connections/azure-client-secrets
+   */
+  clientSecret: pulumi.Input<string>;
+  /**
+   * The Azure Active Directory (AAD) tenant ID. Required for client-secret method. For more details, refer to the documentation here infisical.com/docs/integrations/app-connections/azure-client-secrets
+   */
+  tenantId: pulumi.Input<string>;
+}
+export interface AppConnectionBitbucketCredentials {
+  /**
+   * The Bitbucket API token for authentication.
+   */
+  apiToken: pulumi.Input<string>;
+  /**
+   * The email address associated with the Bitbucket API token.
+   */
+  email: pulumi.Input<string>;
+}
+export interface AppConnectionCloudflareCredentials {
+  /**
+   * The Cloudflare Account ID. This can be found in the sidebar of your Cloudflare dashboard.
+   */
+  accountId: pulumi.Input<string>;
+  /**
+   * The Cloudflare API token with the necessary permissions to manage Workers scripts. The token should have Zone:Zone:Read, Zone:Zone Settings:Read, and Zone:Zone:Edit permissions.
+   */
+  apiToken: pulumi.Input<string>;
+}
+export interface AppConnectionDatabricksCredentials {
+  /**
+   * The client ID of the Databricks service principal.
+   */
+  clientId: pulumi.Input<string>;
+  /**
+   * The client secret of the Databricks service principal.
+   */
+  clientSecret: pulumi.Input<string>;
+  /**
+   * The workspace URL of the Databricks instance.
+   */
+  workspaceUrl: pulumi.Input<string>;
+}
+export interface AppConnectionFlyioCredentials {
+  /**
+   * The Fly.io access token for authentication.
+   */
+  accessToken: pulumi.Input<string>;
+}
+export interface AppConnectionGcpCredentials {
+  /**
+   * The service account email to connect with GCP. The service account ID (the part of the email before '@') must be suffixed with the first two sections of your organization ID e.g. service-account-df92581a-0fe9@my-project.iam.gserviceaccount.com. For more details, refer to the documentation here https://infisical.com/docs/integrations/app-connections/gcp#configure-service-account-for-infisical
+   */
+  serviceAccountEmail?: pulumi.Input<string>;
+}
+export interface AppConnectionLdapCredentials {
+  /**
+   * The Distinguished Name (DN) or User Principal Name (UPN) of the principal to bind with (e.g., 'CN=John,CN=Users,DC=example,DC=com').
+   */
+  dn: pulumi.Input<string>;
+  /**
+   * The password to bind with for authentication.
+   */
+  password: pulumi.Input<string>;
+  /**
+   * The LDAP provider (e.g., 'active-directory').
+   */
+  provider: pulumi.Input<string>;
+  /**
+   * The SSL certificate (PEM format) to use for secure connection when using ldaps:// with a self-signed certificate.
+   */
+  sslCertificate?: pulumi.Input<string>;
+  /**
+   * Whether or not to reject unauthorized SSL certificates (true/false) when using ldaps://. Set to false only in test environments.
+   */
+  sslRejectUnauthorized?: pulumi.Input<boolean>;
+  /**
+   * The LDAP server URL (e.g., 'ldap://example.com:389' or 'ldaps://example.com:636').
+   */
+  url: pulumi.Input<string>;
+}
+export interface AppConnectionMssqlCredentials {
+  /**
+   * The name of the database to connect to.
+   */
+  database: pulumi.Input<string>;
+  /**
+   * The hostname of the database server.
+   */
+  host: pulumi.Input<string>;
+  /**
+   * The password to connect to the database with.
+   */
+  password: pulumi.Input<string>;
+  /**
+   * The port number of the database.
+   */
+  port?: pulumi.Input<number>;
+  /**
+   * The SSL certificate to use for connection.
+   */
+  sslCertificate?: pulumi.Input<string>;
+  /**
+   * Whether or not to use SSL when connecting to the database.
+   */
+  sslEnabled?: pulumi.Input<boolean>;
+  /**
+   * Whether or not to reject unauthorized SSL certificates.
+   */
+  sslRejectUnauthorized?: pulumi.Input<boolean>;
+  /**
+   * The username to connect to the database with.
+   */
+  username: pulumi.Input<string>;
+}
+export interface AppConnectionMysqlCredentials {
+  /**
+   * The name of the database to connect to.
+   */
+  database: pulumi.Input<string>;
+  /**
+   * The hostname of the database server.
+   */
+  host: pulumi.Input<string>;
+  /**
+   * The password to connect to the database with.
+   */
+  password: pulumi.Input<string>;
+  /**
+   * The port number of the database.
+   */
+  port?: pulumi.Input<number>;
+  /**
+   * The SSL certificate to use for connection.
+   */
+  sslCertificate?: pulumi.Input<string>;
+  /**
+   * Whether or not to use SSL when connecting to the database.
+   */
+  sslEnabled?: pulumi.Input<boolean>;
+  /**
+   * Whether or not to reject unauthorized SSL certificates.
+   */
+  sslRejectUnauthorized?: pulumi.Input<boolean>;
+  /**
+   * The username to connect to the database with.
+   */
+  username: pulumi.Input<string>;
+}
+export interface AppConnectionOracledbCredentials {
+  /**
+   * The name of the database to connect to.
+   */
+  database: pulumi.Input<string>;
+  /**
+   * The hostname of the database server.
+   */
+  host: pulumi.Input<string>;
+  /**
+   * The password to connect to the database with.
+   */
+  password: pulumi.Input<string>;
+  /**
+   * The port number of the database.
+   */
+  port?: pulumi.Input<number>;
+  /**
+   * The SSL certificate to use for connection.
+   */
+  sslCertificate?: pulumi.Input<string>;
+  /**
+   * Whether or not to use SSL when connecting to the database.
+   */
+  sslEnabled?: pulumi.Input<boolean>;
+  /**
+   * Whether or not to reject unauthorized SSL certificates.
+   */
+  sslRejectUnauthorized?: pulumi.Input<boolean>;
+  /**
+   * The username to connect to the database with.
+   */
+  username: pulumi.Input<string>;
+}
+export interface AppConnectionPostgresCredentials {
+  /**
+   * The name of the database to connect to.
+   */
+  database: pulumi.Input<string>;
+  /**
+   * The hostname of the database server.
+   */
+  host: pulumi.Input<string>;
+  /**
+   * The password to connect to the database with.
+   */
+  password: pulumi.Input<string>;
+  /**
+   * The port number of the database.
+   */
+  port?: pulumi.Input<number>;
+  /**
+   * The SSL certificate to use for connection.
+   */
+  sslCertificate?: pulumi.Input<string>;
+  /**
+   * Whether or not to use SSL when connecting to the database.
+   */
+  sslEnabled?: pulumi.Input<boolean>;
+  /**
+   * Whether or not to reject unauthorized SSL certificates.
+   */
+  sslRejectUnauthorized?: pulumi.Input<boolean>;
+  /**
+   * The username to connect to the database with.
+   */
+  username: pulumi.Input<string>;
+}
+export interface AppConnectionRenderCredentials {
+  /**
+   * The API key to use for authentication. For more details, refer to the documentation here infisical.com/docs/integrations/app-connections/render
+   */
+  apiKey: pulumi.Input<string>;
+}
+export interface AppConnectionSupabaseCredentials {
+  /**
+   * The Supabase access key for authentication.
+   */
+  accessKey: pulumi.Input<string>;
+  /**
+   * The Supabase instance URL (e.g., https://your-domain.com).
+   */
+  instanceUrl?: pulumi.Input<string>;
+}
+export interface DynamicSecretAwsIamConfiguration {
+  /**
+   * Configuration for the 'access_key' authentication method.
+   */
+  accessKeyConfig?: pulumi.Input<inputs.DynamicSecretAwsIamConfigurationAccessKeyConfig>;
+  /**
+   * Configuration for the 'assume_role' authentication method.
+   */
+  assumeRoleConfig?: pulumi.Input<inputs.DynamicSecretAwsIamConfigurationAssumeRoleConfig>;
+  /**
+   * IAM AWS Path to scope created IAM User resource access.
+   */
+  awsPath?: pulumi.Input<string>;
+  /**
+   * The authentication method to use. Must be 'access_key' or 'assume_role'.
+   */
+  method: pulumi.Input<string>;
+  /**
+   * The IAM Policy ARN of the AWS Permissions Boundary to attach to IAM users created in the role.
+   */
+  permissionBoundaryPolicyArn?: pulumi.Input<string>;
+  /**
+   * The AWS IAM managed policies that should be attached to the created users. Multiple values can be provided by separating them with commas
+   */
+  policyArns?: pulumi.Input<string>;
+  /**
+   * The AWS IAM inline policy that should be attached to the created users. Multiple values can be provided by separating them with commas
+   */
+  policyDocument?: pulumi.Input<string>;
+  /**
+   * The AWS data center region.
+   */
+  region: pulumi.Input<string>;
+  /**
+   * The AWS IAM groups that should be assigned to the created users. Multiple values can be provided by separating them with commas
+   */
+  userGroups?: pulumi.Input<string>;
+}
+export interface DynamicSecretAwsIamConfigurationAccessKeyConfig {
+  /**
+   * The managing AWS IAM User Access Key
+   */
+  accessKey: pulumi.Input<string>;
+  /**
+   * The managing AWS IAM User Secret Key
+   */
+  secretAccessKey: pulumi.Input<string>;
+}
+export interface DynamicSecretAwsIamConfigurationAssumeRoleConfig {
+  /**
+   * The ARN of the AWS Role to assume.
+   */
+  roleArn: pulumi.Input<string>;
+}
+export interface DynamicSecretAwsIamMetadata {
+  /**
+   * The key of the metadata object
+   */
+  key: pulumi.Input<string>;
+  /**
+   * The value of the metadata object
+   */
+  value: pulumi.Input<string>;
+}
+export interface DynamicSecretKubernetesConfiguration {
+  /**
+   * Configuration for the 'api' authentication method.
+   */
+  apiConfig?: pulumi.Input<inputs.DynamicSecretKubernetesConfigurationApiConfig>;
+  /**
+   * Optional list of audiences to include in the generated token.
+   */
+  audiences?: pulumi.Input<pulumi.Input<string>[]>;
+  /**
+   * Choose between Token ('api') or 'gateway' authentication. If using Gateway, the Gateway must be deployed in your Kubernetes cluster.
+   */
+  authMethod: pulumi.Input<string>;
+  /**
+   * Choose between 'static' (predefined service account) or 'dynamic' (temporary service accounts with role assignments).
+   */
+  credentialType: pulumi.Input<string>;
+  /**
+   * Configuration for the 'dynamic' credential type.
+   */
+  dynamicConfig?: pulumi.Input<inputs.DynamicSecretKubernetesConfigurationDynamicConfig>;
+  /**
+   * Select a gateway for private cluster access. If not specified, the Internet Gateway will be used.
+   */
+  gatewayId?: pulumi.Input<string>;
+  /**
+   * Configuration for the 'static' credential type.
+   */
+  staticConfig?: pulumi.Input<inputs.DynamicSecretKubernetesConfigurationStaticConfig>;
+}
+export interface DynamicSecretKubernetesConfigurationApiConfig {
+  /**
+   * Custom CA certificate for the Kubernetes API server. Leave blank to use the system/public CA.
+   */
+  ca?: pulumi.Input<string>;
+  /**
+   * Service account token with permissions to create service accounts and manage RBAC.
+   */
+  clusterToken: pulumi.Input<string>;
+  /**
+   * Kubernetes API server URL (e.g., https://kubernetes.default.svc).
+   */
+  clusterUrl: pulumi.Input<string>;
+  /**
+   * Whether to enable SSL verification for the Kubernetes API server connection.
+   */
+  enableSsl?: pulumi.Input<boolean>;
+}
+export interface DynamicSecretKubernetesConfigurationDynamicConfig {
+  /**
+   * Kubernetes namespace(s) where the service accounts will be created. You can specify multiple namespaces as a comma-separated list (e.g., “default,kube-system”). During lease creation, you can specify which namespace to use from this allowed list.
+   */
+  allowedNamespaces: pulumi.Input<string>;
+  /**
+   * Name of the role to assign to the temporary service account.
+   */
+  role: pulumi.Input<string>;
+  /**
+   * Type of role to assign ('cluster-role' or 'role').
+   */
+  roleType: pulumi.Input<string>;
+}
+export interface DynamicSecretKubernetesConfigurationStaticConfig {
+  /**
+   * Kubernetes namespace where the service account exists.
+   */
+  namespace: pulumi.Input<string>;
+  /**
+   * Name of the service account to generate tokens for.
+   */
+  serviceAccountName: pulumi.Input<string>;
+}
+export interface DynamicSecretKubernetesMetadata {
+  /**
+   * The key of the metadata object
+   */
+  key: pulumi.Input<string>;
+  /**
+   * The value of the metadata object
+   */
+  value: pulumi.Input<string>;
+}
+export interface DynamicSecretSqlDatabaseConfiguration {
+  /**
+   * The CA certificate to use to connect to the database.
+   */
+  ca?: pulumi.Input<string>;
+  /**
+   * The database client to use. Currently supported values are postgres, mysql2, oracledb, mssql, sap-ase, and vertica.
+   */
+  client: pulumi.Input<string>;
+  /**
+   * The creation statement to use to create the dynamic secret lease.
+   */
+  creationStatement: pulumi.Input<string>;
+  /**
+   * The name of the database to use.
+   */
+  database: pulumi.Input<string>;
+  /**
+   * The Gateway ID to use to connect to the database.
+   */
+  gatewayId?: pulumi.Input<string>;
+  /**
+   * The host of the database server.
+   */
+  host: pulumi.Input<string>;
+  /**
+   * The password to use to connect to the database.
+   */
+  password: pulumi.Input<string>;
+  /**
+   * The password requirements to use to create the dynamic secret lease.
+   */
+  passwordRequirements?: pulumi.Input<inputs.DynamicSecretSqlDatabaseConfigurationPasswordRequirements>;
+  /**
+   * The port of the database server.
+   */
+  port: pulumi.Input<number>;
+  /**
+   * The renew statement to use to renew the dynamic secret lease.
+   */
+  renewStatement?: pulumi.Input<string>;
+  /**
+   * The revocation statement to use to revoke the dynamic secret lease.
+   */
+  revocationStatement: pulumi.Input<string>;
+  /**
+   * The username to use to connect to the database.
+   */
+  username: pulumi.Input<string>;
+}
+export interface DynamicSecretSqlDatabaseConfigurationPasswordRequirements {
+  /**
+   * The symbols allowed in the password.
+   */
+  allowedSymbols?: pulumi.Input<string>;
+  /**
+   * The length of the password to use to create the dynamic secret lease.
+   */
+  length: pulumi.Input<number>;
+  /**
+   * The required characters to use to create the dynamic secret lease.
+   */
+  required: pulumi.Input<inputs.DynamicSecretSqlDatabaseConfigurationPasswordRequirementsRequired>;
+}
+export interface DynamicSecretSqlDatabaseConfigurationPasswordRequirementsRequired {
+  /**
+   * The number of digits required in the password.
+   */
+  digits: pulumi.Input<number>;
+  /**
+   * The number of lowercase characters required in the password.
+   */
+  lowercase: pulumi.Input<number>;
+  /**
+   * The number of symbols required in the password.
+   */
+  symbols: pulumi.Input<number>;
+  /**
+   * The number of uppercase characters required in the password.
+   */
+  uppercase: pulumi.Input<number>;
+}
+export interface DynamicSecretSqlDatabaseMetadata {
+  /**
+   * The key of the metadata object
+   */
+  key: pulumi.Input<string>;
+  /**
+   * The value of the metadata object
+   */
+  value: pulumi.Input<string>;
+}
+export interface IdentityAwsAuthAccessTokenTrustedIp {
+  ipAddress?: pulumi.Input<string>;
+}
+export interface IdentityAzureAuthAccessTokenTrustedIp {
+  ipAddress?: pulumi.Input<string>;
+}
+export interface IdentityGcpAuthAccessTokenTrustedIp {
+  ipAddress?: pulumi.Input<string>;
+}
+export interface IdentityKubernetesAuthAccessTokenTrustedIp {
+  ipAddress?: pulumi.Input<string>;
+}
+export interface IdentityMetadata {
+  /**
+   * The key of the metadata object
+   */
+  key: pulumi.Input<string>;
+  /**
+   * The value of the metadata object
+   */
+  value: pulumi.Input<string>;
+}
+export interface IdentityOidcAuthAccessTokenTrustedIp {
+  ipAddress?: pulumi.Input<string>;
+}
+export interface IdentityUniversalAuthAccessTokenTrustedIp {
+  ipAddress?: pulumi.Input<string>;
+}
+export interface IdentityUniversalAuthClientSecretTrustedIp {
+  ipAddress?: pulumi.Input<string>;
+}
+export interface IntegrationAwsParameterStoreOptions {
+  /**
+   * Tags to attach to the AWS parameter store secrets.
+   */
+  awsTags?: pulumi.Input<pulumi.Input<inputs.IntegrationAwsParameterStoreOptionsAwsTag>[]>;
+  /**
+   * Whether to disable deletion of existing secrets in AWS Parameter Store.
+   */
+  shouldDisableDelete?: pulumi.Input<boolean>;
+}
+export interface IntegrationAwsParameterStoreOptionsAwsTag {
+  /**
+   * The key of the tag.
+   */
+  key?: pulumi.Input<string>;
+  /**
+   * The value of the tag.
+   */
+  value?: pulumi.Input<string>;
+}
+export interface IntegrationAwsSecretsManagerOptions {
+  /**
+   * Tags to attach to the AWS Secrets Manager secrets.
+   */
+  awsTags?: pulumi.Input<pulumi.Input<inputs.IntegrationAwsSecretsManagerOptionsAwsTag>[]>;
+  /**
+   * The sync mode for AWS tags. The supported options are `secret-metadata` and `custom`. If `secret-metadata` is selected, the metadata of the Infisical secrets are used as tags in AWS (only supported for one-to-one integrations). If `custom` is selected, then the key/value pairs in the `aws_tags` field is used.
+   */
+  metadataSyncMode?: pulumi.Input<string>;
+  /**
+   * The prefix to add to the secret name in AWS Secrets Manager.
+   */
+  secretPrefix?: pulumi.Input<string>;
+}
+export interface IntegrationAwsSecretsManagerOptionsAwsTag {
+  /**
+   * The key of the tag.
+   */
+  key?: pulumi.Input<string>;
+  /**
+   * The value of the tag.
+   */
+  value?: pulumi.Input<string>;
+}
+export interface IntegrationGcpSecretManagerOptions {
+  /**
+   * The prefix to add to the secret name in GCP Secret Manager.
+   */
+  secretPrefix?: pulumi.Input<string>;
+  /**
+   * The suffix to add to the secret name in GCP Secret Manager.
+   */
+  secretSuffix?: pulumi.Input<string>;
+}
+export interface ProjectGroupRole {
+  /**
+   * Flag to indicate the assigned role is temporary or not. When is_temporary is true fields temporary_mode, temporary_range and temporary_access_start_time is required.
+   */
+  isTemporary?: pulumi.Input<boolean>;
+  /**
+   * The slug of the role
+   */
+  roleSlug: pulumi.Input<string>;
+  /**
+   * ISO time for which temporary access should begin. This is in the format YYYY-MM-DDTHH:MM:SSZ e.g. 2024-09-19T12:43:13Z
+   */
+  temporaryAccessStartTime?: pulumi.Input<string>;
+  /**
+   * TTL for the temporary time. Eg: 1m, 1h, 1d. Default: 1h
+   */
+  temporaryRange?: pulumi.Input<string>;
+}
+export interface ProjectIdentityIdentity {
+  /**
+   * The auth methods for the identity
+   */
+  authMethods?: pulumi.Input<pulumi.Input<string>[]>;
+  /**
+   * The ID of the identity
+   */
+  id?: pulumi.Input<string>;
+  /**
+   * The name of the identity
+   */
+  name?: pulumi.Input<string>;
+}
+export interface ProjectIdentityRole {
+  /**
+   * The id of the custom role slug
+   */
+  customRoleId?: pulumi.Input<string>;
+  /**
+   * The ID of the project identity role.
+   */
+  id?: pulumi.Input<string>;
+  /**
+   * Flag to indicate the assigned role is temporary or not. When is_temporary is true fields temporary_mode, temporary_range and temporary_access_start_time is required.
+   */
+  isTemporary?: pulumi.Input<boolean>;
+  /**
+   * The slug of the role
+   */
+  roleSlug: pulumi.Input<string>;
+  /**
+   * ISO time for which temporary access will end. Computed based on temporary_range and temporary_access_start_time
+   */
+  temporaryAccessEndTime?: pulumi.Input<string>;
+  /**
+   * ISO time for which temporary access should begin. The current time is used by default.
+   */
+  temporaryAccessStartTime?: pulumi.Input<string>;
+  /**
+   * Type of temporary access given. Types: relative. Default: relative
+   */
+  temporaryMode?: pulumi.Input<string>;
+  /**
+   * TTL for the temporary time. Eg: 1m, 1h, 1d. Default: 1h
+   */
+  temporaryRange?: pulumi.Input<string>;
+}
+export interface ProjectIdentitySpecificPrivilegePermission {
+  /**
+   * Describe what action an entity can take. Enum: create,edit,delete,read
+   */
+  actions: pulumi.Input<pulumi.Input<string>[]>;
+  /**
+   * The conditions to scope permissions
+   */
+  conditions: pulumi.Input<inputs.ProjectIdentitySpecificPrivilegePermissionConditions>;
+  /**
+   * Describe what action an entity can take. Enum: role,member,groups,settings,integrations,webhooks,service-tokens,environments,tags,audit-logs,ip-allowlist,workspace,secrets,secret-rollback,secret-approval,secret-rotation,identity,certificate-authorities,certificates,certificate-templates,kms,pki-alerts,pki-collections
+   */
+  subject: pulumi.Input<string>;
+}
+export interface ProjectIdentitySpecificPrivilegePermissionConditions {
+  /**
+   * The environment slug this permission should allow.
+   */
+  environment: pulumi.Input<string>;
+  /**
+   * The secret path this permission should be scoped to
+   */
+  secretPath?: pulumi.Input<string>;
+}
+export interface ProjectIdentitySpecificPrivilegePermissionsV2 {
+  /**
+   * Describe what actions an entity can take.
+   */
+  actions: pulumi.Input<pulumi.Input<string>[]>;
+  /**
+   * When specified, only matching conditions will be allowed to access given resource. Refer to the documentation in https://infisical.com/docs/internals/permissions#conditions for the complete list of supported properties and operators.
+   */
+  conditions?: pulumi.Input<string>;
+  /**
+   * Whether rule forbids. Set this to true if permission forbids.
+   */
+  inverted?: pulumi.Input<boolean>;
+  /**
+   * Describe the entity the permission pertains to.
+   */
+  subject: pulumi.Input<string>;
+}
+export interface ProjectRolePermission {
+  /**
+   * Describe what action an entity can take. Enum: create,edit,delete,read
+   */
+  action: pulumi.Input<string>;
+  /**
+   * The conditions to scope permissions
+   */
+  conditions?: pulumi.Input<inputs.ProjectRolePermissionConditions>;
+  /**
+   * Describe what action an entity can take. Enum: role,member,groups,settings,integrations,webhooks,service-tokens,environments,tags,audit-logs,ip-allowlist,workspace,secrets,secret-rollback,secret-approval,secret-rotation,identity,certificate-authorities,certificates,certificate-templates,kms,pki-alerts,pki-collections
+   */
+  subject: pulumi.Input<string>;
+}
+export interface ProjectRolePermissionConditions {
+  /**
+   * The environment slug this permission should allow.
+   */
+  environment?: pulumi.Input<string>;
+  /**
+   * The secret path this permission should be scoped to
+   */
+  secretPath?: pulumi.Input<string>;
+}
+export interface ProjectRolePermissionsV2 {
+  /**
+   * Describe what actions an entity can take.
+   */
+  actions: pulumi.Input<pulumi.Input<string>[]>;
+  /**
+   * When specified, only matching conditions will be allowed to access given resource. Refer to the documentation in https://infisical.com/docs/internals/permissions#conditions for the complete list of supported properties and operators.
+   */
+  conditions?: pulumi.Input<string>;
+  /**
+   * Whether rule forbids. Set this to true if permission forbids.
+   */
+  inverted?: pulumi.Input<boolean>;
+  /**
+   * Describe the entity the permission pertains to.
+   */
+  subject: pulumi.Input<string>;
+}
+export interface ProjectTemplateEnvironment {
+  /**
+   * The name of the environment
+   */
+  name: pulumi.Input<string>;
+  /**
+   * The position of the environment
+   */
+  position: pulumi.Input<number>;
+  /**
+   * The slug of the environment
+   */
+  slug: pulumi.Input<string>;
+}
+export interface ProjectTemplateRole {
+  /**
+   * The name of the role
+   */
+  name: pulumi.Input<string>;
+  /**
+   * The permissions assigned to the role. Refer to the documentation here https://infisical.com/docs/api-reference/endpoints/project-templates/create#body-roles-permissions for its usage.
+   */
+  permissions?: pulumi.Input<pulumi.Input<inputs.ProjectTemplateRolePermission>[]>;
+  /**
+   * The slug of the role
+   */
+  slug: pulumi.Input<string>;
+}
+export interface ProjectTemplateRolePermission {
+  /**
+   * Describe what actions an entity can take.
+   */
+  actions: pulumi.Input<pulumi.Input<string>[]>;
+  /**
+   * When specified, only matching conditions will be allowed to access given resource. Refer to the documentation in https://infisical.com/docs/internals/permissions#conditions for the complete list of supported properties and operators.
+   */
+  conditions?: pulumi.Input<string>;
+  /**
+   * Whether rule forbids. Set this to true if permission forbids.
+   */
+  inverted?: pulumi.Input<boolean>;
+  /**
+   * Describe the entity the permission pertains to.
+   */
+  subject: pulumi.Input<string>;
+}
+export interface ProjectUserRole {
+  /**
+   * The id of the custom role slug
+   */
+  customRoleId?: pulumi.Input<string>;
+  /**
+   * The ID of the project user role.
+   */
+  id?: pulumi.Input<string>;
+  /**
+   * Flag to indicate the assigned role is temporary or not. When is_temporary is true fields temporary_mode, temporary_range and temporary_access_start_time is required.
+   */
+  isTemporary?: pulumi.Input<boolean>;
+  /**
+   * The slug of the role
+   */
+  roleSlug: pulumi.Input<string>;
+  /**
+   * ISO time for which temporary access will end. Computed based on temporary_range and temporary_access_start_time
+   */
+  temporaryAccessEndTime?: pulumi.Input<string>;
+  /**
+   * ISO time for which temporary access should begin. The current time is used by default.
+   */
+  temporaryAccessStartTime?: pulumi.Input<string>;
+  /**
+   * Type of temporary access given. Types: relative. Default: relative
+   */
+  temporaryMode?: pulumi.Input<string>;
+  /**
+   * TTL for the temporary time. Eg: 1m, 1h, 1d. Default: 1h
+   */
+  temporaryRange?: pulumi.Input<string>;
+}
+export interface ProjectUserUser {
+  /**
+   * The email of the user
+   */
+  email?: pulumi.Input<string>;
+  /**
+   * The first name of the user
+   */
+  firstName?: pulumi.Input<string>;
+  /**
+   * The id of the user
+   */
+  id?: pulumi.Input<string>;
+  /**
+   * The last name of the user
+   */
+  lastName?: pulumi.Input<string>;
+}
+export interface ProviderAuth {
+  /**
+   * The configuration values for AWS IAM Auth
+   */
+  awsIam?: pulumi.Input<inputs.ProviderAuthAwsIam>;
+  /**
+   * The configuration values for Kubernetes Auth
+   */
+  kubernetes?: pulumi.Input<inputs.ProviderAuthKubernetes>;
+  /**
+   * The configuration values for OIDC Auth
+   */
+  oidc?: pulumi.Input<inputs.ProviderAuthOidc>;
+  /**
+   * The authentication token for Machine Identity Token Auth. This attribute can also be set using the `INFISICAL_TOKEN` environment variable
+   */
+  token?: pulumi.Input<string>;
+  /**
+   * The configuration values for Universal Auth
+   */
+  universal?: pulumi.Input<inputs.ProviderAuthUniversal>;
+}
+export interface ProviderAuthAwsIam {
+  /**
+   * Machine identity ID. This attribute can also be set using the `INFISICAL_MACHINE_IDENTITY_ID` environment variable
+   */
+  identityId?: pulumi.Input<string>;
+}
+export interface ProviderAuthKubernetes {
+  /**
+   * Machine identity ID. This attribute can also be set using the `INFISICAL_MACHINE_IDENTITY_ID` environment variable
+   */
+  identityId?: pulumi.Input<string>;
+  /**
+   * The service account token. This attribute can also be set using the `INFISICAL_KUBERNETES_SERVICE_ACCOUNT_TOKEN` environment variable
+   */
+  serviceAccountToken?: pulumi.Input<string>;
+  /**
+   * The path to the service account token. This attribute can also be set using the `INFISICAL_KUBERNETES_SERVICE_ACCOUNT_TOKEN_PATH` environment variable. Default is `/var/run/secrets/kubernetes.io/serviceaccount/token`.
+   */
+  serviceAccountTokenPath?: pulumi.Input<string>;
+}
+export interface ProviderAuthOidc {
+  /**
+   * Machine identity ID. This attribute can also be set using the `INFISICAL_MACHINE_IDENTITY_ID` environment variable
+   */
+  identityId?: pulumi.Input<string>;
+  /**
+   * The environment variable name for the OIDC JWT token. This attribute can also be set using the `INFISICAL_OIDC_AUTH_TOKEN_KEY_NAME` environment variable. Default is `INFISICAL_AUTH_JWT`.
+   */
+  tokenEnvironmentVariableName?: pulumi.Input<string>;
+}
+export interface ProviderAuthUniversal {
+  /**
+   * Machine identity client ID. This attribute can also be set using the `INFISICAL_UNIVERSAL_AUTH_CLIENT_ID` environment variable
+   */
+  clientId?: pulumi.Input<string>;
+  /**
+   * Machine identity client secret. This attribute can also be set using the `INFISICAL_UNIVERSAL_AUTH_CLIENT_SECRET` environment variable
+   */
+  clientSecret?: pulumi.Input<string>;
+}
+export interface SecretApprovalPolicyApprover {
+  /**
+   * The ID of the approver
+   */
+  id?: pulumi.Input<string>;
+  /**
+   * The type of approver. Either group or user
+   */
+  type: pulumi.Input<string>;
+  /**
+   * The username of the approver. By default, this is the email
+   */
+  username?: pulumi.Input<string>;
+}
+export interface SecretRotationAwsIamUserSecretParameters {
+  /**
+   * The AWS region the client is present in.
+   */
+  region: pulumi.Input<string>;
+  /**
+   * The name of the client to rotate credentials for.
+   */
+  userName: pulumi.Input<string>;
+}
+export interface SecretRotationAwsIamUserSecretRotateAtUtc {
+  /**
+   * The hour at which the rotation should occur (UTC).
+   */
+  hours?: pulumi.Input<number>;
+  /**
+   * The minute at which the rotation should occur (UTC).
+   */
+  minutes?: pulumi.Input<number>;
+}
+export interface SecretRotationAwsIamUserSecretSecretsMapping {
+  /**
+   * The name of the secret that the access key ID will be mapped to.
+   */
+  accessKeyId: pulumi.Input<string>;
+  /**
+   * The name of the secret that the rotated secret access key will be mapped to.
+   */
+  secretAccessKey: pulumi.Input<string>;
+}
+export interface SecretRotationAwsIamUserSecretTemporaryParameters {
+}
+export interface SecretRotationAzureClientSecretParameters {
+  /**
+   * The client ID of the Azure Application to rotate the client secret for.
+   */
+  clientId: pulumi.Input<string>;
+  /**
+   * The ID of the Azure Application to rotate the client secret for.
+   */
+  objectId: pulumi.Input<string>;
+}
+export interface SecretRotationAzureClientSecretRotateAtUtc {
+  /**
+   * The hour at which the rotation should occur (UTC).
+   */
+  hours?: pulumi.Input<number>;
+  /**
+   * The minute at which the rotation should occur (UTC).
+   */
+  minutes?: pulumi.Input<number>;
+}
+export interface SecretRotationAzureClientSecretSecretsMapping {
+  /**
+   * The name of the secret that the client ID will be mapped to.
+   */
+  clientId: pulumi.Input<string>;
+  /**
+   * The name of the secret that the rotated client secret will be mapped to.
+   */
+  clientSecret: pulumi.Input<string>;
+}
+export interface SecretRotationAzureClientSecretTemporaryParameters {
+}
+export interface SecretRotationLdapPasswordParameters {
+  /**
+   * The Distinguished Name (DN) of the LDAP entry to rotate the password for.
+   */
+  dn: pulumi.Input<string>;
+  /**
+   * Password generation requirements.
+   */
+  passwordRequirements: pulumi.Input<inputs.SecretRotationLdapPasswordParametersPasswordRequirements>;
+  /**
+   * The method to use for rotating the password. Supported options: connection-principal and target-principal (default: connection-principal)
+   */
+  rotationMethod?: pulumi.Input<string>;
+}
+export interface SecretRotationLdapPasswordParametersPasswordRequirements {
+  /**
+   * String of allowed symbols for password generation.
+   */
+  allowedSymbols?: pulumi.Input<string>;
+  /**
+   * The length of the generated password.
+   */
+  length: pulumi.Input<number>;
+  /**
+   * Required character types in the generated password.
+   */
+  required: pulumi.Input<inputs.SecretRotationLdapPasswordParametersPasswordRequirementsRequired>;
+}
+export interface SecretRotationLdapPasswordParametersPasswordRequirementsRequired {
+  /**
+   * Minimum number of digits required in the password.
+   */
+  digits: pulumi.Input<number>;
+  /**
+   * Minimum number of lowercase letters required in the password.
+   */
+  lowercase: pulumi.Input<number>;
+  /**
+   * Minimum number of symbols required in the password.
+   */
+  symbols: pulumi.Input<number>;
+  /**
+   * Minimum number of uppercase letters required in the password.
+   */
+  uppercase: pulumi.Input<number>;
+}
+export interface SecretRotationLdapPasswordRotateAtUtc {
+  /**
+   * The hour at which the rotation should occur (UTC).
+   */
+  hours?: pulumi.Input<number>;
+  /**
+   * The minute at which the rotation should occur (UTC).
+   */
+  minutes?: pulumi.Input<number>;
+}
+export interface SecretRotationLdapPasswordSecretsMapping {
+  /**
+   * The name of the secret that the Distinguished Name will be mapped to.
+   */
+  dn: pulumi.Input<string>;
+  /**
+   * The name of the secret that the generated password will be mapped to.
+   */
+  password: pulumi.Input<string>;
+}
+export interface SecretRotationLdapPasswordTemporaryParameters {
+  /**
+   * The password of the provided principal if 'parameters.rotation_method' is set to 'target-principal'.
+   */
+  password?: pulumi.Input<string>;
+}
+export interface SecretRotationMssqlCredentialsParameters {
+  /**
+   * The username of the first login to rotate passwords for. This user must already exists in your database.
+   */
+  username1: pulumi.Input<string>;
+  /**
+   * The username of the second login to rotate passwords for. This user must already exists in your database.
+   */
+  username2: pulumi.Input<string>;
+}
+export interface SecretRotationMssqlCredentialsRotateAtUtc {
+  /**
+   * The hour at which the rotation should occur (UTC).
+   */
+  hours?: pulumi.Input<number>;
+  /**
+   * The minute at which the rotation should occur (UTC).
+   */
+  minutes?: pulumi.Input<number>;
+}
+export interface SecretRotationMssqlCredentialsSecretsMapping {
+  /**
+   * The name of the secret that the generated password will be mapped to.
+   */
+  password: pulumi.Input<string>;
+  /**
+   * The name of the secret that the active username will be mapped to.
+   */
+  username: pulumi.Input<string>;
+}
+export interface SecretRotationMssqlCredentialsTemporaryParameters {
+}
+export interface SecretRotationMysqlCredentialsParameters {
+  /**
+   * The username of the first login to rotate passwords for. This user must already exists in your database.
+   */
+  username1: pulumi.Input<string>;
+  /**
+   * The username of the second login to rotate passwords for. This user must already exists in your database.
+   */
+  username2: pulumi.Input<string>;
+}
+export interface SecretRotationMysqlCredentialsRotateAtUtc {
+  /**
+   * The hour at which the rotation should occur (UTC).
+   */
+  hours?: pulumi.Input<number>;
+  /**
+   * The minute at which the rotation should occur (UTC).
+   */
+  minutes?: pulumi.Input<number>;
+}
+export interface SecretRotationMysqlCredentialsSecretsMapping {
+  /**
+   * The name of the secret that the generated password will be mapped to.
+   */
+  password: pulumi.Input<string>;
+  /**
+   * The name of the secret that the active username will be mapped to.
+   */
+  username: pulumi.Input<string>;
+}
+export interface SecretRotationMysqlCredentialsTemporaryParameters {
+}
+export interface SecretRotationOracledbCredentialsParameters {
+  /**
+   * The username of the first login to rotate passwords for. This user must already exists in your database.
+   */
+  username1: pulumi.Input<string>;
+  /**
+   * The username of the second login to rotate passwords for. This user must already exists in your database.
+   */
+  username2: pulumi.Input<string>;
+}
+export interface SecretRotationOracledbCredentialsRotateAtUtc {
+  /**
+   * The hour at which the rotation should occur (UTC).
+   */
+  hours?: pulumi.Input<number>;
+  /**
+   * The minute at which the rotation should occur (UTC).
+   */
+  minutes?: pulumi.Input<number>;
+}
+export interface SecretRotationOracledbCredentialsSecretsMapping {
+  /**
+   * The name of the secret that the generated password will be mapped to.
+   */
+  password: pulumi.Input<string>;
+  /**
+   * The name of the secret that the active username will be mapped to.
+   */
+  username: pulumi.Input<string>;
+}
+export interface SecretRotationOracledbCredentialsTemporaryParameters {
+}
+export interface SecretRotationPostgresCredentialsParameters {
+  /**
+   * The username of the first login to rotate passwords for. This user must already exists in your database.
+   */
+  username1: pulumi.Input<string>;
+  /**
+   * The username of the second login to rotate passwords for. This user must already exists in your database.
+   */
+  username2: pulumi.Input<string>;
+}
+export interface SecretRotationPostgresCredentialsRotateAtUtc {
+  /**
+   * The hour at which the rotation should occur (UTC).
+   */
+  hours?: pulumi.Input<number>;
+  /**
+   * The minute at which the rotation should occur (UTC).
+   */
+  minutes?: pulumi.Input<number>;
+}
+export interface SecretRotationPostgresCredentialsSecretsMapping {
+  /**
+   * The name of the secret that the generated password will be mapped to.
+   */
+  password: pulumi.Input<string>;
+  /**
+   * The name of the secret that the active username will be mapped to.
+   */
+  username: pulumi.Input<string>;
+}
+export interface SecretRotationPostgresCredentialsTemporaryParameters {
+}
+export interface SecretSecretReminder {
+  /**
+   * Note for the secret rotation reminder
+   */
+  note?: pulumi.Input<string>;
+  /**
+   * Frequency of secret rotation reminder in days
+   */
+  repeatDays: pulumi.Input<number>;
+}
+export interface SecretSync1passwordDestinationConfig {
+  /**
+   * The label of the 1Password item field which will hold your secret value. For example, if you were to sync Infisical secret 'foo: bar', the 1Password item equivalent would have an item title of 'foo', and a field on that item 'value: bar'. The field label 'value' is what gets changed by this option
+   */
+  valueLabel?: pulumi.Input<string>;
+  /**
+   * The ID of the 1Password vault to sync secrets to
+   */
+  vaultId: pulumi.Input<string>;
+}
+export interface SecretSync1passwordSyncOptions {
+  /**
+   * When set to true, Infisical will not remove secrets from 1Password. Enable this option if you intend to manage some secrets manually outside of Infisical.
+   */
+  disableSecretDeletion?: pulumi.Input<boolean>;
+  /**
+   * Specify how Infisical should resolve the initial sync to the destination. Supported options: overwrite-destination, import-prioritize-source, import-prioritize-destination
+   */
+  initialSyncBehavior: pulumi.Input<string>;
+  /**
+   * The format to use for structuring secret keys in the 1Password destination.
+   */
+  keySchema?: pulumi.Input<string>;
+}
+export interface SecretSyncAwsParameterStoreDestinationConfig {
+  /**
+   * The AWS region of your AWS Parameter Store
+   */
+  awsRegion: pulumi.Input<string>;
+  /**
+   * The path in the AWS Parameter Store where the secrets will be stored, Example: /example/path/
+   */
+  path: pulumi.Input<string>;
+}
+export interface SecretSyncAwsParameterStoreSyncOptions {
+  /**
+   * The AWS KMS key ID to use for encryption
+   */
+  awsKmsKeyId?: pulumi.Input<string>;
+  /**
+   * When set to true, Infisical will not remove secrets from AWS Parameter Store. Enable this option if you intend to manage some secrets manually outside of Infisical.
+   */
+  disableSecretDeletion?: pulumi.Input<boolean>;
+  /**
+   * Specify how Infisical should resolve the initial sync to the destination. Supported options: overwrite-destination, import-prioritize-source, import-prioritize-destination
+   */
+  initialSyncBehavior: pulumi.Input<string>;
+  /**
+   * The format to use for structuring secret keys in the AWS Parameter Store destination.
+   */
+  keySchema?: pulumi.Input<string>;
+  /**
+   * Whether to sync the secret metadata as tags
+   */
+  syncSecretMetadataAsTags?: pulumi.Input<boolean>;
+  /**
+   * The tags to sync to the secret
+   */
+  tags?: pulumi.Input<pulumi.Input<inputs.SecretSyncAwsParameterStoreSyncOptionsTag>[]>;
+}
+export interface SecretSyncAwsParameterStoreSyncOptionsTag {
+  /**
+   * The key of the tag
+   */
+  key: pulumi.Input<string>;
+  /**
+   * The value of the tag
+   */
+  value: pulumi.Input<string>;
+}
+export interface SecretSyncAwsSecretsManagerDestinationConfig {
+  /**
+   * The AWS region of your AWS Secrets Manager
+   */
+  awsRegion: pulumi.Input<string>;
+  /**
+   * The name of the AWS secret to map to. This only applies when mapping_behavior is set to 'many-to-one'.
+   */
+  awsSecretsManagerSecretName?: pulumi.Input<string>;
+  /**
+   * The behavior of the mapping. Can be 'many-to-one' or 'one-to-one'. Many to One: All Infisical secrets will be mapped to a single AWS secret. One to One: Each Infisical secret will be mapped to its own AWS secret.
+   */
+  mappingBehavior?: pulumi.Input<string>;
+}
+export interface SecretSyncAwsSecretsManagerSyncOptions {
+  /**
+   * The AWS KMS key ID to use for encryption
+   */
+  awsKmsKeyId?: pulumi.Input<string>;
+  /**
+   * When set to true, Infisical will not remove secrets from AWS Secrets Manager. Enable this option if you intend to manage some secrets manually outside of Infisical.
+   */
+  disableSecretDeletion?: pulumi.Input<boolean>;
+  /**
+   * Specify how Infisical should resolve the initial sync to the destination. Supported options: overwrite-destination, import-prioritize-source, import-prioritize-destination
+   */
+  initialSyncBehavior: pulumi.Input<string>;
+  /**
+   * The format to use for structuring secret keys in the AWS Secrets Manager destination.
+   */
+  keySchema?: pulumi.Input<string>;
+  /**
+   * Whether to sync the secret metadata as tags. This is only supported for the 'one-to-one' mapping behavior.
+   */
+  syncSecretMetadataAsTags?: pulumi.Input<boolean>;
+  /**
+   * The tags to sync to the secret
+   */
+  tags?: pulumi.Input<pulumi.Input<inputs.SecretSyncAwsSecretsManagerSyncOptionsTag>[]>;
+}
+export interface SecretSyncAwsSecretsManagerSyncOptionsTag {
+  /**
+   * The key of the tag
+   */
+  key: pulumi.Input<string>;
+  /**
+   * The value of the tag
+   */
+  value: pulumi.Input<string>;
+}
+export interface SecretSyncAzureAppConfigurationDestinationConfig {
+  /**
+   * The URL of your Azure App Configuration
+   */
+  configurationUrl: pulumi.Input<string>;
+  /**
+   * The label to attach to secrets created in Azure App Configuration
+   */
+  label?: pulumi.Input<string>;
+}
+export interface SecretSyncAzureAppConfigurationSyncOptions {
+  /**
+   * When set to true, Infisical will not remove secrets from Azure App Configuration. Enable this option if you intend to manage some secrets manually outside of Infisical.
+   */
+  disableSecretDeletion?: pulumi.Input<boolean>;
+  /**
+   * Specify how Infisical should resolve the initial sync to the destination. Supported options: overwrite-destination, import-prioritize-source, import-prioritize-destination
+   */
+  initialSyncBehavior: pulumi.Input<string>;
+  /**
+   * The format to use for structuring secret keys in the Azure App Configuration destination.
+   */
+  keySchema?: pulumi.Input<string>;
+}
+export interface SecretSyncAzureDevopsDestinationConfig {
+  /**
+   * The ID of the Azure DevOps project to sync secrets to.
+   */
+  devopsProjectId: pulumi.Input<string>;
+}
+export interface SecretSyncAzureDevopsSyncOptions {
+  /**
+   * When set to true, Infisical will not remove secrets from Azure DevOps. Enable this option if you intend to manage some secrets manually outside of Infisical.
+   */
+  disableSecretDeletion?: pulumi.Input<boolean>;
+  /**
+   * The format to use for structuring secret keys in the Azure DevOps destination.
+   */
+  keySchema?: pulumi.Input<string>;
+}
+export interface SecretSyncAzureKeyVaultDestinationConfig {
+  /**
+   * The base URL of your Azure Key Vault
+   */
+  vaultBaseUrl: pulumi.Input<string>;
+}
+export interface SecretSyncAzureKeyVaultSyncOptions {
+  /**
+   * When set to true, Infisical will not remove secrets from Azure Key Vault. Enable this option if you intend to manage some secrets manually outside of Infisical.
+   */
+  disableSecretDeletion?: pulumi.Input<boolean>;
+  /**
+   * Specify how Infisical should resolve the initial sync to the destination. Supported options: overwrite-destination, import-prioritize-source, import-prioritize-destination
+   */
+  initialSyncBehavior: pulumi.Input<string>;
+  /**
+   * The format to use for structuring secret keys in the Azure Key Vault destination.
+   */
+  keySchema?: pulumi.Input<string>;
+}
+export interface SecretSyncBitbucketDestinationConfig {
+  /**
+   * The Bitbucket deployment environment ID (optional).
+   */
+  environmentId?: pulumi.Input<string>;
+  /**
+   * The Bitbucket repository slug to sync secrets to.
+   */
+  repositorySlug: pulumi.Input<string>;
+  /**
+   * The Bitbucket workspace slug.
+   */
+  workspaceSlug: pulumi.Input<string>;
+}
+export interface SecretSyncBitbucketSyncOptions {
+  /**
+   * When set to true, Infisical will not remove secrets from Bitbucket. Enable this option if you intend to manage some secrets manually outside of Infisical.
+   */
+  disableSecretDeletion?: pulumi.Input<boolean>;
+  /**
+   * Specify how Infisical should resolve the initial sync to the destination. Supported options: overwrite-destination
+   */
+  initialSyncBehavior: pulumi.Input<string>;
+  /**
+   * The format to use for structuring secret keys in the Bitbucket destination.
+   */
+  keySchema?: pulumi.Input<string>;
+}
+export interface SecretSyncCloudflarePagesDestinationConfig {
+  /**
+   * The Cloudflare Pages environment (production, preview) where the secrets will be synced
+   */
+  environment: pulumi.Input<string>;
+  /**
+   * The Cloudflare Pages project name where the secrets will be synced
+   */
+  projectName: pulumi.Input<string>;
+}
+export interface SecretSyncCloudflarePagesSyncOptions {
+  /**
+   * When set to true, Infisical will not remove secrets from Cloudflare Pages. Enable this option if you intend to manage some secrets manually outside of Infisical.
+   */
+  disableSecretDeletion?: pulumi.Input<boolean>;
+  /**
+   * Specify how Infisical should resolve the initial sync to the destination. Supported options: overwrite-destination, import-prioritize-source, import-prioritize-destination
+   */
+  initialSyncBehavior: pulumi.Input<string>;
+  /**
+   * The format to use for structuring secret keys in the Cloudflare Pages destination.
+   */
+  keySchema?: pulumi.Input<string>;
+}
+export interface SecretSyncCloudflareWorkersDestinationConfig {
+  /**
+   * The Cloudflare Workers script ID where the secrets will be synced
+   */
+  scriptId: pulumi.Input<string>;
+}
+export interface SecretSyncCloudflareWorkersSyncOptions {
+  /**
+   * When set to true, Infisical will not remove secrets from Cloudflare Workers. Enable this option if you intend to manage some secrets manually outside of Infisical.
+   */
+  disableSecretDeletion?: pulumi.Input<boolean>;
+  /**
+   * Specify how Infisical should resolve the initial sync to the destination. Supported options: overwrite-destination, import-prioritize-source, import-prioritize-destination
+   */
+  initialSyncBehavior: pulumi.Input<string>;
+  /**
+   * The format to use for structuring secret keys in the Cloudflare Workers destination.
+   */
+  keySchema?: pulumi.Input<string>;
+}
+export interface SecretSyncDatabricksDestinationConfig {
+  /**
+   * The Databricks secret scope to sync secrets to.
+   */
+  scope: pulumi.Input<string>;
+}
+export interface SecretSyncDatabricksSyncOptions {
+  /**
+   * When set to true, Infisical will not remove secrets from Databricks. Enable this option if you intend to manage some secrets manually outside of Infisical.
+   */
+  disableSecretDeletion?: pulumi.Input<boolean>;
+  /**
+   * Specify how Infisical should resolve the initial sync to the destination. Supported options: overwrite-destination
+   */
+  initialSyncBehavior: pulumi.Input<string>;
+  /**
+   * The format to use for structuring secret keys in the Databricks destination.
+   */
+  keySchema?: pulumi.Input<string>;
+}
+export interface SecretSyncFlyioDestinationConfig {
+  /**
+   * The Fly.io app ID to sync secrets to.
+   */
+  appId: pulumi.Input<string>;
+}
+export interface SecretSyncFlyioSyncOptions {
+  /**
+   * When set to true, Infisical will not remove secrets from Fly.io. Enable this option if you intend to manage some secrets manually outside of Infisical.
+   */
+  disableSecretDeletion?: pulumi.Input<boolean>;
+  /**
+   * Specify how Infisical should resolve the initial sync to the destination. Supported options: overwrite-destination
+   */
+  initialSyncBehavior: pulumi.Input<string>;
+  /**
+   * The format to use for structuring secret keys in the Fly.io destination.
+   */
+  keySchema?: pulumi.Input<string>;
+}
+export interface SecretSyncGcpSecretManagerDestinationConfig {
+  /**
+   * The ID of the GCP project to sync with
+   */
+  projectId: pulumi.Input<string>;
+  /**
+   * The scope of the sync with GCP Secret Manager. Supported options: global
+   */
+  scope?: pulumi.Input<string>;
+}
+export interface SecretSyncGcpSecretManagerSyncOptions {
+  /**
+   * When set to true, Infisical will not remove secrets from GCP Secret Manager. Enable this option if you intend to manage some secrets manually outside of Infisical.
+   */
+  disableSecretDeletion?: pulumi.Input<boolean>;
+  /**
+   * Specify how Infisical should resolve the initial sync to the destination. Supported options: overwrite-destination, import-prioritize-source, import-prioritize-destination
+   */
+  initialSyncBehavior: pulumi.Input<string>;
+  /**
+   * The format to use for structuring secret keys in the GCP Secret Manager destination.
+   */
+  keySchema?: pulumi.Input<string>;
+}
+export interface SecretSyncGithubDestinationConfig {
+  /**
+   * The environment to sync the secrets to, required if scope is `repository-environment`
+   */
+  repositoryEnvironment?: pulumi.Input<string>;
+  /**
+   * The repository to sync the secrets to, required if scope is `repository` or `repository-environment`. This is only the name of the repository, without the repository owner included. As an example if you have a repository called Infisical/go-sdk, you would only need to provide `go-sdk` here.
+   */
+  repositoryName?: pulumi.Input<string>;
+  /**
+   * The owner of the Github repository, required if scope is `repository`, `repository-environment`, or `organization`. This is the organization name, or the username for personal repositories. As an example if you have a repository called Infisical/go-sdk, you would only need to provide `Infisical` here.
+   */
+  repositoryOwner?: pulumi.Input<string>;
+  /**
+   * The scope to sync the secrets to, repository|organization
+   */
+  scope: pulumi.Input<string>;
+  /**
+   * The repository ids to sync the secrets to, required if scope is `organization` and the visibility field is set to `selected`
+   */
+  selectedRepositoryIds?: pulumi.Input<pulumi.Input<number>[]>;
+  /**
+   * The visibility of the Github repository, required if scope is `organization`. Accepted values are: `all`|`private`|`selected`
+   */
+  visibility?: pulumi.Input<string>;
+}
+export interface SecretSyncGithubSyncOptions {
+  /**
+   * When set to true, Infisical will not remove secrets from Github. Enable this option if you intend to manage some secrets manually outside of Infisical.
+   */
+  disableSecretDeletion?: pulumi.Input<boolean>;
+  /**
+   * Specify how Infisical should resolve the initial sync to the destination. Supported options: overwrite-destination
+   */
+  initialSyncBehavior: pulumi.Input<string>;
+  /**
+   * The format to use for structuring secret keys in the Github destination.
+   */
+  keySchema?: pulumi.Input<string>;
+}
+export interface SecretSyncRenderDestinationConfig {
+  /**
+   * The Render scope that secrets should be synced to. Supported options: service
+   */
+  scope: pulumi.Input<string>;
+  /**
+   * The ID of the Render service to sync secrets to.
+   */
+  serviceId: pulumi.Input<string>;
+  /**
+   * The Render resource type to sync secrets to. Supported options: env, file
+   */
+  type: pulumi.Input<string>;
+}
+export interface SecretSyncRenderSyncOptions {
+  /**
+   * When set to true, Infisical will not remove secrets from Render. Enable this option if you intend to manage some secrets manually outside of Infisical.
+   */
+  disableSecretDeletion?: pulumi.Input<boolean>;
+  /**
+   * Specify how Infisical should resolve the initial sync to the destination. Supported options: overwrite-destination
+   */
+  initialSyncBehavior: pulumi.Input<string>;
+  /**
+   * The format to use for structuring secret keys in the Render destination.
+   */
+  keySchema?: pulumi.Input<string>;
+}
+export interface SecretSyncSupabaseDestinationConfig {
+  /**
+   * The Supabase project ID to sync secrets to.
+   */
+  projectId: pulumi.Input<string>;
+  /**
+   * The Supabase project name (optional).
+   */
+  projectName?: pulumi.Input<string>;
+}
+export interface SecretSyncSupabaseSyncOptions {
+  /**
+   * When set to true, Infisical will not remove secrets from Supabase. Enable this option if you intend to manage some secrets manually outside of Infisical.
+   */
+  disableSecretDeletion?: pulumi.Input<boolean>;
+  /**
+   * Specify how Infisical should resolve the initial sync to the destination. Supported options: overwrite-destination
+   */
+  initialSyncBehavior: pulumi.Input<string>;
+  /**
+   * The format to use for structuring secret keys in the Supabase destination.
+   */
+  keySchema?: pulumi.Input<string>;
+}
+export declare namespace config {
+}
