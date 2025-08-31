@@ -1,0 +1,5 @@
+name: nekopara.aws-credentials-secret-injector
+runtime:
+  name: nodejs
+  options:
+    packagemanager: npm

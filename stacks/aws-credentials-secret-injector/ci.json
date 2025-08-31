@@ -1,0 +1,9 @@
+{
+  "dependencies": [
+    "authentik",
+    "cluster",
+    "core",
+    "crds",
+    "nodegroups"
+  ]
+}
