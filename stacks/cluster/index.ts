@@ -670,6 +670,8 @@ nodes["c1"] = new ControlPlaneNode("c1", {
       dedicated: 4096,
     },
   },
+}, {
+  dependsOn: [],
 });
 
 nodes["c2"] = new ControlPlaneNode("c2", {

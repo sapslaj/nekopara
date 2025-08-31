@@ -22,7 +22,7 @@
     "@pulumi/std": "^1.7.3",
     "@pulumi/tls": "^5.0.10",
     "@pulumiverse/time": "^0.1.1",
-    "@sapslaj/pulumi-mid": "^0.0.14",
+    "@sapslaj/pulumi-mid": "^0.0.16",
     "dedent": "^1.5.3",
     "graphology": "^0.26.0",
     "graphology-dag": "^0.4.1",
