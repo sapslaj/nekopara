@@ -12,54 +12,63 @@ const utilities = require("./utilities");
  * [documentation](https://www.pulumi.com/docs/reference/programming-model/#providers) for more information.
  */
 class Provider extends pulumi.ProviderResource {
-    /**
-     * Returns true if the given object is an instance of Provider.  This is designed to work even
-     * when multiple copies of the Pulumi SDK have been loaded into the same process.
-     */
-    static isInstance(obj) {
-        if (obj === undefined || obj === null) {
-            return false;
-        }
-        return obj['__pulumiType'] === "pulumi:providers:" + Provider.__pulumiType;
+  /**
+   * Returns true if the given object is an instance of Provider.  This is designed to work even
+   * when multiple copies of the Pulumi SDK have been loaded into the same process.
+   */
+  static isInstance(obj) {
+    if (obj === undefined || obj === null) {
+      return false;
     }
-    /**
-     * Create a Provider resource with the given unique name, arguments, and options.
-     *
-     * @param name The _unique_ name of the resource.
-     * @param args The arguments to use to populate this resource's properties.
-     * @param opts A bag of options that control this resource's behavior.
-     */
-    constructor(name, args, opts) {
-        let resourceInputs = {};
-        opts = opts || {};
-        {
-            if ((!args || args.token === undefined) && !opts.urn) {
-                throw new Error("Missing required property 'token'");
-            }
-            if ((!args || args.url === undefined) && !opts.urn) {
-                throw new Error("Missing required property 'url'");
-            }
-            resourceInputs["headers"] = pulumi.output((args === null || args === void 0 ? void 0 : args.headers) ? pulumi.secret(args.headers) : undefined).apply(JSON.stringify);
-            resourceInputs["insecure"] = pulumi.output(args ? args.insecure : undefined).apply(JSON.stringify);
-            resourceInputs["token"] = (args === null || args === void 0 ? void 0 : args.token) ? pulumi.secret(args.token) : undefined;
-            resourceInputs["url"] = args ? args.url : undefined;
-        }
-        opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
-        const secretOpts = { additionalSecretOutputs: ["token"] };
-        opts = pulumi.mergeOptions(opts, secretOpts);
-        super(Provider.__pulumiType, name, resourceInputs, opts, false /*dependency*/, utilities.getPackage());
+    return obj["__pulumiType"] === "pulumi:providers:" + Provider.__pulumiType;
+  }
+  /**
+   * Create a Provider resource with the given unique name, arguments, and options.
+   *
+   * @param name The _unique_ name of the resource.
+   * @param args The arguments to use to populate this resource's properties.
+   * @param opts A bag of options that control this resource's behavior.
+   */
+  constructor(name, args, opts) {
+    let resourceInputs = {};
+    opts = opts || {};
+    {
+      if ((!args || args.token === undefined) && !opts.urn) {
+        throw new Error("Missing required property 'token'");
+      }
+      if ((!args || args.url === undefined) && !opts.urn) {
+        throw new Error("Missing required property 'url'");
+      }
+      resourceInputs["headers"] = pulumi.output(
+        (args === null || args === void 0 ? void 0 : args.headers) ? pulumi.secret(args.headers) : undefined,
+      ).apply(JSON.stringify);
+      resourceInputs["insecure"] = pulumi.output(args ? args.insecure : undefined).apply(JSON.stringify);
+      resourceInputs["token"] = (args === null || args === void 0 ? void 0 : args.token)
+        ? pulumi.secret(args.token)
+        : undefined;
+      resourceInputs["url"] = args ? args.url : undefined;
     }
-    /**
-     * This function returns a Terraform config object with terraform-namecased keys,to be used with the Terraform Module Provider.
-     */
-    terraformConfig() {
-        const result = pulumi.runtime.call("pulumi:providers:authentik/terraformConfig", {
-            "__self__": this,
-        }, this, utilities.getPackage());
-        return result.result;
-    }
+    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
+    const secretOpts = { additionalSecretOutputs: ["token"] };
+    opts = pulumi.mergeOptions(opts, secretOpts);
+    super(Provider.__pulumiType, name, resourceInputs, opts, false, /*dependency*/ utilities.getPackage());
+  }
+  /**
+   * This function returns a Terraform config object with terraform-namecased keys,to be used with the Terraform Module Provider.
+   */
+  terraformConfig() {
+    const result = pulumi.runtime.call(
+      "pulumi:providers:authentik/terraformConfig",
+      {
+        "__self__": this,
+      },
+      this,
+      utilities.getPackage(),
+    );
+    return result.result;
+  }
 }
 exports.Provider = Provider;
 /** @internal */
-Provider.__pulumiType = 'authentik';
-//# sourceMappingURL=provider.js.map
+Provider.__pulumiType = "authentik";
+// # sourceMappingURL=provider.js.map

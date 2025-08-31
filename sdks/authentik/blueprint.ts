@@ -5,111 +5,116 @@ import * as pulumi from "@pulumi/pulumi";
 import * as utilities from "./utilities";
 
 export class Blueprint extends pulumi.CustomResource {
-    /**
-     * Get an existing Blueprint resource's state with the given name, ID, and optional extra
-     * properties used to qualify the lookup.
-     *
-     * @param name The _unique_ name of the resulting resource.
-     * @param id The _unique_ provider ID of the resource to lookup.
-     * @param state Any extra arguments used during the lookup.
-     * @param opts Optional settings to control the behavior of the CustomResource.
-     */
-    public static get(name: string, id: pulumi.Input<pulumi.ID>, state?: BlueprintState, opts?: pulumi.CustomResourceOptions): Blueprint {
-        return new Blueprint(name, <any>state, { ...opts, id: id });
+  /**
+   * Get an existing Blueprint resource's state with the given name, ID, and optional extra
+   * properties used to qualify the lookup.
+   *
+   * @param name The _unique_ name of the resulting resource.
+   * @param id The _unique_ provider ID of the resource to lookup.
+   * @param state Any extra arguments used during the lookup.
+   * @param opts Optional settings to control the behavior of the CustomResource.
+   */
+  public static get(
+    name: string,
+    id: pulumi.Input<pulumi.ID>,
+    state?: BlueprintState,
+    opts?: pulumi.CustomResourceOptions,
+  ): Blueprint {
+    return new Blueprint(name, <any> state, { ...opts, id: id });
+  }
+
+  /** @internal */
+  public static readonly __pulumiType = "authentik:index/blueprint:Blueprint";
+
+  /**
+   * Returns true if the given object is an instance of Blueprint.  This is designed to work even
+   * when multiple copies of the Pulumi SDK have been loaded into the same process.
+   */
+  public static isInstance(obj: any): obj is Blueprint {
+    if (obj === undefined || obj === null) {
+      return false;
     }
+    return obj["__pulumiType"] === Blueprint.__pulumiType;
+  }
 
-    /** @internal */
-    public static readonly __pulumiType = 'authentik:index/blueprint:Blueprint';
+  public readonly blueprintId!: pulumi.Output<string>;
+  public readonly content!: pulumi.Output<string | undefined>;
+  /**
+   * JSON format expected. Use jsonencode() to pass objects. Defaults to `{}`.
+   */
+  public readonly context!: pulumi.Output<string | undefined>;
+  /**
+   * Defaults to `true`.
+   */
+  public readonly enabled!: pulumi.Output<boolean | undefined>;
+  public readonly name!: pulumi.Output<string>;
+  public readonly path!: pulumi.Output<string | undefined>;
 
-    /**
-     * Returns true if the given object is an instance of Blueprint.  This is designed to work even
-     * when multiple copies of the Pulumi SDK have been loaded into the same process.
-     */
-    public static isInstance(obj: any): obj is Blueprint {
-        if (obj === undefined || obj === null) {
-            return false;
-        }
-        return obj['__pulumiType'] === Blueprint.__pulumiType;
+  /**
+   * Create a Blueprint resource with the given unique name, arguments, and options.
+   *
+   * @param name The _unique_ name of the resource.
+   * @param args The arguments to use to populate this resource's properties.
+   * @param opts A bag of options that control this resource's behavior.
+   */
+  constructor(name: string, args?: BlueprintArgs, opts?: pulumi.CustomResourceOptions);
+  constructor(name: string, argsOrState?: BlueprintArgs | BlueprintState, opts?: pulumi.CustomResourceOptions) {
+    let resourceInputs: pulumi.Inputs = {};
+    opts = opts || {};
+    if (opts.id) {
+      const state = argsOrState as BlueprintState | undefined;
+      resourceInputs["blueprintId"] = state ? state.blueprintId : undefined;
+      resourceInputs["content"] = state ? state.content : undefined;
+      resourceInputs["context"] = state ? state.context : undefined;
+      resourceInputs["enabled"] = state ? state.enabled : undefined;
+      resourceInputs["name"] = state ? state.name : undefined;
+      resourceInputs["path"] = state ? state.path : undefined;
+    } else {
+      const args = argsOrState as BlueprintArgs | undefined;
+      resourceInputs["blueprintId"] = args ? args.blueprintId : undefined;
+      resourceInputs["content"] = args ? args.content : undefined;
+      resourceInputs["context"] = args ? args.context : undefined;
+      resourceInputs["enabled"] = args ? args.enabled : undefined;
+      resourceInputs["name"] = args ? args.name : undefined;
+      resourceInputs["path"] = args ? args.path : undefined;
     }
-
-    public readonly blueprintId!: pulumi.Output<string>;
-    public readonly content!: pulumi.Output<string | undefined>;
-    /**
-     * JSON format expected. Use jsonencode() to pass objects. Defaults to `{}`.
-     */
-    public readonly context!: pulumi.Output<string | undefined>;
-    /**
-     * Defaults to `true`.
-     */
-    public readonly enabled!: pulumi.Output<boolean | undefined>;
-    public readonly name!: pulumi.Output<string>;
-    public readonly path!: pulumi.Output<string | undefined>;
-
-    /**
-     * Create a Blueprint resource with the given unique name, arguments, and options.
-     *
-     * @param name The _unique_ name of the resource.
-     * @param args The arguments to use to populate this resource's properties.
-     * @param opts A bag of options that control this resource's behavior.
-     */
-    constructor(name: string, args?: BlueprintArgs, opts?: pulumi.CustomResourceOptions)
-    constructor(name: string, argsOrState?: BlueprintArgs | BlueprintState, opts?: pulumi.CustomResourceOptions) {
-        let resourceInputs: pulumi.Inputs = {};
-        opts = opts || {};
-        if (opts.id) {
-            const state = argsOrState as BlueprintState | undefined;
-            resourceInputs["blueprintId"] = state ? state.blueprintId : undefined;
-            resourceInputs["content"] = state ? state.content : undefined;
-            resourceInputs["context"] = state ? state.context : undefined;
-            resourceInputs["enabled"] = state ? state.enabled : undefined;
-            resourceInputs["name"] = state ? state.name : undefined;
-            resourceInputs["path"] = state ? state.path : undefined;
-        } else {
-            const args = argsOrState as BlueprintArgs | undefined;
-            resourceInputs["blueprintId"] = args ? args.blueprintId : undefined;
-            resourceInputs["content"] = args ? args.content : undefined;
-            resourceInputs["context"] = args ? args.context : undefined;
-            resourceInputs["enabled"] = args ? args.enabled : undefined;
-            resourceInputs["name"] = args ? args.name : undefined;
-            resourceInputs["path"] = args ? args.path : undefined;
-        }
-        opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
-        super(Blueprint.__pulumiType, name, resourceInputs, opts, false /*dependency*/, utilities.getPackage());
-    }
+    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
+    super(Blueprint.__pulumiType, name, resourceInputs, opts, false, /*dependency*/ utilities.getPackage());
+  }
 }
 
 /**
  * Input properties used for looking up and filtering Blueprint resources.
  */
 export interface BlueprintState {
-    blueprintId?: pulumi.Input<string>;
-    content?: pulumi.Input<string>;
-    /**
-     * JSON format expected. Use jsonencode() to pass objects. Defaults to `{}`.
-     */
-    context?: pulumi.Input<string>;
-    /**
-     * Defaults to `true`.
-     */
-    enabled?: pulumi.Input<boolean>;
-    name?: pulumi.Input<string>;
-    path?: pulumi.Input<string>;
+  blueprintId?: pulumi.Input<string>;
+  content?: pulumi.Input<string>;
+  /**
+   * JSON format expected. Use jsonencode() to pass objects. Defaults to `{}`.
+   */
+  context?: pulumi.Input<string>;
+  /**
+   * Defaults to `true`.
+   */
+  enabled?: pulumi.Input<boolean>;
+  name?: pulumi.Input<string>;
+  path?: pulumi.Input<string>;
 }
 
 /**
  * The set of arguments for constructing a Blueprint resource.
  */
 export interface BlueprintArgs {
-    blueprintId?: pulumi.Input<string>;
-    content?: pulumi.Input<string>;
-    /**
-     * JSON format expected. Use jsonencode() to pass objects. Defaults to `{}`.
-     */
-    context?: pulumi.Input<string>;
-    /**
-     * Defaults to `true`.
-     */
-    enabled?: pulumi.Input<boolean>;
-    name?: pulumi.Input<string>;
-    path?: pulumi.Input<string>;
+  blueprintId?: pulumi.Input<string>;
+  content?: pulumi.Input<string>;
+  /**
+   * JSON format expected. Use jsonencode() to pass objects. Defaults to `{}`.
+   */
+  context?: pulumi.Input<string>;
+  /**
+   * Defaults to `true`.
+   */
+  enabled?: pulumi.Input<boolean>;
+  name?: pulumi.Input<string>;
+  path?: pulumi.Input<string>;
 }

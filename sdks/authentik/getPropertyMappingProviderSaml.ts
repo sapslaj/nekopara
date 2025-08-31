@@ -4,73 +4,89 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as utilities from "./utilities";
 
-export function getPropertyMappingProviderSaml(args?: GetPropertyMappingProviderSamlArgs, opts?: pulumi.InvokeOptions): Promise<GetPropertyMappingProviderSamlResult> {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invoke("authentik:index/getPropertyMappingProviderSaml:getPropertyMappingProviderSaml", {
-        "expression": args.expression,
-        "friendlyName": args.friendlyName,
-        "id": args.id,
-        "ids": args.ids,
-        "managed": args.managed,
-        "managedLists": args.managedLists,
-        "name": args.name,
-        "samlName": args.samlName,
-    }, opts, utilities.getPackage());
+export function getPropertyMappingProviderSaml(
+  args?: GetPropertyMappingProviderSamlArgs,
+  opts?: pulumi.InvokeOptions,
+): Promise<GetPropertyMappingProviderSamlResult> {
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invoke(
+    "authentik:index/getPropertyMappingProviderSaml:getPropertyMappingProviderSaml",
+    {
+      "expression": args.expression,
+      "friendlyName": args.friendlyName,
+      "id": args.id,
+      "ids": args.ids,
+      "managed": args.managed,
+      "managedLists": args.managedLists,
+      "name": args.name,
+      "samlName": args.samlName,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 
 /**
  * A collection of arguments for invoking getPropertyMappingProviderSaml.
  */
 export interface GetPropertyMappingProviderSamlArgs {
-    expression?: string;
-    friendlyName?: string;
-    id?: string;
-    ids?: string[];
-    managed?: string;
-    managedLists?: string[];
-    name?: string;
-    samlName?: string;
+  expression?: string;
+  friendlyName?: string;
+  id?: string;
+  ids?: string[];
+  managed?: string;
+  managedLists?: string[];
+  name?: string;
+  samlName?: string;
 }
 
 /**
  * A collection of values returned by getPropertyMappingProviderSaml.
  */
 export interface GetPropertyMappingProviderSamlResult {
-    readonly expression: string;
-    readonly friendlyName: string;
-    readonly id: string;
-    readonly ids: string[];
-    readonly managed?: string;
-    readonly managedLists?: string[];
-    readonly name?: string;
-    readonly samlName: string;
+  readonly expression: string;
+  readonly friendlyName: string;
+  readonly id: string;
+  readonly ids: string[];
+  readonly managed?: string;
+  readonly managedLists?: string[];
+  readonly name?: string;
+  readonly samlName: string;
 }
-export function getPropertyMappingProviderSamlOutput(args?: GetPropertyMappingProviderSamlOutputArgs, opts?: pulumi.InvokeOutputOptions): pulumi.Output<GetPropertyMappingProviderSamlResult> {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invokeOutput("authentik:index/getPropertyMappingProviderSaml:getPropertyMappingProviderSaml", {
-        "expression": args.expression,
-        "friendlyName": args.friendlyName,
-        "id": args.id,
-        "ids": args.ids,
-        "managed": args.managed,
-        "managedLists": args.managedLists,
-        "name": args.name,
-        "samlName": args.samlName,
-    }, opts, utilities.getPackage());
+export function getPropertyMappingProviderSamlOutput(
+  args?: GetPropertyMappingProviderSamlOutputArgs,
+  opts?: pulumi.InvokeOutputOptions,
+): pulumi.Output<GetPropertyMappingProviderSamlResult> {
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invokeOutput(
+    "authentik:index/getPropertyMappingProviderSaml:getPropertyMappingProviderSaml",
+    {
+      "expression": args.expression,
+      "friendlyName": args.friendlyName,
+      "id": args.id,
+      "ids": args.ids,
+      "managed": args.managed,
+      "managedLists": args.managedLists,
+      "name": args.name,
+      "samlName": args.samlName,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 
 /**
  * A collection of arguments for invoking getPropertyMappingProviderSaml.
  */
 export interface GetPropertyMappingProviderSamlOutputArgs {
-    expression?: pulumi.Input<string>;
-    friendlyName?: pulumi.Input<string>;
-    id?: pulumi.Input<string>;
-    ids?: pulumi.Input<pulumi.Input<string>[]>;
-    managed?: pulumi.Input<string>;
-    managedLists?: pulumi.Input<pulumi.Input<string>[]>;
-    name?: pulumi.Input<string>;
-    samlName?: pulumi.Input<string>;
+  expression?: pulumi.Input<string>;
+  friendlyName?: pulumi.Input<string>;
+  id?: pulumi.Input<string>;
+  ids?: pulumi.Input<pulumi.Input<string>[]>;
+  managed?: pulumi.Input<string>;
+  managedLists?: pulumi.Input<pulumi.Input<string>[]>;
+  name?: pulumi.Input<string>;
+  samlName?: pulumi.Input<string>;
 }

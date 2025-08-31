@@ -6,25 +6,35 @@ exports.getGroupOutput = exports.getGroup = void 0;
 const pulumi = require("@pulumi/pulumi");
 const utilities = require("./utilities");
 function getGroup(args, opts) {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invoke("authentik:index/getGroup:getGroup", {
-        "id": args.id,
-        "includeUsers": args.includeUsers,
-        "name": args.name,
-        "pk": args.pk,
-    }, opts, utilities.getPackage());
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invoke(
+    "authentik:index/getGroup:getGroup",
+    {
+      "id": args.id,
+      "includeUsers": args.includeUsers,
+      "name": args.name,
+      "pk": args.pk,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 exports.getGroup = getGroup;
 function getGroupOutput(args, opts) {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invokeOutput("authentik:index/getGroup:getGroup", {
-        "id": args.id,
-        "includeUsers": args.includeUsers,
-        "name": args.name,
-        "pk": args.pk,
-    }, opts, utilities.getPackage());
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invokeOutput(
+    "authentik:index/getGroup:getGroup",
+    {
+      "id": args.id,
+      "includeUsers": args.includeUsers,
+      "name": args.name,
+      "pk": args.pk,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 exports.getGroupOutput = getGroupOutput;
-//# sourceMappingURL=getGroup.js.map
+// # sourceMappingURL=getGroup.js.map

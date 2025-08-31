@@ -6,70 +6,71 @@ exports.ProviderScim = void 0;
 const pulumi = require("@pulumi/pulumi");
 const utilities = require("./utilities");
 class ProviderScim extends pulumi.CustomResource {
-    /**
-     * Get an existing ProviderScim resource's state with the given name, ID, and optional extra
-     * properties used to qualify the lookup.
-     *
-     * @param name The _unique_ name of the resulting resource.
-     * @param id The _unique_ provider ID of the resource to lookup.
-     * @param state Any extra arguments used during the lookup.
-     * @param opts Optional settings to control the behavior of the CustomResource.
-     */
-    static get(name, id, state, opts) {
-        return new ProviderScim(name, state, Object.assign(Object.assign({}, opts), { id: id }));
+  /**
+   * Get an existing ProviderScim resource's state with the given name, ID, and optional extra
+   * properties used to qualify the lookup.
+   *
+   * @param name The _unique_ name of the resulting resource.
+   * @param id The _unique_ provider ID of the resource to lookup.
+   * @param state Any extra arguments used during the lookup.
+   * @param opts Optional settings to control the behavior of the CustomResource.
+   */
+  static get(name, id, state, opts) {
+    return new ProviderScim(name, state, Object.assign(Object.assign({}, opts), { id: id }));
+  }
+  /**
+   * Returns true if the given object is an instance of ProviderScim.  This is designed to work even
+   * when multiple copies of the Pulumi SDK have been loaded into the same process.
+   */
+  static isInstance(obj) {
+    if (obj === undefined || obj === null) {
+      return false;
     }
-    /**
-     * Returns true if the given object is an instance of ProviderScim.  This is designed to work even
-     * when multiple copies of the Pulumi SDK have been loaded into the same process.
-     */
-    static isInstance(obj) {
-        if (obj === undefined || obj === null) {
-            return false;
-        }
-        return obj['__pulumiType'] === ProviderScim.__pulumiType;
+    return obj["__pulumiType"] === ProviderScim.__pulumiType;
+  }
+  constructor(name, argsOrState, opts) {
+    let resourceInputs = {};
+    opts = opts || {};
+    if (opts.id) {
+      const state = argsOrState;
+      resourceInputs["compatibilityMode"] = state ? state.compatibilityMode : undefined;
+      resourceInputs["dryRun"] = state ? state.dryRun : undefined;
+      resourceInputs["excludeUsersServiceAccount"] = state ? state.excludeUsersServiceAccount : undefined;
+      resourceInputs["filterGroup"] = state ? state.filterGroup : undefined;
+      resourceInputs["name"] = state ? state.name : undefined;
+      resourceInputs["propertyMappings"] = state ? state.propertyMappings : undefined;
+      resourceInputs["propertyMappingsGroups"] = state ? state.propertyMappingsGroups : undefined;
+      resourceInputs["providerScimId"] = state ? state.providerScimId : undefined;
+      resourceInputs["token"] = state ? state.token : undefined;
+      resourceInputs["url"] = state ? state.url : undefined;
+    } else {
+      const args = argsOrState;
+      if ((!args || args.token === undefined) && !opts.urn) {
+        throw new Error("Missing required property 'token'");
+      }
+      if ((!args || args.url === undefined) && !opts.urn) {
+        throw new Error("Missing required property 'url'");
+      }
+      resourceInputs["compatibilityMode"] = args ? args.compatibilityMode : undefined;
+      resourceInputs["dryRun"] = args ? args.dryRun : undefined;
+      resourceInputs["excludeUsersServiceAccount"] = args ? args.excludeUsersServiceAccount : undefined;
+      resourceInputs["filterGroup"] = args ? args.filterGroup : undefined;
+      resourceInputs["name"] = args ? args.name : undefined;
+      resourceInputs["propertyMappings"] = args ? args.propertyMappings : undefined;
+      resourceInputs["propertyMappingsGroups"] = args ? args.propertyMappingsGroups : undefined;
+      resourceInputs["providerScimId"] = args ? args.providerScimId : undefined;
+      resourceInputs["token"] = (args === null || args === void 0 ? void 0 : args.token)
+        ? pulumi.secret(args.token)
+        : undefined;
+      resourceInputs["url"] = args ? args.url : undefined;
     }
-    constructor(name, argsOrState, opts) {
-        let resourceInputs = {};
-        opts = opts || {};
-        if (opts.id) {
-            const state = argsOrState;
-            resourceInputs["compatibilityMode"] = state ? state.compatibilityMode : undefined;
-            resourceInputs["dryRun"] = state ? state.dryRun : undefined;
-            resourceInputs["excludeUsersServiceAccount"] = state ? state.excludeUsersServiceAccount : undefined;
-            resourceInputs["filterGroup"] = state ? state.filterGroup : undefined;
-            resourceInputs["name"] = state ? state.name : undefined;
-            resourceInputs["propertyMappings"] = state ? state.propertyMappings : undefined;
-            resourceInputs["propertyMappingsGroups"] = state ? state.propertyMappingsGroups : undefined;
-            resourceInputs["providerScimId"] = state ? state.providerScimId : undefined;
-            resourceInputs["token"] = state ? state.token : undefined;
-            resourceInputs["url"] = state ? state.url : undefined;
-        }
-        else {
-            const args = argsOrState;
-            if ((!args || args.token === undefined) && !opts.urn) {
-                throw new Error("Missing required property 'token'");
-            }
-            if ((!args || args.url === undefined) && !opts.urn) {
-                throw new Error("Missing required property 'url'");
-            }
-            resourceInputs["compatibilityMode"] = args ? args.compatibilityMode : undefined;
-            resourceInputs["dryRun"] = args ? args.dryRun : undefined;
-            resourceInputs["excludeUsersServiceAccount"] = args ? args.excludeUsersServiceAccount : undefined;
-            resourceInputs["filterGroup"] = args ? args.filterGroup : undefined;
-            resourceInputs["name"] = args ? args.name : undefined;
-            resourceInputs["propertyMappings"] = args ? args.propertyMappings : undefined;
-            resourceInputs["propertyMappingsGroups"] = args ? args.propertyMappingsGroups : undefined;
-            resourceInputs["providerScimId"] = args ? args.providerScimId : undefined;
-            resourceInputs["token"] = (args === null || args === void 0 ? void 0 : args.token) ? pulumi.secret(args.token) : undefined;
-            resourceInputs["url"] = args ? args.url : undefined;
-        }
-        opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
-        const secretOpts = { additionalSecretOutputs: ["token"] };
-        opts = pulumi.mergeOptions(opts, secretOpts);
-        super(ProviderScim.__pulumiType, name, resourceInputs, opts, false /*dependency*/, utilities.getPackage());
-    }
+    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
+    const secretOpts = { additionalSecretOutputs: ["token"] };
+    opts = pulumi.mergeOptions(opts, secretOpts);
+    super(ProviderScim.__pulumiType, name, resourceInputs, opts, false, /*dependency*/ utilities.getPackage());
+  }
 }
 exports.ProviderScim = ProviderScim;
 /** @internal */
-ProviderScim.__pulumiType = 'authentik:index/providerScim:ProviderScim';
-//# sourceMappingURL=providerScim.js.map
+ProviderScim.__pulumiType = "authentik:index/providerScim:ProviderScim";
+// # sourceMappingURL=providerScim.js.map

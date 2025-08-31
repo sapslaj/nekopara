@@ -6,25 +6,35 @@ exports.getServiceConnectionKubernetesOutput = exports.getServiceConnectionKuber
 const pulumi = require("@pulumi/pulumi");
 const utilities = require("./utilities");
 function getServiceConnectionKubernetes(args, opts) {
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invoke("authentik:index/getServiceConnectionKubernetes:getServiceConnectionKubernetes", {
-        "id": args.id,
-        "kubeconfig": args.kubeconfig,
-        "local": args.local,
-        "name": args.name,
-        "verifySsl": args.verifySsl,
-    }, opts, utilities.getPackage());
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invoke(
+    "authentik:index/getServiceConnectionKubernetes:getServiceConnectionKubernetes",
+    {
+      "id": args.id,
+      "kubeconfig": args.kubeconfig,
+      "local": args.local,
+      "name": args.name,
+      "verifySsl": args.verifySsl,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 exports.getServiceConnectionKubernetes = getServiceConnectionKubernetes;
 function getServiceConnectionKubernetesOutput(args, opts) {
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invokeOutput("authentik:index/getServiceConnectionKubernetes:getServiceConnectionKubernetes", {
-        "id": args.id,
-        "kubeconfig": args.kubeconfig,
-        "local": args.local,
-        "name": args.name,
-        "verifySsl": args.verifySsl,
-    }, opts, utilities.getPackage());
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invokeOutput(
+    "authentik:index/getServiceConnectionKubernetes:getServiceConnectionKubernetes",
+    {
+      "id": args.id,
+      "kubeconfig": args.kubeconfig,
+      "local": args.local,
+      "name": args.name,
+      "verifySsl": args.verifySsl,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 exports.getServiceConnectionKubernetesOutput = getServiceConnectionKubernetesOutput;
-//# sourceMappingURL=getServiceConnectionKubernetes.js.map
+// # sourceMappingURL=getServiceConnectionKubernetes.js.map

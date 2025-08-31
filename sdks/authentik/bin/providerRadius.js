@@ -6,69 +6,70 @@ exports.ProviderRadius = void 0;
 const pulumi = require("@pulumi/pulumi");
 const utilities = require("./utilities");
 class ProviderRadius extends pulumi.CustomResource {
-    /**
-     * Get an existing ProviderRadius resource's state with the given name, ID, and optional extra
-     * properties used to qualify the lookup.
-     *
-     * @param name The _unique_ name of the resulting resource.
-     * @param id The _unique_ provider ID of the resource to lookup.
-     * @param state Any extra arguments used during the lookup.
-     * @param opts Optional settings to control the behavior of the CustomResource.
-     */
-    static get(name, id, state, opts) {
-        return new ProviderRadius(name, state, Object.assign(Object.assign({}, opts), { id: id }));
+  /**
+   * Get an existing ProviderRadius resource's state with the given name, ID, and optional extra
+   * properties used to qualify the lookup.
+   *
+   * @param name The _unique_ name of the resulting resource.
+   * @param id The _unique_ provider ID of the resource to lookup.
+   * @param state Any extra arguments used during the lookup.
+   * @param opts Optional settings to control the behavior of the CustomResource.
+   */
+  static get(name, id, state, opts) {
+    return new ProviderRadius(name, state, Object.assign(Object.assign({}, opts), { id: id }));
+  }
+  /**
+   * Returns true if the given object is an instance of ProviderRadius.  This is designed to work even
+   * when multiple copies of the Pulumi SDK have been loaded into the same process.
+   */
+  static isInstance(obj) {
+    if (obj === undefined || obj === null) {
+      return false;
     }
-    /**
-     * Returns true if the given object is an instance of ProviderRadius.  This is designed to work even
-     * when multiple copies of the Pulumi SDK have been loaded into the same process.
-     */
-    static isInstance(obj) {
-        if (obj === undefined || obj === null) {
-            return false;
-        }
-        return obj['__pulumiType'] === ProviderRadius.__pulumiType;
+    return obj["__pulumiType"] === ProviderRadius.__pulumiType;
+  }
+  constructor(name, argsOrState, opts) {
+    let resourceInputs = {};
+    opts = opts || {};
+    if (opts.id) {
+      const state = argsOrState;
+      resourceInputs["authorizationFlow"] = state ? state.authorizationFlow : undefined;
+      resourceInputs["clientNetworks"] = state ? state.clientNetworks : undefined;
+      resourceInputs["invalidationFlow"] = state ? state.invalidationFlow : undefined;
+      resourceInputs["mfaSupport"] = state ? state.mfaSupport : undefined;
+      resourceInputs["name"] = state ? state.name : undefined;
+      resourceInputs["propertyMappings"] = state ? state.propertyMappings : undefined;
+      resourceInputs["providerRadiusId"] = state ? state.providerRadiusId : undefined;
+      resourceInputs["sharedSecret"] = state ? state.sharedSecret : undefined;
+    } else {
+      const args = argsOrState;
+      if ((!args || args.authorizationFlow === undefined) && !opts.urn) {
+        throw new Error("Missing required property 'authorizationFlow'");
+      }
+      if ((!args || args.invalidationFlow === undefined) && !opts.urn) {
+        throw new Error("Missing required property 'invalidationFlow'");
+      }
+      if ((!args || args.sharedSecret === undefined) && !opts.urn) {
+        throw new Error("Missing required property 'sharedSecret'");
+      }
+      resourceInputs["authorizationFlow"] = args ? args.authorizationFlow : undefined;
+      resourceInputs["clientNetworks"] = args ? args.clientNetworks : undefined;
+      resourceInputs["invalidationFlow"] = args ? args.invalidationFlow : undefined;
+      resourceInputs["mfaSupport"] = args ? args.mfaSupport : undefined;
+      resourceInputs["name"] = args ? args.name : undefined;
+      resourceInputs["propertyMappings"] = args ? args.propertyMappings : undefined;
+      resourceInputs["providerRadiusId"] = args ? args.providerRadiusId : undefined;
+      resourceInputs["sharedSecret"] = (args === null || args === void 0 ? void 0 : args.sharedSecret)
+        ? pulumi.secret(args.sharedSecret)
+        : undefined;
     }
-    constructor(name, argsOrState, opts) {
-        let resourceInputs = {};
-        opts = opts || {};
-        if (opts.id) {
-            const state = argsOrState;
-            resourceInputs["authorizationFlow"] = state ? state.authorizationFlow : undefined;
-            resourceInputs["clientNetworks"] = state ? state.clientNetworks : undefined;
-            resourceInputs["invalidationFlow"] = state ? state.invalidationFlow : undefined;
-            resourceInputs["mfaSupport"] = state ? state.mfaSupport : undefined;
-            resourceInputs["name"] = state ? state.name : undefined;
-            resourceInputs["propertyMappings"] = state ? state.propertyMappings : undefined;
-            resourceInputs["providerRadiusId"] = state ? state.providerRadiusId : undefined;
-            resourceInputs["sharedSecret"] = state ? state.sharedSecret : undefined;
-        }
-        else {
-            const args = argsOrState;
-            if ((!args || args.authorizationFlow === undefined) && !opts.urn) {
-                throw new Error("Missing required property 'authorizationFlow'");
-            }
-            if ((!args || args.invalidationFlow === undefined) && !opts.urn) {
-                throw new Error("Missing required property 'invalidationFlow'");
-            }
-            if ((!args || args.sharedSecret === undefined) && !opts.urn) {
-                throw new Error("Missing required property 'sharedSecret'");
-            }
-            resourceInputs["authorizationFlow"] = args ? args.authorizationFlow : undefined;
-            resourceInputs["clientNetworks"] = args ? args.clientNetworks : undefined;
-            resourceInputs["invalidationFlow"] = args ? args.invalidationFlow : undefined;
-            resourceInputs["mfaSupport"] = args ? args.mfaSupport : undefined;
-            resourceInputs["name"] = args ? args.name : undefined;
-            resourceInputs["propertyMappings"] = args ? args.propertyMappings : undefined;
-            resourceInputs["providerRadiusId"] = args ? args.providerRadiusId : undefined;
-            resourceInputs["sharedSecret"] = (args === null || args === void 0 ? void 0 : args.sharedSecret) ? pulumi.secret(args.sharedSecret) : undefined;
-        }
-        opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
-        const secretOpts = { additionalSecretOutputs: ["sharedSecret"] };
-        opts = pulumi.mergeOptions(opts, secretOpts);
-        super(ProviderRadius.__pulumiType, name, resourceInputs, opts, false /*dependency*/, utilities.getPackage());
-    }
+    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
+    const secretOpts = { additionalSecretOutputs: ["sharedSecret"] };
+    opts = pulumi.mergeOptions(opts, secretOpts);
+    super(ProviderRadius.__pulumiType, name, resourceInputs, opts, false, /*dependency*/ utilities.getPackage());
+  }
 }
 exports.ProviderRadius = ProviderRadius;
 /** @internal */
-ProviderRadius.__pulumiType = 'authentik:index/providerRadius:ProviderRadius';
-//# sourceMappingURL=providerRadius.js.map
+ProviderRadius.__pulumiType = "authentik:index/providerRadius:ProviderRadius";
+// # sourceMappingURL=providerRadius.js.map

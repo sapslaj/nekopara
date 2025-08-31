@@ -10,12 +10,12 @@ const __config = new pulumi.Config("authentik");
 /**
  * Optional HTTP headers sent with every request
  */
-export declare const headers: {[key: string]: string} | undefined;
+export declare const headers: { [key: string]: string } | undefined;
 Object.defineProperty(exports, "headers", {
-    get() {
-        return __config.getObject<{[key: string]: string}>("headers");
-    },
-    enumerable: true,
+  get() {
+    return __config.getObject<{ [key: string]: string }>("headers");
+  },
+  enumerable: true,
 });
 
 /**
@@ -23,10 +23,10 @@ Object.defineProperty(exports, "headers", {
  */
 export declare const insecure: boolean | undefined;
 Object.defineProperty(exports, "insecure", {
-    get() {
-        return __config.getObject<boolean>("insecure");
-    },
-    enumerable: true,
+  get() {
+    return __config.getObject<boolean>("insecure");
+  },
+  enumerable: true,
 });
 
 /**
@@ -34,10 +34,10 @@ Object.defineProperty(exports, "insecure", {
  */
 export declare const token: string | undefined;
 Object.defineProperty(exports, "token", {
-    get() {
-        return __config.get("token");
-    },
-    enumerable: true,
+  get() {
+    return __config.get("token");
+  },
+  enumerable: true,
 });
 
 /**
@@ -45,9 +45,8 @@ Object.defineProperty(exports, "token", {
  */
 export declare const url: string | undefined;
 Object.defineProperty(exports, "url", {
-    get() {
-        return __config.get("url");
-    },
-    enumerable: true,
+  get() {
+    return __config.get("url");
+  },
+  enumerable: true,
 });
-

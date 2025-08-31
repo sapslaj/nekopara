@@ -6,101 +6,100 @@ exports.SourceSaml = void 0;
 const pulumi = require("@pulumi/pulumi");
 const utilities = require("./utilities");
 class SourceSaml extends pulumi.CustomResource {
-    /**
-     * Get an existing SourceSaml resource's state with the given name, ID, and optional extra
-     * properties used to qualify the lookup.
-     *
-     * @param name The _unique_ name of the resulting resource.
-     * @param id The _unique_ provider ID of the resource to lookup.
-     * @param state Any extra arguments used during the lookup.
-     * @param opts Optional settings to control the behavior of the CustomResource.
-     */
-    static get(name, id, state, opts) {
-        return new SourceSaml(name, state, Object.assign(Object.assign({}, opts), { id: id }));
+  /**
+   * Get an existing SourceSaml resource's state with the given name, ID, and optional extra
+   * properties used to qualify the lookup.
+   *
+   * @param name The _unique_ name of the resulting resource.
+   * @param id The _unique_ provider ID of the resource to lookup.
+   * @param state Any extra arguments used during the lookup.
+   * @param opts Optional settings to control the behavior of the CustomResource.
+   */
+  static get(name, id, state, opts) {
+    return new SourceSaml(name, state, Object.assign(Object.assign({}, opts), { id: id }));
+  }
+  /**
+   * Returns true if the given object is an instance of SourceSaml.  This is designed to work even
+   * when multiple copies of the Pulumi SDK have been loaded into the same process.
+   */
+  static isInstance(obj) {
+    if (obj === undefined || obj === null) {
+      return false;
     }
-    /**
-     * Returns true if the given object is an instance of SourceSaml.  This is designed to work even
-     * when multiple copies of the Pulumi SDK have been loaded into the same process.
-     */
-    static isInstance(obj) {
-        if (obj === undefined || obj === null) {
-            return false;
-        }
-        return obj['__pulumiType'] === SourceSaml.__pulumiType;
+    return obj["__pulumiType"] === SourceSaml.__pulumiType;
+  }
+  constructor(name, argsOrState, opts) {
+    let resourceInputs = {};
+    opts = opts || {};
+    if (opts.id) {
+      const state = argsOrState;
+      resourceInputs["allowIdpInitiated"] = state ? state.allowIdpInitiated : undefined;
+      resourceInputs["authenticationFlow"] = state ? state.authenticationFlow : undefined;
+      resourceInputs["bindingType"] = state ? state.bindingType : undefined;
+      resourceInputs["digestAlgorithm"] = state ? state.digestAlgorithm : undefined;
+      resourceInputs["enabled"] = state ? state.enabled : undefined;
+      resourceInputs["encryptionKp"] = state ? state.encryptionKp : undefined;
+      resourceInputs["enrollmentFlow"] = state ? state.enrollmentFlow : undefined;
+      resourceInputs["groupMatchingMode"] = state ? state.groupMatchingMode : undefined;
+      resourceInputs["issuer"] = state ? state.issuer : undefined;
+      resourceInputs["metadata"] = state ? state.metadata : undefined;
+      resourceInputs["name"] = state ? state.name : undefined;
+      resourceInputs["nameIdPolicy"] = state ? state.nameIdPolicy : undefined;
+      resourceInputs["policyEngineMode"] = state ? state.policyEngineMode : undefined;
+      resourceInputs["preAuthenticationFlow"] = state ? state.preAuthenticationFlow : undefined;
+      resourceInputs["signatureAlgorithm"] = state ? state.signatureAlgorithm : undefined;
+      resourceInputs["signingKp"] = state ? state.signingKp : undefined;
+      resourceInputs["sloUrl"] = state ? state.sloUrl : undefined;
+      resourceInputs["slug"] = state ? state.slug : undefined;
+      resourceInputs["sourceSamlId"] = state ? state.sourceSamlId : undefined;
+      resourceInputs["ssoUrl"] = state ? state.ssoUrl : undefined;
+      resourceInputs["temporaryUserDeleteAfter"] = state ? state.temporaryUserDeleteAfter : undefined;
+      resourceInputs["userMatchingMode"] = state ? state.userMatchingMode : undefined;
+      resourceInputs["userPathTemplate"] = state ? state.userPathTemplate : undefined;
+      resourceInputs["uuid"] = state ? state.uuid : undefined;
+      resourceInputs["verificationKp"] = state ? state.verificationKp : undefined;
+    } else {
+      const args = argsOrState;
+      if ((!args || args.preAuthenticationFlow === undefined) && !opts.urn) {
+        throw new Error("Missing required property 'preAuthenticationFlow'");
+      }
+      if ((!args || args.slug === undefined) && !opts.urn) {
+        throw new Error("Missing required property 'slug'");
+      }
+      if ((!args || args.ssoUrl === undefined) && !opts.urn) {
+        throw new Error("Missing required property 'ssoUrl'");
+      }
+      resourceInputs["allowIdpInitiated"] = args ? args.allowIdpInitiated : undefined;
+      resourceInputs["authenticationFlow"] = args ? args.authenticationFlow : undefined;
+      resourceInputs["bindingType"] = args ? args.bindingType : undefined;
+      resourceInputs["digestAlgorithm"] = args ? args.digestAlgorithm : undefined;
+      resourceInputs["enabled"] = args ? args.enabled : undefined;
+      resourceInputs["encryptionKp"] = args ? args.encryptionKp : undefined;
+      resourceInputs["enrollmentFlow"] = args ? args.enrollmentFlow : undefined;
+      resourceInputs["groupMatchingMode"] = args ? args.groupMatchingMode : undefined;
+      resourceInputs["issuer"] = args ? args.issuer : undefined;
+      resourceInputs["name"] = args ? args.name : undefined;
+      resourceInputs["nameIdPolicy"] = args ? args.nameIdPolicy : undefined;
+      resourceInputs["policyEngineMode"] = args ? args.policyEngineMode : undefined;
+      resourceInputs["preAuthenticationFlow"] = args ? args.preAuthenticationFlow : undefined;
+      resourceInputs["signatureAlgorithm"] = args ? args.signatureAlgorithm : undefined;
+      resourceInputs["signingKp"] = args ? args.signingKp : undefined;
+      resourceInputs["sloUrl"] = args ? args.sloUrl : undefined;
+      resourceInputs["slug"] = args ? args.slug : undefined;
+      resourceInputs["sourceSamlId"] = args ? args.sourceSamlId : undefined;
+      resourceInputs["ssoUrl"] = args ? args.ssoUrl : undefined;
+      resourceInputs["temporaryUserDeleteAfter"] = args ? args.temporaryUserDeleteAfter : undefined;
+      resourceInputs["userMatchingMode"] = args ? args.userMatchingMode : undefined;
+      resourceInputs["userPathTemplate"] = args ? args.userPathTemplate : undefined;
+      resourceInputs["uuid"] = args ? args.uuid : undefined;
+      resourceInputs["verificationKp"] = args ? args.verificationKp : undefined;
+      resourceInputs["metadata"] = undefined /*out*/;
     }
-    constructor(name, argsOrState, opts) {
-        let resourceInputs = {};
-        opts = opts || {};
-        if (opts.id) {
-            const state = argsOrState;
-            resourceInputs["allowIdpInitiated"] = state ? state.allowIdpInitiated : undefined;
-            resourceInputs["authenticationFlow"] = state ? state.authenticationFlow : undefined;
-            resourceInputs["bindingType"] = state ? state.bindingType : undefined;
-            resourceInputs["digestAlgorithm"] = state ? state.digestAlgorithm : undefined;
-            resourceInputs["enabled"] = state ? state.enabled : undefined;
-            resourceInputs["encryptionKp"] = state ? state.encryptionKp : undefined;
-            resourceInputs["enrollmentFlow"] = state ? state.enrollmentFlow : undefined;
-            resourceInputs["groupMatchingMode"] = state ? state.groupMatchingMode : undefined;
-            resourceInputs["issuer"] = state ? state.issuer : undefined;
-            resourceInputs["metadata"] = state ? state.metadata : undefined;
-            resourceInputs["name"] = state ? state.name : undefined;
-            resourceInputs["nameIdPolicy"] = state ? state.nameIdPolicy : undefined;
-            resourceInputs["policyEngineMode"] = state ? state.policyEngineMode : undefined;
-            resourceInputs["preAuthenticationFlow"] = state ? state.preAuthenticationFlow : undefined;
-            resourceInputs["signatureAlgorithm"] = state ? state.signatureAlgorithm : undefined;
-            resourceInputs["signingKp"] = state ? state.signingKp : undefined;
-            resourceInputs["sloUrl"] = state ? state.sloUrl : undefined;
-            resourceInputs["slug"] = state ? state.slug : undefined;
-            resourceInputs["sourceSamlId"] = state ? state.sourceSamlId : undefined;
-            resourceInputs["ssoUrl"] = state ? state.ssoUrl : undefined;
-            resourceInputs["temporaryUserDeleteAfter"] = state ? state.temporaryUserDeleteAfter : undefined;
-            resourceInputs["userMatchingMode"] = state ? state.userMatchingMode : undefined;
-            resourceInputs["userPathTemplate"] = state ? state.userPathTemplate : undefined;
-            resourceInputs["uuid"] = state ? state.uuid : undefined;
-            resourceInputs["verificationKp"] = state ? state.verificationKp : undefined;
-        }
-        else {
-            const args = argsOrState;
-            if ((!args || args.preAuthenticationFlow === undefined) && !opts.urn) {
-                throw new Error("Missing required property 'preAuthenticationFlow'");
-            }
-            if ((!args || args.slug === undefined) && !opts.urn) {
-                throw new Error("Missing required property 'slug'");
-            }
-            if ((!args || args.ssoUrl === undefined) && !opts.urn) {
-                throw new Error("Missing required property 'ssoUrl'");
-            }
-            resourceInputs["allowIdpInitiated"] = args ? args.allowIdpInitiated : undefined;
-            resourceInputs["authenticationFlow"] = args ? args.authenticationFlow : undefined;
-            resourceInputs["bindingType"] = args ? args.bindingType : undefined;
-            resourceInputs["digestAlgorithm"] = args ? args.digestAlgorithm : undefined;
-            resourceInputs["enabled"] = args ? args.enabled : undefined;
-            resourceInputs["encryptionKp"] = args ? args.encryptionKp : undefined;
-            resourceInputs["enrollmentFlow"] = args ? args.enrollmentFlow : undefined;
-            resourceInputs["groupMatchingMode"] = args ? args.groupMatchingMode : undefined;
-            resourceInputs["issuer"] = args ? args.issuer : undefined;
-            resourceInputs["name"] = args ? args.name : undefined;
-            resourceInputs["nameIdPolicy"] = args ? args.nameIdPolicy : undefined;
-            resourceInputs["policyEngineMode"] = args ? args.policyEngineMode : undefined;
-            resourceInputs["preAuthenticationFlow"] = args ? args.preAuthenticationFlow : undefined;
-            resourceInputs["signatureAlgorithm"] = args ? args.signatureAlgorithm : undefined;
-            resourceInputs["signingKp"] = args ? args.signingKp : undefined;
-            resourceInputs["sloUrl"] = args ? args.sloUrl : undefined;
-            resourceInputs["slug"] = args ? args.slug : undefined;
-            resourceInputs["sourceSamlId"] = args ? args.sourceSamlId : undefined;
-            resourceInputs["ssoUrl"] = args ? args.ssoUrl : undefined;
-            resourceInputs["temporaryUserDeleteAfter"] = args ? args.temporaryUserDeleteAfter : undefined;
-            resourceInputs["userMatchingMode"] = args ? args.userMatchingMode : undefined;
-            resourceInputs["userPathTemplate"] = args ? args.userPathTemplate : undefined;
-            resourceInputs["uuid"] = args ? args.uuid : undefined;
-            resourceInputs["verificationKp"] = args ? args.verificationKp : undefined;
-            resourceInputs["metadata"] = undefined /*out*/;
-        }
-        opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
-        super(SourceSaml.__pulumiType, name, resourceInputs, opts, false /*dependency*/, utilities.getPackage());
-    }
+    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
+    super(SourceSaml.__pulumiType, name, resourceInputs, opts, false, /*dependency*/ utilities.getPackage());
+  }
 }
 exports.SourceSaml = SourceSaml;
 /** @internal */
-SourceSaml.__pulumiType = 'authentik:index/sourceSaml:SourceSaml';
-//# sourceMappingURL=sourceSaml.js.map
+SourceSaml.__pulumiType = "authentik:index/sourceSaml:SourceSaml";
+// # sourceMappingURL=sourceSaml.js.map

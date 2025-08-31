@@ -6,19 +6,29 @@ exports.getRbacPermissionOutput = exports.getRbacPermission = void 0;
 const pulumi = require("@pulumi/pulumi");
 const utilities = require("./utilities");
 function getRbacPermission(args, opts) {
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invoke("authentik:index/getRbacPermission:getRbacPermission", {
-        "codename": args.codename,
-        "id": args.id,
-    }, opts, utilities.getPackage());
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invoke(
+    "authentik:index/getRbacPermission:getRbacPermission",
+    {
+      "codename": args.codename,
+      "id": args.id,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 exports.getRbacPermission = getRbacPermission;
 function getRbacPermissionOutput(args, opts) {
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invokeOutput("authentik:index/getRbacPermission:getRbacPermission", {
-        "codename": args.codename,
-        "id": args.id,
-    }, opts, utilities.getPackage());
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invokeOutput(
+    "authentik:index/getRbacPermission:getRbacPermission",
+    {
+      "codename": args.codename,
+      "id": args.id,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 exports.getRbacPermissionOutput = getRbacPermissionOutput;
-//# sourceMappingURL=getRbacPermission.js.map
+// # sourceMappingURL=getRbacPermission.js.map

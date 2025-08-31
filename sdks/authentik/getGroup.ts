@@ -7,59 +7,72 @@ import * as outputs from "./types/output";
 import * as utilities from "./utilities";
 
 export function getGroup(args?: GetGroupArgs, opts?: pulumi.InvokeOptions): Promise<GetGroupResult> {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invoke("authentik:index/getGroup:getGroup", {
-        "id": args.id,
-        "includeUsers": args.includeUsers,
-        "name": args.name,
-        "pk": args.pk,
-    }, opts, utilities.getPackage());
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invoke(
+    "authentik:index/getGroup:getGroup",
+    {
+      "id": args.id,
+      "includeUsers": args.includeUsers,
+      "name": args.name,
+      "pk": args.pk,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 
 /**
  * A collection of arguments for invoking getGroup.
  */
 export interface GetGroupArgs {
-    id?: string;
-    includeUsers?: boolean;
-    name?: string;
-    pk?: string;
+  id?: string;
+  includeUsers?: boolean;
+  name?: string;
+  pk?: string;
 }
 
 /**
  * A collection of values returned by getGroup.
  */
 export interface GetGroupResult {
-    readonly attributes: string;
-    readonly id: string;
-    readonly includeUsers?: boolean;
-    readonly isSuperuser: boolean;
-    readonly name?: string;
-    readonly numPk: number;
-    readonly parent: string;
-    readonly parentName: string;
-    readonly pk?: string;
-    readonly users: number[];
-    readonly usersObjs: outputs.GetGroupUsersObj[];
+  readonly attributes: string;
+  readonly id: string;
+  readonly includeUsers?: boolean;
+  readonly isSuperuser: boolean;
+  readonly name?: string;
+  readonly numPk: number;
+  readonly parent: string;
+  readonly parentName: string;
+  readonly pk?: string;
+  readonly users: number[];
+  readonly usersObjs: outputs.GetGroupUsersObj[];
 }
-export function getGroupOutput(args?: GetGroupOutputArgs, opts?: pulumi.InvokeOutputOptions): pulumi.Output<GetGroupResult> {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invokeOutput("authentik:index/getGroup:getGroup", {
-        "id": args.id,
-        "includeUsers": args.includeUsers,
-        "name": args.name,
-        "pk": args.pk,
-    }, opts, utilities.getPackage());
+export function getGroupOutput(
+  args?: GetGroupOutputArgs,
+  opts?: pulumi.InvokeOutputOptions,
+): pulumi.Output<GetGroupResult> {
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invokeOutput(
+    "authentik:index/getGroup:getGroup",
+    {
+      "id": args.id,
+      "includeUsers": args.includeUsers,
+      "name": args.name,
+      "pk": args.pk,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 
 /**
  * A collection of arguments for invoking getGroup.
  */
 export interface GetGroupOutputArgs {
-    id?: pulumi.Input<string>;
-    includeUsers?: pulumi.Input<boolean>;
-    name?: pulumi.Input<string>;
-    pk?: pulumi.Input<string>;
+  id?: pulumi.Input<string>;
+  includeUsers?: pulumi.Input<boolean>;
+  name?: pulumi.Input<string>;
+  pk?: pulumi.Input<string>;
 }

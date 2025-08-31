@@ -28,64 +28,124 @@ export declare const Flow: typeof import("./flow").Flow;
 export { FlowStageBindingArgs, FlowStageBindingState } from "./flowStageBinding";
 export type FlowStageBinding = import("./flowStageBinding").FlowStageBinding;
 export declare const FlowStageBinding: typeof import("./flowStageBinding").FlowStageBinding;
-export { GetBrandArgs, GetBrandResult, GetBrandOutputArgs } from "./getBrand";
+export { GetBrandArgs, GetBrandOutputArgs, GetBrandResult } from "./getBrand";
 export declare const getBrand: typeof import("./getBrand").getBrand;
 export declare const getBrandOutput: typeof import("./getBrand").getBrandOutput;
-export { GetCertificateKeyPairArgs, GetCertificateKeyPairResult, GetCertificateKeyPairOutputArgs } from "./getCertificateKeyPair";
+export {
+  GetCertificateKeyPairArgs,
+  GetCertificateKeyPairOutputArgs,
+  GetCertificateKeyPairResult,
+} from "./getCertificateKeyPair";
 export declare const getCertificateKeyPair: typeof import("./getCertificateKeyPair").getCertificateKeyPair;
 export declare const getCertificateKeyPairOutput: typeof import("./getCertificateKeyPair").getCertificateKeyPairOutput;
-export { GetFlowArgs, GetFlowResult, GetFlowOutputArgs } from "./getFlow";
+export { GetFlowArgs, GetFlowOutputArgs, GetFlowResult } from "./getFlow";
 export declare const getFlow: typeof import("./getFlow").getFlow;
 export declare const getFlowOutput: typeof import("./getFlow").getFlowOutput;
-export { GetGroupArgs, GetGroupResult, GetGroupOutputArgs } from "./getGroup";
+export { GetGroupArgs, GetGroupOutputArgs, GetGroupResult } from "./getGroup";
 export declare const getGroup: typeof import("./getGroup").getGroup;
 export declare const getGroupOutput: typeof import("./getGroup").getGroupOutput;
-export { GetGroupsArgs, GetGroupsResult, GetGroupsOutputArgs } from "./getGroups";
+export { GetGroupsArgs, GetGroupsOutputArgs, GetGroupsResult } from "./getGroups";
 export declare const getGroups: typeof import("./getGroups").getGroups;
 export declare const getGroupsOutput: typeof import("./getGroups").getGroupsOutput;
-export { GetPropertyMappingProviderRacArgs, GetPropertyMappingProviderRacResult, GetPropertyMappingProviderRacOutputArgs } from "./getPropertyMappingProviderRac";
-export declare const getPropertyMappingProviderRac: typeof import("./getPropertyMappingProviderRac").getPropertyMappingProviderRac;
-export declare const getPropertyMappingProviderRacOutput: typeof import("./getPropertyMappingProviderRac").getPropertyMappingProviderRacOutput;
-export { GetPropertyMappingProviderRadiusArgs, GetPropertyMappingProviderRadiusResult, GetPropertyMappingProviderRadiusOutputArgs } from "./getPropertyMappingProviderRadius";
-export declare const getPropertyMappingProviderRadius: typeof import("./getPropertyMappingProviderRadius").getPropertyMappingProviderRadius;
-export declare const getPropertyMappingProviderRadiusOutput: typeof import("./getPropertyMappingProviderRadius").getPropertyMappingProviderRadiusOutput;
-export { GetPropertyMappingProviderSamlArgs, GetPropertyMappingProviderSamlResult, GetPropertyMappingProviderSamlOutputArgs } from "./getPropertyMappingProviderSaml";
-export declare const getPropertyMappingProviderSaml: typeof import("./getPropertyMappingProviderSaml").getPropertyMappingProviderSaml;
-export declare const getPropertyMappingProviderSamlOutput: typeof import("./getPropertyMappingProviderSaml").getPropertyMappingProviderSamlOutput;
-export { GetPropertyMappingProviderScimArgs, GetPropertyMappingProviderScimResult, GetPropertyMappingProviderScimOutputArgs } from "./getPropertyMappingProviderScim";
-export declare const getPropertyMappingProviderScim: typeof import("./getPropertyMappingProviderScim").getPropertyMappingProviderScim;
-export declare const getPropertyMappingProviderScimOutput: typeof import("./getPropertyMappingProviderScim").getPropertyMappingProviderScimOutput;
-export { GetPropertyMappingProviderScopeArgs, GetPropertyMappingProviderScopeResult, GetPropertyMappingProviderScopeOutputArgs } from "./getPropertyMappingProviderScope";
-export declare const getPropertyMappingProviderScope: typeof import("./getPropertyMappingProviderScope").getPropertyMappingProviderScope;
-export declare const getPropertyMappingProviderScopeOutput: typeof import("./getPropertyMappingProviderScope").getPropertyMappingProviderScopeOutput;
-export { GetPropertyMappingSourceLdapArgs, GetPropertyMappingSourceLdapResult, GetPropertyMappingSourceLdapOutputArgs } from "./getPropertyMappingSourceLdap";
-export declare const getPropertyMappingSourceLdap: typeof import("./getPropertyMappingSourceLdap").getPropertyMappingSourceLdap;
-export declare const getPropertyMappingSourceLdapOutput: typeof import("./getPropertyMappingSourceLdap").getPropertyMappingSourceLdapOutput;
-export { GetProviderOauth2ConfigArgs, GetProviderOauth2ConfigResult, GetProviderOauth2ConfigOutputArgs } from "./getProviderOauth2Config";
+export {
+  GetPropertyMappingProviderRacArgs,
+  GetPropertyMappingProviderRacOutputArgs,
+  GetPropertyMappingProviderRacResult,
+} from "./getPropertyMappingProviderRac";
+export declare const getPropertyMappingProviderRac:
+  typeof import("./getPropertyMappingProviderRac").getPropertyMappingProviderRac;
+export declare const getPropertyMappingProviderRacOutput:
+  typeof import("./getPropertyMappingProviderRac").getPropertyMappingProviderRacOutput;
+export {
+  GetPropertyMappingProviderRadiusArgs,
+  GetPropertyMappingProviderRadiusOutputArgs,
+  GetPropertyMappingProviderRadiusResult,
+} from "./getPropertyMappingProviderRadius";
+export declare const getPropertyMappingProviderRadius:
+  typeof import("./getPropertyMappingProviderRadius").getPropertyMappingProviderRadius;
+export declare const getPropertyMappingProviderRadiusOutput:
+  typeof import("./getPropertyMappingProviderRadius").getPropertyMappingProviderRadiusOutput;
+export {
+  GetPropertyMappingProviderSamlArgs,
+  GetPropertyMappingProviderSamlOutputArgs,
+  GetPropertyMappingProviderSamlResult,
+} from "./getPropertyMappingProviderSaml";
+export declare const getPropertyMappingProviderSaml:
+  typeof import("./getPropertyMappingProviderSaml").getPropertyMappingProviderSaml;
+export declare const getPropertyMappingProviderSamlOutput:
+  typeof import("./getPropertyMappingProviderSaml").getPropertyMappingProviderSamlOutput;
+export {
+  GetPropertyMappingProviderScimArgs,
+  GetPropertyMappingProviderScimOutputArgs,
+  GetPropertyMappingProviderScimResult,
+} from "./getPropertyMappingProviderScim";
+export declare const getPropertyMappingProviderScim:
+  typeof import("./getPropertyMappingProviderScim").getPropertyMappingProviderScim;
+export declare const getPropertyMappingProviderScimOutput:
+  typeof import("./getPropertyMappingProviderScim").getPropertyMappingProviderScimOutput;
+export {
+  GetPropertyMappingProviderScopeArgs,
+  GetPropertyMappingProviderScopeOutputArgs,
+  GetPropertyMappingProviderScopeResult,
+} from "./getPropertyMappingProviderScope";
+export declare const getPropertyMappingProviderScope:
+  typeof import("./getPropertyMappingProviderScope").getPropertyMappingProviderScope;
+export declare const getPropertyMappingProviderScopeOutput:
+  typeof import("./getPropertyMappingProviderScope").getPropertyMappingProviderScopeOutput;
+export {
+  GetPropertyMappingSourceLdapArgs,
+  GetPropertyMappingSourceLdapOutputArgs,
+  GetPropertyMappingSourceLdapResult,
+} from "./getPropertyMappingSourceLdap";
+export declare const getPropertyMappingSourceLdap:
+  typeof import("./getPropertyMappingSourceLdap").getPropertyMappingSourceLdap;
+export declare const getPropertyMappingSourceLdapOutput:
+  typeof import("./getPropertyMappingSourceLdap").getPropertyMappingSourceLdapOutput;
+export {
+  GetProviderOauth2ConfigArgs,
+  GetProviderOauth2ConfigOutputArgs,
+  GetProviderOauth2ConfigResult,
+} from "./getProviderOauth2Config";
 export declare const getProviderOauth2Config: typeof import("./getProviderOauth2Config").getProviderOauth2Config;
-export declare const getProviderOauth2ConfigOutput: typeof import("./getProviderOauth2Config").getProviderOauth2ConfigOutput;
-export { GetProviderSamlMetadataArgs, GetProviderSamlMetadataResult, GetProviderSamlMetadataOutputArgs } from "./getProviderSamlMetadata";
+export declare const getProviderOauth2ConfigOutput:
+  typeof import("./getProviderOauth2Config").getProviderOauth2ConfigOutput;
+export {
+  GetProviderSamlMetadataArgs,
+  GetProviderSamlMetadataOutputArgs,
+  GetProviderSamlMetadataResult,
+} from "./getProviderSamlMetadata";
 export declare const getProviderSamlMetadata: typeof import("./getProviderSamlMetadata").getProviderSamlMetadata;
-export declare const getProviderSamlMetadataOutput: typeof import("./getProviderSamlMetadata").getProviderSamlMetadataOutput;
-export { GetRbacPermissionArgs, GetRbacPermissionResult, GetRbacPermissionOutputArgs } from "./getRbacPermission";
+export declare const getProviderSamlMetadataOutput:
+  typeof import("./getProviderSamlMetadata").getProviderSamlMetadataOutput;
+export { GetRbacPermissionArgs, GetRbacPermissionOutputArgs, GetRbacPermissionResult } from "./getRbacPermission";
 export declare const getRbacPermission: typeof import("./getRbacPermission").getRbacPermission;
 export declare const getRbacPermissionOutput: typeof import("./getRbacPermission").getRbacPermissionOutput;
-export { GetServiceConnectionKubernetesArgs, GetServiceConnectionKubernetesResult, GetServiceConnectionKubernetesOutputArgs } from "./getServiceConnectionKubernetes";
-export declare const getServiceConnectionKubernetes: typeof import("./getServiceConnectionKubernetes").getServiceConnectionKubernetes;
-export declare const getServiceConnectionKubernetesOutput: typeof import("./getServiceConnectionKubernetes").getServiceConnectionKubernetesOutput;
-export { GetSourceArgs, GetSourceResult, GetSourceOutputArgs } from "./getSource";
+export {
+  GetServiceConnectionKubernetesArgs,
+  GetServiceConnectionKubernetesOutputArgs,
+  GetServiceConnectionKubernetesResult,
+} from "./getServiceConnectionKubernetes";
+export declare const getServiceConnectionKubernetes:
+  typeof import("./getServiceConnectionKubernetes").getServiceConnectionKubernetes;
+export declare const getServiceConnectionKubernetesOutput:
+  typeof import("./getServiceConnectionKubernetes").getServiceConnectionKubernetesOutput;
+export { GetSourceArgs, GetSourceOutputArgs, GetSourceResult } from "./getSource";
 export declare const getSource: typeof import("./getSource").getSource;
 export declare const getSourceOutput: typeof import("./getSource").getSourceOutput;
-export { GetStageArgs, GetStageResult, GetStageOutputArgs } from "./getStage";
+export { GetStageArgs, GetStageOutputArgs, GetStageResult } from "./getStage";
 export declare const getStage: typeof import("./getStage").getStage;
 export declare const getStageOutput: typeof import("./getStage").getStageOutput;
-export { GetUserArgs, GetUserResult, GetUserOutputArgs } from "./getUser";
+export { GetUserArgs, GetUserOutputArgs, GetUserResult } from "./getUser";
 export declare const getUser: typeof import("./getUser").getUser;
 export declare const getUserOutput: typeof import("./getUser").getUserOutput;
-export { GetUsersArgs, GetUsersResult, GetUsersOutputArgs } from "./getUsers";
+export { GetUsersArgs, GetUsersOutputArgs, GetUsersResult } from "./getUsers";
 export declare const getUsers: typeof import("./getUsers").getUsers;
 export declare const getUsersOutput: typeof import("./getUsers").getUsersOutput;
-export { GetWebauthnDeviceTypeArgs, GetWebauthnDeviceTypeResult, GetWebauthnDeviceTypeOutputArgs } from "./getWebauthnDeviceType";
+export {
+  GetWebauthnDeviceTypeArgs,
+  GetWebauthnDeviceTypeOutputArgs,
+  GetWebauthnDeviceTypeResult,
+} from "./getWebauthnDeviceType";
 export declare const getWebauthnDeviceType: typeof import("./getWebauthnDeviceType").getWebauthnDeviceType;
 export declare const getWebauthnDeviceTypeOutput: typeof import("./getWebauthnDeviceType").getWebauthnDeviceTypeOutput;
 export { GroupArgs, GroupState } from "./group";
@@ -121,39 +181,60 @@ export declare const PolicyReputation: typeof import("./policyReputation").Polic
 export { PolicyUniquePasswordArgs, PolicyUniquePasswordState } from "./policyUniquePassword";
 export type PolicyUniquePassword = import("./policyUniquePassword").PolicyUniquePassword;
 export declare const PolicyUniquePassword: typeof import("./policyUniquePassword").PolicyUniquePassword;
-export { PropertyMappingGoogleWorkspaceArgs, PropertyMappingGoogleWorkspaceState } from "./propertyMappingGoogleWorkspace";
+export {
+  PropertyMappingGoogleWorkspaceArgs,
+  PropertyMappingGoogleWorkspaceState,
+} from "./propertyMappingGoogleWorkspace";
 export type PropertyMappingGoogleWorkspace = import("./propertyMappingGoogleWorkspace").PropertyMappingGoogleWorkspace;
-export declare const PropertyMappingGoogleWorkspace: typeof import("./propertyMappingGoogleWorkspace").PropertyMappingGoogleWorkspace;
+export declare const PropertyMappingGoogleWorkspace:
+  typeof import("./propertyMappingGoogleWorkspace").PropertyMappingGoogleWorkspace;
 export { PropertyMappingLdapArgs, PropertyMappingLdapState } from "./propertyMappingLdap";
 export type PropertyMappingLdap = import("./propertyMappingLdap").PropertyMappingLdap;
 export declare const PropertyMappingLdap: typeof import("./propertyMappingLdap").PropertyMappingLdap;
 export { PropertyMappingMicrosoftEntraArgs, PropertyMappingMicrosoftEntraState } from "./propertyMappingMicrosoftEntra";
 export type PropertyMappingMicrosoftEntra = import("./propertyMappingMicrosoftEntra").PropertyMappingMicrosoftEntra;
-export declare const PropertyMappingMicrosoftEntra: typeof import("./propertyMappingMicrosoftEntra").PropertyMappingMicrosoftEntra;
+export declare const PropertyMappingMicrosoftEntra:
+  typeof import("./propertyMappingMicrosoftEntra").PropertyMappingMicrosoftEntra;
 export { PropertyMappingNotificationArgs, PropertyMappingNotificationState } from "./propertyMappingNotification";
 export type PropertyMappingNotification = import("./propertyMappingNotification").PropertyMappingNotification;
-export declare const PropertyMappingNotification: typeof import("./propertyMappingNotification").PropertyMappingNotification;
-export { PropertyMappingProviderGoogleWorkspaceArgs, PropertyMappingProviderGoogleWorkspaceState } from "./propertyMappingProviderGoogleWorkspace";
-export type PropertyMappingProviderGoogleWorkspace = import("./propertyMappingProviderGoogleWorkspace").PropertyMappingProviderGoogleWorkspace;
-export declare const PropertyMappingProviderGoogleWorkspace: typeof import("./propertyMappingProviderGoogleWorkspace").PropertyMappingProviderGoogleWorkspace;
-export { PropertyMappingProviderMicrosoftEntraArgs, PropertyMappingProviderMicrosoftEntraState } from "./propertyMappingProviderMicrosoftEntra";
-export type PropertyMappingProviderMicrosoftEntra = import("./propertyMappingProviderMicrosoftEntra").PropertyMappingProviderMicrosoftEntra;
-export declare const PropertyMappingProviderMicrosoftEntra: typeof import("./propertyMappingProviderMicrosoftEntra").PropertyMappingProviderMicrosoftEntra;
+export declare const PropertyMappingNotification:
+  typeof import("./propertyMappingNotification").PropertyMappingNotification;
+export {
+  PropertyMappingProviderGoogleWorkspaceArgs,
+  PropertyMappingProviderGoogleWorkspaceState,
+} from "./propertyMappingProviderGoogleWorkspace";
+export type PropertyMappingProviderGoogleWorkspace =
+  import("./propertyMappingProviderGoogleWorkspace").PropertyMappingProviderGoogleWorkspace;
+export declare const PropertyMappingProviderGoogleWorkspace:
+  typeof import("./propertyMappingProviderGoogleWorkspace").PropertyMappingProviderGoogleWorkspace;
+export {
+  PropertyMappingProviderMicrosoftEntraArgs,
+  PropertyMappingProviderMicrosoftEntraState,
+} from "./propertyMappingProviderMicrosoftEntra";
+export type PropertyMappingProviderMicrosoftEntra =
+  import("./propertyMappingProviderMicrosoftEntra").PropertyMappingProviderMicrosoftEntra;
+export declare const PropertyMappingProviderMicrosoftEntra:
+  typeof import("./propertyMappingProviderMicrosoftEntra").PropertyMappingProviderMicrosoftEntra;
 export { PropertyMappingProviderRacArgs, PropertyMappingProviderRacState } from "./propertyMappingProviderRac";
 export type PropertyMappingProviderRac = import("./propertyMappingProviderRac").PropertyMappingProviderRac;
-export declare const PropertyMappingProviderRac: typeof import("./propertyMappingProviderRac").PropertyMappingProviderRac;
+export declare const PropertyMappingProviderRac:
+  typeof import("./propertyMappingProviderRac").PropertyMappingProviderRac;
 export { PropertyMappingProviderRadiusArgs, PropertyMappingProviderRadiusState } from "./propertyMappingProviderRadius";
 export type PropertyMappingProviderRadius = import("./propertyMappingProviderRadius").PropertyMappingProviderRadius;
-export declare const PropertyMappingProviderRadius: typeof import("./propertyMappingProviderRadius").PropertyMappingProviderRadius;
+export declare const PropertyMappingProviderRadius:
+  typeof import("./propertyMappingProviderRadius").PropertyMappingProviderRadius;
 export { PropertyMappingProviderSamlArgs, PropertyMappingProviderSamlState } from "./propertyMappingProviderSaml";
 export type PropertyMappingProviderSaml = import("./propertyMappingProviderSaml").PropertyMappingProviderSaml;
-export declare const PropertyMappingProviderSaml: typeof import("./propertyMappingProviderSaml").PropertyMappingProviderSaml;
+export declare const PropertyMappingProviderSaml:
+  typeof import("./propertyMappingProviderSaml").PropertyMappingProviderSaml;
 export { PropertyMappingProviderScimArgs, PropertyMappingProviderScimState } from "./propertyMappingProviderScim";
 export type PropertyMappingProviderScim = import("./propertyMappingProviderScim").PropertyMappingProviderScim;
-export declare const PropertyMappingProviderScim: typeof import("./propertyMappingProviderScim").PropertyMappingProviderScim;
+export declare const PropertyMappingProviderScim:
+  typeof import("./propertyMappingProviderScim").PropertyMappingProviderScim;
 export { PropertyMappingProviderScopeArgs, PropertyMappingProviderScopeState } from "./propertyMappingProviderScope";
 export type PropertyMappingProviderScope = import("./propertyMappingProviderScope").PropertyMappingProviderScope;
-export declare const PropertyMappingProviderScope: typeof import("./propertyMappingProviderScope").PropertyMappingProviderScope;
+export declare const PropertyMappingProviderScope:
+  typeof import("./propertyMappingProviderScope").PropertyMappingProviderScope;
 export { PropertyMappingRacArgs, PropertyMappingRacState } from "./propertyMappingRac";
 export type PropertyMappingRac = import("./propertyMappingRac").PropertyMappingRac;
 export declare const PropertyMappingRac: typeof import("./propertyMappingRac").PropertyMappingRac;
@@ -168,13 +249,15 @@ export type PropertyMappingScim = import("./propertyMappingScim").PropertyMappin
 export declare const PropertyMappingScim: typeof import("./propertyMappingScim").PropertyMappingScim;
 export { PropertyMappingSourceKerberosArgs, PropertyMappingSourceKerberosState } from "./propertyMappingSourceKerberos";
 export type PropertyMappingSourceKerberos = import("./propertyMappingSourceKerberos").PropertyMappingSourceKerberos;
-export declare const PropertyMappingSourceKerberos: typeof import("./propertyMappingSourceKerberos").PropertyMappingSourceKerberos;
+export declare const PropertyMappingSourceKerberos:
+  typeof import("./propertyMappingSourceKerberos").PropertyMappingSourceKerberos;
 export { PropertyMappingSourceLdapArgs, PropertyMappingSourceLdapState } from "./propertyMappingSourceLdap";
 export type PropertyMappingSourceLdap = import("./propertyMappingSourceLdap").PropertyMappingSourceLdap;
 export declare const PropertyMappingSourceLdap: typeof import("./propertyMappingSourceLdap").PropertyMappingSourceLdap;
 export { PropertyMappingSourceOauthArgs, PropertyMappingSourceOauthState } from "./propertyMappingSourceOauth";
 export type PropertyMappingSourceOauth = import("./propertyMappingSourceOauth").PropertyMappingSourceOauth;
-export declare const PropertyMappingSourceOauth: typeof import("./propertyMappingSourceOauth").PropertyMappingSourceOauth;
+export declare const PropertyMappingSourceOauth:
+  typeof import("./propertyMappingSourceOauth").PropertyMappingSourceOauth;
 export { PropertyMappingSourcePlexArgs, PropertyMappingSourcePlexState } from "./propertyMappingSourcePlex";
 export type PropertyMappingSourcePlex = import("./propertyMappingSourcePlex").PropertyMappingSourcePlex;
 export declare const PropertyMappingSourcePlex: typeof import("./propertyMappingSourcePlex").PropertyMappingSourcePlex;
@@ -238,7 +321,8 @@ export type ServiceConnectionDocker = import("./serviceConnectionDocker").Servic
 export declare const ServiceConnectionDocker: typeof import("./serviceConnectionDocker").ServiceConnectionDocker;
 export { ServiceConnectionKubernetesArgs, ServiceConnectionKubernetesState } from "./serviceConnectionKubernetes";
 export type ServiceConnectionKubernetes = import("./serviceConnectionKubernetes").ServiceConnectionKubernetes;
-export declare const ServiceConnectionKubernetes: typeof import("./serviceConnectionKubernetes").ServiceConnectionKubernetes;
+export declare const ServiceConnectionKubernetes:
+  typeof import("./serviceConnectionKubernetes").ServiceConnectionKubernetes;
 export { SourceKerberosArgs, SourceKerberosState } from "./sourceKerberos";
 export type SourceKerberos = import("./sourceKerberos").SourceKerberos;
 export declare const SourceKerberos: typeof import("./sourceKerberos").SourceKerberos;
@@ -260,9 +344,13 @@ export declare const StageAuthenticatorDuo: typeof import("./stageAuthenticatorD
 export { StageAuthenticatorEmailArgs, StageAuthenticatorEmailState } from "./stageAuthenticatorEmail";
 export type StageAuthenticatorEmail = import("./stageAuthenticatorEmail").StageAuthenticatorEmail;
 export declare const StageAuthenticatorEmail: typeof import("./stageAuthenticatorEmail").StageAuthenticatorEmail;
-export { StageAuthenticatorEndpointGdtcArgs, StageAuthenticatorEndpointGdtcState } from "./stageAuthenticatorEndpointGdtc";
+export {
+  StageAuthenticatorEndpointGdtcArgs,
+  StageAuthenticatorEndpointGdtcState,
+} from "./stageAuthenticatorEndpointGdtc";
 export type StageAuthenticatorEndpointGdtc = import("./stageAuthenticatorEndpointGdtc").StageAuthenticatorEndpointGdtc;
-export declare const StageAuthenticatorEndpointGdtc: typeof import("./stageAuthenticatorEndpointGdtc").StageAuthenticatorEndpointGdtc;
+export declare const StageAuthenticatorEndpointGdtc:
+  typeof import("./stageAuthenticatorEndpointGdtc").StageAuthenticatorEndpointGdtc;
 export { StageAuthenticatorSmsArgs, StageAuthenticatorSmsState } from "./stageAuthenticatorSms";
 export type StageAuthenticatorSms = import("./stageAuthenticatorSms").StageAuthenticatorSms;
 export declare const StageAuthenticatorSms: typeof import("./stageAuthenticatorSms").StageAuthenticatorSms;
@@ -274,10 +362,12 @@ export type StageAuthenticatorTotp = import("./stageAuthenticatorTotp").StageAut
 export declare const StageAuthenticatorTotp: typeof import("./stageAuthenticatorTotp").StageAuthenticatorTotp;
 export { StageAuthenticatorValidateArgs, StageAuthenticatorValidateState } from "./stageAuthenticatorValidate";
 export type StageAuthenticatorValidate = import("./stageAuthenticatorValidate").StageAuthenticatorValidate;
-export declare const StageAuthenticatorValidate: typeof import("./stageAuthenticatorValidate").StageAuthenticatorValidate;
+export declare const StageAuthenticatorValidate:
+  typeof import("./stageAuthenticatorValidate").StageAuthenticatorValidate;
 export { StageAuthenticatorWebauthnArgs, StageAuthenticatorWebauthnState } from "./stageAuthenticatorWebauthn";
 export type StageAuthenticatorWebauthn = import("./stageAuthenticatorWebauthn").StageAuthenticatorWebauthn;
-export declare const StageAuthenticatorWebauthn: typeof import("./stageAuthenticatorWebauthn").StageAuthenticatorWebauthn;
+export declare const StageAuthenticatorWebauthn:
+  typeof import("./stageAuthenticatorWebauthn").StageAuthenticatorWebauthn;
 export { StageCaptchaArgs, StageCaptchaState } from "./stageCaptcha";
 export type StageCaptcha = import("./stageCaptcha").StageCaptcha;
 export declare const StageCaptcha: typeof import("./stageCaptcha").StageCaptcha;
@@ -340,4 +430,4 @@ export type User = import("./user").User;
 export declare const User: typeof import("./user").User;
 import * as config from "./config";
 import * as types from "./types";
-export { config, types, };
+export { config, types };

@@ -6,29 +6,39 @@ exports.getPropertyMappingProviderRacOutput = exports.getPropertyMappingProvider
 const pulumi = require("@pulumi/pulumi");
 const utilities = require("./utilities");
 function getPropertyMappingProviderRac(args, opts) {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invoke("authentik:index/getPropertyMappingProviderRac:getPropertyMappingProviderRac", {
-        "id": args.id,
-        "ids": args.ids,
-        "managed": args.managed,
-        "managedLists": args.managedLists,
-        "name": args.name,
-        "settings": args.settings,
-    }, opts, utilities.getPackage());
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invoke(
+    "authentik:index/getPropertyMappingProviderRac:getPropertyMappingProviderRac",
+    {
+      "id": args.id,
+      "ids": args.ids,
+      "managed": args.managed,
+      "managedLists": args.managedLists,
+      "name": args.name,
+      "settings": args.settings,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 exports.getPropertyMappingProviderRac = getPropertyMappingProviderRac;
 function getPropertyMappingProviderRacOutput(args, opts) {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invokeOutput("authentik:index/getPropertyMappingProviderRac:getPropertyMappingProviderRac", {
-        "id": args.id,
-        "ids": args.ids,
-        "managed": args.managed,
-        "managedLists": args.managedLists,
-        "name": args.name,
-        "settings": args.settings,
-    }, opts, utilities.getPackage());
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invokeOutput(
+    "authentik:index/getPropertyMappingProviderRac:getPropertyMappingProviderRac",
+    {
+      "id": args.id,
+      "ids": args.ids,
+      "managed": args.managed,
+      "managedLists": args.managedLists,
+      "name": args.name,
+      "settings": args.settings,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 exports.getPropertyMappingProviderRacOutput = getPropertyMappingProviderRacOutput;
-//# sourceMappingURL=getPropertyMappingProviderRac.js.map
+// # sourceMappingURL=getPropertyMappingProviderRac.js.map

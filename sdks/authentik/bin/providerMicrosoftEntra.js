@@ -6,77 +6,85 @@ exports.ProviderMicrosoftEntra = void 0;
 const pulumi = require("@pulumi/pulumi");
 const utilities = require("./utilities");
 class ProviderMicrosoftEntra extends pulumi.CustomResource {
-    /**
-     * Get an existing ProviderMicrosoftEntra resource's state with the given name, ID, and optional extra
-     * properties used to qualify the lookup.
-     *
-     * @param name The _unique_ name of the resulting resource.
-     * @param id The _unique_ provider ID of the resource to lookup.
-     * @param state Any extra arguments used during the lookup.
-     * @param opts Optional settings to control the behavior of the CustomResource.
-     */
-    static get(name, id, state, opts) {
-        return new ProviderMicrosoftEntra(name, state, Object.assign(Object.assign({}, opts), { id: id }));
+  /**
+   * Get an existing ProviderMicrosoftEntra resource's state with the given name, ID, and optional extra
+   * properties used to qualify the lookup.
+   *
+   * @param name The _unique_ name of the resulting resource.
+   * @param id The _unique_ provider ID of the resource to lookup.
+   * @param state Any extra arguments used during the lookup.
+   * @param opts Optional settings to control the behavior of the CustomResource.
+   */
+  static get(name, id, state, opts) {
+    return new ProviderMicrosoftEntra(name, state, Object.assign(Object.assign({}, opts), { id: id }));
+  }
+  /**
+   * Returns true if the given object is an instance of ProviderMicrosoftEntra.  This is designed to work even
+   * when multiple copies of the Pulumi SDK have been loaded into the same process.
+   */
+  static isInstance(obj) {
+    if (obj === undefined || obj === null) {
+      return false;
     }
-    /**
-     * Returns true if the given object is an instance of ProviderMicrosoftEntra.  This is designed to work even
-     * when multiple copies of the Pulumi SDK have been loaded into the same process.
-     */
-    static isInstance(obj) {
-        if (obj === undefined || obj === null) {
-            return false;
-        }
-        return obj['__pulumiType'] === ProviderMicrosoftEntra.__pulumiType;
+    return obj["__pulumiType"] === ProviderMicrosoftEntra.__pulumiType;
+  }
+  constructor(name, argsOrState, opts) {
+    let resourceInputs = {};
+    opts = opts || {};
+    if (opts.id) {
+      const state = argsOrState;
+      resourceInputs["clientId"] = state ? state.clientId : undefined;
+      resourceInputs["clientSecret"] = state ? state.clientSecret : undefined;
+      resourceInputs["dryRun"] = state ? state.dryRun : undefined;
+      resourceInputs["excludeUsersServiceAccount"] = state ? state.excludeUsersServiceAccount : undefined;
+      resourceInputs["filterGroup"] = state ? state.filterGroup : undefined;
+      resourceInputs["groupDeleteAction"] = state ? state.groupDeleteAction : undefined;
+      resourceInputs["name"] = state ? state.name : undefined;
+      resourceInputs["propertyMappings"] = state ? state.propertyMappings : undefined;
+      resourceInputs["propertyMappingsGroups"] = state ? state.propertyMappingsGroups : undefined;
+      resourceInputs["providerMicrosoftEntraId"] = state ? state.providerMicrosoftEntraId : undefined;
+      resourceInputs["tenantId"] = state ? state.tenantId : undefined;
+      resourceInputs["userDeleteAction"] = state ? state.userDeleteAction : undefined;
+    } else {
+      const args = argsOrState;
+      if ((!args || args.clientId === undefined) && !opts.urn) {
+        throw new Error("Missing required property 'clientId'");
+      }
+      if ((!args || args.clientSecret === undefined) && !opts.urn) {
+        throw new Error("Missing required property 'clientSecret'");
+      }
+      if ((!args || args.tenantId === undefined) && !opts.urn) {
+        throw new Error("Missing required property 'tenantId'");
+      }
+      resourceInputs["clientId"] = args ? args.clientId : undefined;
+      resourceInputs["clientSecret"] = (args === null || args === void 0 ? void 0 : args.clientSecret)
+        ? pulumi.secret(args.clientSecret)
+        : undefined;
+      resourceInputs["dryRun"] = args ? args.dryRun : undefined;
+      resourceInputs["excludeUsersServiceAccount"] = args ? args.excludeUsersServiceAccount : undefined;
+      resourceInputs["filterGroup"] = args ? args.filterGroup : undefined;
+      resourceInputs["groupDeleteAction"] = args ? args.groupDeleteAction : undefined;
+      resourceInputs["name"] = args ? args.name : undefined;
+      resourceInputs["propertyMappings"] = args ? args.propertyMappings : undefined;
+      resourceInputs["propertyMappingsGroups"] = args ? args.propertyMappingsGroups : undefined;
+      resourceInputs["providerMicrosoftEntraId"] = args ? args.providerMicrosoftEntraId : undefined;
+      resourceInputs["tenantId"] = args ? args.tenantId : undefined;
+      resourceInputs["userDeleteAction"] = args ? args.userDeleteAction : undefined;
     }
-    constructor(name, argsOrState, opts) {
-        let resourceInputs = {};
-        opts = opts || {};
-        if (opts.id) {
-            const state = argsOrState;
-            resourceInputs["clientId"] = state ? state.clientId : undefined;
-            resourceInputs["clientSecret"] = state ? state.clientSecret : undefined;
-            resourceInputs["dryRun"] = state ? state.dryRun : undefined;
-            resourceInputs["excludeUsersServiceAccount"] = state ? state.excludeUsersServiceAccount : undefined;
-            resourceInputs["filterGroup"] = state ? state.filterGroup : undefined;
-            resourceInputs["groupDeleteAction"] = state ? state.groupDeleteAction : undefined;
-            resourceInputs["name"] = state ? state.name : undefined;
-            resourceInputs["propertyMappings"] = state ? state.propertyMappings : undefined;
-            resourceInputs["propertyMappingsGroups"] = state ? state.propertyMappingsGroups : undefined;
-            resourceInputs["providerMicrosoftEntraId"] = state ? state.providerMicrosoftEntraId : undefined;
-            resourceInputs["tenantId"] = state ? state.tenantId : undefined;
-            resourceInputs["userDeleteAction"] = state ? state.userDeleteAction : undefined;
-        }
-        else {
-            const args = argsOrState;
-            if ((!args || args.clientId === undefined) && !opts.urn) {
-                throw new Error("Missing required property 'clientId'");
-            }
-            if ((!args || args.clientSecret === undefined) && !opts.urn) {
-                throw new Error("Missing required property 'clientSecret'");
-            }
-            if ((!args || args.tenantId === undefined) && !opts.urn) {
-                throw new Error("Missing required property 'tenantId'");
-            }
-            resourceInputs["clientId"] = args ? args.clientId : undefined;
-            resourceInputs["clientSecret"] = (args === null || args === void 0 ? void 0 : args.clientSecret) ? pulumi.secret(args.clientSecret) : undefined;
-            resourceInputs["dryRun"] = args ? args.dryRun : undefined;
-            resourceInputs["excludeUsersServiceAccount"] = args ? args.excludeUsersServiceAccount : undefined;
-            resourceInputs["filterGroup"] = args ? args.filterGroup : undefined;
-            resourceInputs["groupDeleteAction"] = args ? args.groupDeleteAction : undefined;
-            resourceInputs["name"] = args ? args.name : undefined;
-            resourceInputs["propertyMappings"] = args ? args.propertyMappings : undefined;
-            resourceInputs["propertyMappingsGroups"] = args ? args.propertyMappingsGroups : undefined;
-            resourceInputs["providerMicrosoftEntraId"] = args ? args.providerMicrosoftEntraId : undefined;
-            resourceInputs["tenantId"] = args ? args.tenantId : undefined;
-            resourceInputs["userDeleteAction"] = args ? args.userDeleteAction : undefined;
-        }
-        opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
-        const secretOpts = { additionalSecretOutputs: ["clientSecret"] };
-        opts = pulumi.mergeOptions(opts, secretOpts);
-        super(ProviderMicrosoftEntra.__pulumiType, name, resourceInputs, opts, false /*dependency*/, utilities.getPackage());
-    }
+    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
+    const secretOpts = { additionalSecretOutputs: ["clientSecret"] };
+    opts = pulumi.mergeOptions(opts, secretOpts);
+    super(
+      ProviderMicrosoftEntra.__pulumiType,
+      name,
+      resourceInputs,
+      opts,
+      false, /*dependency*/
+      utilities.getPackage(),
+    );
+  }
 }
 exports.ProviderMicrosoftEntra = ProviderMicrosoftEntra;
 /** @internal */
-ProviderMicrosoftEntra.__pulumiType = 'authentik:index/providerMicrosoftEntra:ProviderMicrosoftEntra';
-//# sourceMappingURL=providerMicrosoftEntra.js.map
+ProviderMicrosoftEntra.__pulumiType = "authentik:index/providerMicrosoftEntra:ProviderMicrosoftEntra";
+// # sourceMappingURL=providerMicrosoftEntra.js.map

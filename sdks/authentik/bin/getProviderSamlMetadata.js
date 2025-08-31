@@ -6,23 +6,33 @@ exports.getProviderSamlMetadataOutput = exports.getProviderSamlMetadata = void 0
 const pulumi = require("@pulumi/pulumi");
 const utilities = require("./utilities");
 function getProviderSamlMetadata(args, opts) {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invoke("authentik:index/getProviderSamlMetadata:getProviderSamlMetadata", {
-        "id": args.id,
-        "name": args.name,
-        "providerId": args.providerId,
-    }, opts, utilities.getPackage());
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invoke(
+    "authentik:index/getProviderSamlMetadata:getProviderSamlMetadata",
+    {
+      "id": args.id,
+      "name": args.name,
+      "providerId": args.providerId,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 exports.getProviderSamlMetadata = getProviderSamlMetadata;
 function getProviderSamlMetadataOutput(args, opts) {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invokeOutput("authentik:index/getProviderSamlMetadata:getProviderSamlMetadata", {
-        "id": args.id,
-        "name": args.name,
-        "providerId": args.providerId,
-    }, opts, utilities.getPackage());
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invokeOutput(
+    "authentik:index/getProviderSamlMetadata:getProviderSamlMetadata",
+    {
+      "id": args.id,
+      "name": args.name,
+      "providerId": args.providerId,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 exports.getProviderSamlMetadataOutput = getProviderSamlMetadataOutput;
-//# sourceMappingURL=getProviderSamlMetadata.js.map
+// # sourceMappingURL=getProviderSamlMetadata.js.map

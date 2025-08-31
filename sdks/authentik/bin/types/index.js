@@ -8,4 +8,4 @@ const input = require("./input");
 exports.input = input;
 const output = require("./output");
 exports.output = output;
-//# sourceMappingURL=index.js.map
+// # sourceMappingURL=index.js.map

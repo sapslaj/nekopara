@@ -4,44 +4,60 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as utilities from "./utilities";
 
-export function getWebauthnDeviceType(args?: GetWebauthnDeviceTypeArgs, opts?: pulumi.InvokeOptions): Promise<GetWebauthnDeviceTypeResult> {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invoke("authentik:index/getWebauthnDeviceType:getWebauthnDeviceType", {
-        "description": args.description,
-        "id": args.id,
-    }, opts, utilities.getPackage());
+export function getWebauthnDeviceType(
+  args?: GetWebauthnDeviceTypeArgs,
+  opts?: pulumi.InvokeOptions,
+): Promise<GetWebauthnDeviceTypeResult> {
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invoke(
+    "authentik:index/getWebauthnDeviceType:getWebauthnDeviceType",
+    {
+      "description": args.description,
+      "id": args.id,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 
 /**
  * A collection of arguments for invoking getWebauthnDeviceType.
  */
 export interface GetWebauthnDeviceTypeArgs {
-    description?: string;
-    id?: string;
+  description?: string;
+  id?: string;
 }
 
 /**
  * A collection of values returned by getWebauthnDeviceType.
  */
 export interface GetWebauthnDeviceTypeResult {
-    readonly aaguid: string;
-    readonly description: string;
-    readonly id: string;
+  readonly aaguid: string;
+  readonly description: string;
+  readonly id: string;
 }
-export function getWebauthnDeviceTypeOutput(args?: GetWebauthnDeviceTypeOutputArgs, opts?: pulumi.InvokeOutputOptions): pulumi.Output<GetWebauthnDeviceTypeResult> {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invokeOutput("authentik:index/getWebauthnDeviceType:getWebauthnDeviceType", {
-        "description": args.description,
-        "id": args.id,
-    }, opts, utilities.getPackage());
+export function getWebauthnDeviceTypeOutput(
+  args?: GetWebauthnDeviceTypeOutputArgs,
+  opts?: pulumi.InvokeOutputOptions,
+): pulumi.Output<GetWebauthnDeviceTypeResult> {
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invokeOutput(
+    "authentik:index/getWebauthnDeviceType:getWebauthnDeviceType",
+    {
+      "description": args.description,
+      "id": args.id,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 
 /**
  * A collection of arguments for invoking getWebauthnDeviceType.
  */
 export interface GetWebauthnDeviceTypeOutputArgs {
-    description?: pulumi.Input<string>;
-    id?: pulumi.Input<string>;
+  description?: pulumi.Input<string>;
+  id?: pulumi.Input<string>;
 }

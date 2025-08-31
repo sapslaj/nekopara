@@ -6,70 +6,69 @@ exports.Token = void 0;
 const pulumi = require("@pulumi/pulumi");
 const utilities = require("./utilities");
 class Token extends pulumi.CustomResource {
-    /**
-     * Get an existing Token resource's state with the given name, ID, and optional extra
-     * properties used to qualify the lookup.
-     *
-     * @param name The _unique_ name of the resulting resource.
-     * @param id The _unique_ provider ID of the resource to lookup.
-     * @param state Any extra arguments used during the lookup.
-     * @param opts Optional settings to control the behavior of the CustomResource.
-     */
-    static get(name, id, state, opts) {
-        return new Token(name, state, Object.assign(Object.assign({}, opts), { id: id }));
+  /**
+   * Get an existing Token resource's state with the given name, ID, and optional extra
+   * properties used to qualify the lookup.
+   *
+   * @param name The _unique_ name of the resulting resource.
+   * @param id The _unique_ provider ID of the resource to lookup.
+   * @param state Any extra arguments used during the lookup.
+   * @param opts Optional settings to control the behavior of the CustomResource.
+   */
+  static get(name, id, state, opts) {
+    return new Token(name, state, Object.assign(Object.assign({}, opts), { id: id }));
+  }
+  /**
+   * Returns true if the given object is an instance of Token.  This is designed to work even
+   * when multiple copies of the Pulumi SDK have been loaded into the same process.
+   */
+  static isInstance(obj) {
+    if (obj === undefined || obj === null) {
+      return false;
     }
-    /**
-     * Returns true if the given object is an instance of Token.  This is designed to work even
-     * when multiple copies of the Pulumi SDK have been loaded into the same process.
-     */
-    static isInstance(obj) {
-        if (obj === undefined || obj === null) {
-            return false;
-        }
-        return obj['__pulumiType'] === Token.__pulumiType;
+    return obj["__pulumiType"] === Token.__pulumiType;
+  }
+  constructor(name, argsOrState, opts) {
+    let resourceInputs = {};
+    opts = opts || {};
+    if (opts.id) {
+      const state = argsOrState;
+      resourceInputs["description"] = state ? state.description : undefined;
+      resourceInputs["expires"] = state ? state.expires : undefined;
+      resourceInputs["expiresIn"] = state ? state.expiresIn : undefined;
+      resourceInputs["expiring"] = state ? state.expiring : undefined;
+      resourceInputs["identifier"] = state ? state.identifier : undefined;
+      resourceInputs["intent"] = state ? state.intent : undefined;
+      resourceInputs["key"] = state ? state.key : undefined;
+      resourceInputs["retrieveKey"] = state ? state.retrieveKey : undefined;
+      resourceInputs["tokenId"] = state ? state.tokenId : undefined;
+      resourceInputs["user"] = state ? state.user : undefined;
+    } else {
+      const args = argsOrState;
+      if ((!args || args.identifier === undefined) && !opts.urn) {
+        throw new Error("Missing required property 'identifier'");
+      }
+      if ((!args || args.user === undefined) && !opts.urn) {
+        throw new Error("Missing required property 'user'");
+      }
+      resourceInputs["description"] = args ? args.description : undefined;
+      resourceInputs["expires"] = args ? args.expires : undefined;
+      resourceInputs["expiring"] = args ? args.expiring : undefined;
+      resourceInputs["identifier"] = args ? args.identifier : undefined;
+      resourceInputs["intent"] = args ? args.intent : undefined;
+      resourceInputs["retrieveKey"] = args ? args.retrieveKey : undefined;
+      resourceInputs["tokenId"] = args ? args.tokenId : undefined;
+      resourceInputs["user"] = args ? args.user : undefined;
+      resourceInputs["expiresIn"] = undefined /*out*/;
+      resourceInputs["key"] = undefined /*out*/;
     }
-    constructor(name, argsOrState, opts) {
-        let resourceInputs = {};
-        opts = opts || {};
-        if (opts.id) {
-            const state = argsOrState;
-            resourceInputs["description"] = state ? state.description : undefined;
-            resourceInputs["expires"] = state ? state.expires : undefined;
-            resourceInputs["expiresIn"] = state ? state.expiresIn : undefined;
-            resourceInputs["expiring"] = state ? state.expiring : undefined;
-            resourceInputs["identifier"] = state ? state.identifier : undefined;
-            resourceInputs["intent"] = state ? state.intent : undefined;
-            resourceInputs["key"] = state ? state.key : undefined;
-            resourceInputs["retrieveKey"] = state ? state.retrieveKey : undefined;
-            resourceInputs["tokenId"] = state ? state.tokenId : undefined;
-            resourceInputs["user"] = state ? state.user : undefined;
-        }
-        else {
-            const args = argsOrState;
-            if ((!args || args.identifier === undefined) && !opts.urn) {
-                throw new Error("Missing required property 'identifier'");
-            }
-            if ((!args || args.user === undefined) && !opts.urn) {
-                throw new Error("Missing required property 'user'");
-            }
-            resourceInputs["description"] = args ? args.description : undefined;
-            resourceInputs["expires"] = args ? args.expires : undefined;
-            resourceInputs["expiring"] = args ? args.expiring : undefined;
-            resourceInputs["identifier"] = args ? args.identifier : undefined;
-            resourceInputs["intent"] = args ? args.intent : undefined;
-            resourceInputs["retrieveKey"] = args ? args.retrieveKey : undefined;
-            resourceInputs["tokenId"] = args ? args.tokenId : undefined;
-            resourceInputs["user"] = args ? args.user : undefined;
-            resourceInputs["expiresIn"] = undefined /*out*/;
-            resourceInputs["key"] = undefined /*out*/;
-        }
-        opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
-        const secretOpts = { additionalSecretOutputs: ["key"] };
-        opts = pulumi.mergeOptions(opts, secretOpts);
-        super(Token.__pulumiType, name, resourceInputs, opts, false /*dependency*/, utilities.getPackage());
-    }
+    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
+    const secretOpts = { additionalSecretOutputs: ["key"] };
+    opts = pulumi.mergeOptions(opts, secretOpts);
+    super(Token.__pulumiType, name, resourceInputs, opts, false, /*dependency*/ utilities.getPackage());
+  }
 }
 exports.Token = Token;
 /** @internal */
-Token.__pulumiType = 'authentik:index/token:Token';
-//# sourceMappingURL=token.js.map
+Token.__pulumiType = "authentik:index/token:Token";
+// # sourceMappingURL=token.js.map

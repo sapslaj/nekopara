@@ -6,68 +6,67 @@ exports.PolicyBinding = void 0;
 const pulumi = require("@pulumi/pulumi");
 const utilities = require("./utilities");
 class PolicyBinding extends pulumi.CustomResource {
-    /**
-     * Get an existing PolicyBinding resource's state with the given name, ID, and optional extra
-     * properties used to qualify the lookup.
-     *
-     * @param name The _unique_ name of the resulting resource.
-     * @param id The _unique_ provider ID of the resource to lookup.
-     * @param state Any extra arguments used during the lookup.
-     * @param opts Optional settings to control the behavior of the CustomResource.
-     */
-    static get(name, id, state, opts) {
-        return new PolicyBinding(name, state, Object.assign(Object.assign({}, opts), { id: id }));
+  /**
+   * Get an existing PolicyBinding resource's state with the given name, ID, and optional extra
+   * properties used to qualify the lookup.
+   *
+   * @param name The _unique_ name of the resulting resource.
+   * @param id The _unique_ provider ID of the resource to lookup.
+   * @param state Any extra arguments used during the lookup.
+   * @param opts Optional settings to control the behavior of the CustomResource.
+   */
+  static get(name, id, state, opts) {
+    return new PolicyBinding(name, state, Object.assign(Object.assign({}, opts), { id: id }));
+  }
+  /**
+   * Returns true if the given object is an instance of PolicyBinding.  This is designed to work even
+   * when multiple copies of the Pulumi SDK have been loaded into the same process.
+   */
+  static isInstance(obj) {
+    if (obj === undefined || obj === null) {
+      return false;
     }
-    /**
-     * Returns true if the given object is an instance of PolicyBinding.  This is designed to work even
-     * when multiple copies of the Pulumi SDK have been loaded into the same process.
-     */
-    static isInstance(obj) {
-        if (obj === undefined || obj === null) {
-            return false;
-        }
-        return obj['__pulumiType'] === PolicyBinding.__pulumiType;
+    return obj["__pulumiType"] === PolicyBinding.__pulumiType;
+  }
+  constructor(name, argsOrState, opts) {
+    let resourceInputs = {};
+    opts = opts || {};
+    if (opts.id) {
+      const state = argsOrState;
+      resourceInputs["enabled"] = state ? state.enabled : undefined;
+      resourceInputs["failureResult"] = state ? state.failureResult : undefined;
+      resourceInputs["group"] = state ? state.group : undefined;
+      resourceInputs["negate"] = state ? state.negate : undefined;
+      resourceInputs["order"] = state ? state.order : undefined;
+      resourceInputs["policy"] = state ? state.policy : undefined;
+      resourceInputs["policyBindingId"] = state ? state.policyBindingId : undefined;
+      resourceInputs["target"] = state ? state.target : undefined;
+      resourceInputs["timeout"] = state ? state.timeout : undefined;
+      resourceInputs["user"] = state ? state.user : undefined;
+    } else {
+      const args = argsOrState;
+      if ((!args || args.order === undefined) && !opts.urn) {
+        throw new Error("Missing required property 'order'");
+      }
+      if ((!args || args.target === undefined) && !opts.urn) {
+        throw new Error("Missing required property 'target'");
+      }
+      resourceInputs["enabled"] = args ? args.enabled : undefined;
+      resourceInputs["failureResult"] = args ? args.failureResult : undefined;
+      resourceInputs["group"] = args ? args.group : undefined;
+      resourceInputs["negate"] = args ? args.negate : undefined;
+      resourceInputs["order"] = args ? args.order : undefined;
+      resourceInputs["policy"] = args ? args.policy : undefined;
+      resourceInputs["policyBindingId"] = args ? args.policyBindingId : undefined;
+      resourceInputs["target"] = args ? args.target : undefined;
+      resourceInputs["timeout"] = args ? args.timeout : undefined;
+      resourceInputs["user"] = args ? args.user : undefined;
     }
-    constructor(name, argsOrState, opts) {
-        let resourceInputs = {};
-        opts = opts || {};
-        if (opts.id) {
-            const state = argsOrState;
-            resourceInputs["enabled"] = state ? state.enabled : undefined;
-            resourceInputs["failureResult"] = state ? state.failureResult : undefined;
-            resourceInputs["group"] = state ? state.group : undefined;
-            resourceInputs["negate"] = state ? state.negate : undefined;
-            resourceInputs["order"] = state ? state.order : undefined;
-            resourceInputs["policy"] = state ? state.policy : undefined;
-            resourceInputs["policyBindingId"] = state ? state.policyBindingId : undefined;
-            resourceInputs["target"] = state ? state.target : undefined;
-            resourceInputs["timeout"] = state ? state.timeout : undefined;
-            resourceInputs["user"] = state ? state.user : undefined;
-        }
-        else {
-            const args = argsOrState;
-            if ((!args || args.order === undefined) && !opts.urn) {
-                throw new Error("Missing required property 'order'");
-            }
-            if ((!args || args.target === undefined) && !opts.urn) {
-                throw new Error("Missing required property 'target'");
-            }
-            resourceInputs["enabled"] = args ? args.enabled : undefined;
-            resourceInputs["failureResult"] = args ? args.failureResult : undefined;
-            resourceInputs["group"] = args ? args.group : undefined;
-            resourceInputs["negate"] = args ? args.negate : undefined;
-            resourceInputs["order"] = args ? args.order : undefined;
-            resourceInputs["policy"] = args ? args.policy : undefined;
-            resourceInputs["policyBindingId"] = args ? args.policyBindingId : undefined;
-            resourceInputs["target"] = args ? args.target : undefined;
-            resourceInputs["timeout"] = args ? args.timeout : undefined;
-            resourceInputs["user"] = args ? args.user : undefined;
-        }
-        opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
-        super(PolicyBinding.__pulumiType, name, resourceInputs, opts, false /*dependency*/, utilities.getPackage());
-    }
+    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
+    super(PolicyBinding.__pulumiType, name, resourceInputs, opts, false, /*dependency*/ utilities.getPackage());
+  }
 }
 exports.PolicyBinding = PolicyBinding;
 /** @internal */
-PolicyBinding.__pulumiType = 'authentik:index/policyBinding:PolicyBinding';
-//# sourceMappingURL=policyBinding.js.map
+PolicyBinding.__pulumiType = "authentik:index/policyBinding:PolicyBinding";
+// # sourceMappingURL=policyBinding.js.map

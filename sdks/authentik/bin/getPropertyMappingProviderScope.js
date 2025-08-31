@@ -6,29 +6,39 @@ exports.getPropertyMappingProviderScopeOutput = exports.getPropertyMappingProvid
 const pulumi = require("@pulumi/pulumi");
 const utilities = require("./utilities");
 function getPropertyMappingProviderScope(args, opts) {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invoke("authentik:index/getPropertyMappingProviderScope:getPropertyMappingProviderScope", {
-        "id": args.id,
-        "ids": args.ids,
-        "managed": args.managed,
-        "managedLists": args.managedLists,
-        "name": args.name,
-        "scopeName": args.scopeName,
-    }, opts, utilities.getPackage());
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invoke(
+    "authentik:index/getPropertyMappingProviderScope:getPropertyMappingProviderScope",
+    {
+      "id": args.id,
+      "ids": args.ids,
+      "managed": args.managed,
+      "managedLists": args.managedLists,
+      "name": args.name,
+      "scopeName": args.scopeName,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 exports.getPropertyMappingProviderScope = getPropertyMappingProviderScope;
 function getPropertyMappingProviderScopeOutput(args, opts) {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invokeOutput("authentik:index/getPropertyMappingProviderScope:getPropertyMappingProviderScope", {
-        "id": args.id,
-        "ids": args.ids,
-        "managed": args.managed,
-        "managedLists": args.managedLists,
-        "name": args.name,
-        "scopeName": args.scopeName,
-    }, opts, utilities.getPackage());
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invokeOutput(
+    "authentik:index/getPropertyMappingProviderScope:getPropertyMappingProviderScope",
+    {
+      "id": args.id,
+      "ids": args.ids,
+      "managed": args.managed,
+      "managedLists": args.managedLists,
+      "name": args.name,
+      "scopeName": args.scopeName,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 exports.getPropertyMappingProviderScopeOutput = getPropertyMappingProviderScopeOutput;
-//# sourceMappingURL=getPropertyMappingProviderScope.js.map
+// # sourceMappingURL=getPropertyMappingProviderScope.js.map

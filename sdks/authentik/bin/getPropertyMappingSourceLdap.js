@@ -6,27 +6,37 @@ exports.getPropertyMappingSourceLdapOutput = exports.getPropertyMappingSourceLda
 const pulumi = require("@pulumi/pulumi");
 const utilities = require("./utilities");
 function getPropertyMappingSourceLdap(args, opts) {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invoke("authentik:index/getPropertyMappingSourceLdap:getPropertyMappingSourceLdap", {
-        "id": args.id,
-        "ids": args.ids,
-        "managed": args.managed,
-        "managedLists": args.managedLists,
-        "name": args.name,
-    }, opts, utilities.getPackage());
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invoke(
+    "authentik:index/getPropertyMappingSourceLdap:getPropertyMappingSourceLdap",
+    {
+      "id": args.id,
+      "ids": args.ids,
+      "managed": args.managed,
+      "managedLists": args.managedLists,
+      "name": args.name,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 exports.getPropertyMappingSourceLdap = getPropertyMappingSourceLdap;
 function getPropertyMappingSourceLdapOutput(args, opts) {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invokeOutput("authentik:index/getPropertyMappingSourceLdap:getPropertyMappingSourceLdap", {
-        "id": args.id,
-        "ids": args.ids,
-        "managed": args.managed,
-        "managedLists": args.managedLists,
-        "name": args.name,
-    }, opts, utilities.getPackage());
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invokeOutput(
+    "authentik:index/getPropertyMappingSourceLdap:getPropertyMappingSourceLdap",
+    {
+      "id": args.id,
+      "ids": args.ids,
+      "managed": args.managed,
+      "managedLists": args.managedLists,
+      "name": args.name,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 exports.getPropertyMappingSourceLdapOutput = getPropertyMappingSourceLdapOutput;
-//# sourceMappingURL=getPropertyMappingSourceLdap.js.map
+// # sourceMappingURL=getPropertyMappingSourceLdap.js.map

@@ -6,23 +6,33 @@ exports.getProviderOauth2ConfigOutput = exports.getProviderOauth2Config = void 0
 const pulumi = require("@pulumi/pulumi");
 const utilities = require("./utilities");
 function getProviderOauth2Config(args, opts) {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invoke("authentik:index/getProviderOauth2Config:getProviderOauth2Config", {
-        "id": args.id,
-        "name": args.name,
-        "providerId": args.providerId,
-    }, opts, utilities.getPackage());
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invoke(
+    "authentik:index/getProviderOauth2Config:getProviderOauth2Config",
+    {
+      "id": args.id,
+      "name": args.name,
+      "providerId": args.providerId,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 exports.getProviderOauth2Config = getProviderOauth2Config;
 function getProviderOauth2ConfigOutput(args, opts) {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invokeOutput("authentik:index/getProviderOauth2Config:getProviderOauth2Config", {
-        "id": args.id,
-        "name": args.name,
-        "providerId": args.providerId,
-    }, opts, utilities.getPackage());
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invokeOutput(
+    "authentik:index/getProviderOauth2Config:getProviderOauth2Config",
+    {
+      "id": args.id,
+      "name": args.name,
+      "providerId": args.providerId,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 exports.getProviderOauth2ConfigOutput = getProviderOauth2ConfigOutput;
-//# sourceMappingURL=getProviderOauth2Config.js.map
+// # sourceMappingURL=getProviderOauth2Config.js.map

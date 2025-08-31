@@ -6,21 +6,31 @@ exports.getStageOutput = exports.getStage = void 0;
 const pulumi = require("@pulumi/pulumi");
 const utilities = require("./utilities");
 function getStage(args, opts) {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invoke("authentik:index/getStage:getStage", {
-        "id": args.id,
-        "name": args.name,
-    }, opts, utilities.getPackage());
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invoke(
+    "authentik:index/getStage:getStage",
+    {
+      "id": args.id,
+      "name": args.name,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 exports.getStage = getStage;
 function getStageOutput(args, opts) {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invokeOutput("authentik:index/getStage:getStage", {
-        "id": args.id,
-        "name": args.name,
-    }, opts, utilities.getPackage());
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invokeOutput(
+    "authentik:index/getStage:getStage",
+    {
+      "id": args.id,
+      "name": args.name,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 exports.getStageOutput = getStageOutput;
-//# sourceMappingURL=getStage.js.map
+// # sourceMappingURL=getStage.js.map

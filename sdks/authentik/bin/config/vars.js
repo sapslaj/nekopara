@@ -5,27 +5,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const pulumi = require("@pulumi/pulumi");
 const __config = new pulumi.Config("authentik");
 Object.defineProperty(exports, "headers", {
-    get() {
-        return __config.getObject("headers");
-    },
-    enumerable: true,
+  get() {
+    return __config.getObject("headers");
+  },
+  enumerable: true,
 });
 Object.defineProperty(exports, "insecure", {
-    get() {
-        return __config.getObject("insecure");
-    },
-    enumerable: true,
+  get() {
+    return __config.getObject("insecure");
+  },
+  enumerable: true,
 });
 Object.defineProperty(exports, "token", {
-    get() {
-        return __config.get("token");
-    },
-    enumerable: true,
+  get() {
+    return __config.get("token");
+  },
+  enumerable: true,
 });
 Object.defineProperty(exports, "url", {
-    get() {
-        return __config.get("url");
-    },
-    enumerable: true,
+  get() {
+    return __config.get("url");
+  },
+  enumerable: true,
 });
-//# sourceMappingURL=vars.js.map
+// # sourceMappingURL=vars.js.map

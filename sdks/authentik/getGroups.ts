@@ -7,78 +7,91 @@ import * as outputs from "./types/output";
 import * as utilities from "./utilities";
 
 export function getGroups(args?: GetGroupsArgs, opts?: pulumi.InvokeOptions): Promise<GetGroupsResult> {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invoke("authentik:index/getGroups:getGroups", {
-        "attributes": args.attributes,
-        "id": args.id,
-        "includeUsers": args.includeUsers,
-        "isSuperuser": args.isSuperuser,
-        "membersByPks": args.membersByPks,
-        "membersByUsernames": args.membersByUsernames,
-        "name": args.name,
-        "ordering": args.ordering,
-        "search": args.search,
-    }, opts, utilities.getPackage());
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invoke(
+    "authentik:index/getGroups:getGroups",
+    {
+      "attributes": args.attributes,
+      "id": args.id,
+      "includeUsers": args.includeUsers,
+      "isSuperuser": args.isSuperuser,
+      "membersByPks": args.membersByPks,
+      "membersByUsernames": args.membersByUsernames,
+      "name": args.name,
+      "ordering": args.ordering,
+      "search": args.search,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 
 /**
  * A collection of arguments for invoking getGroups.
  */
 export interface GetGroupsArgs {
-    attributes?: string;
-    id?: string;
-    includeUsers?: boolean;
-    isSuperuser?: boolean;
-    membersByPks?: number[];
-    membersByUsernames?: string[];
-    name?: string;
-    ordering?: string;
-    search?: string;
+  attributes?: string;
+  id?: string;
+  includeUsers?: boolean;
+  isSuperuser?: boolean;
+  membersByPks?: number[];
+  membersByUsernames?: string[];
+  name?: string;
+  ordering?: string;
+  search?: string;
 }
 
 /**
  * A collection of values returned by getGroups.
  */
 export interface GetGroupsResult {
-    readonly attributes?: string;
-    readonly groups: outputs.GetGroupsGroup[];
-    readonly id: string;
-    readonly includeUsers?: boolean;
-    readonly isSuperuser?: boolean;
-    readonly membersByPks?: number[];
-    readonly membersByUsernames?: string[];
-    readonly name?: string;
-    readonly ordering?: string;
-    readonly search?: string;
+  readonly attributes?: string;
+  readonly groups: outputs.GetGroupsGroup[];
+  readonly id: string;
+  readonly includeUsers?: boolean;
+  readonly isSuperuser?: boolean;
+  readonly membersByPks?: number[];
+  readonly membersByUsernames?: string[];
+  readonly name?: string;
+  readonly ordering?: string;
+  readonly search?: string;
 }
-export function getGroupsOutput(args?: GetGroupsOutputArgs, opts?: pulumi.InvokeOutputOptions): pulumi.Output<GetGroupsResult> {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invokeOutput("authentik:index/getGroups:getGroups", {
-        "attributes": args.attributes,
-        "id": args.id,
-        "includeUsers": args.includeUsers,
-        "isSuperuser": args.isSuperuser,
-        "membersByPks": args.membersByPks,
-        "membersByUsernames": args.membersByUsernames,
-        "name": args.name,
-        "ordering": args.ordering,
-        "search": args.search,
-    }, opts, utilities.getPackage());
+export function getGroupsOutput(
+  args?: GetGroupsOutputArgs,
+  opts?: pulumi.InvokeOutputOptions,
+): pulumi.Output<GetGroupsResult> {
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invokeOutput(
+    "authentik:index/getGroups:getGroups",
+    {
+      "attributes": args.attributes,
+      "id": args.id,
+      "includeUsers": args.includeUsers,
+      "isSuperuser": args.isSuperuser,
+      "membersByPks": args.membersByPks,
+      "membersByUsernames": args.membersByUsernames,
+      "name": args.name,
+      "ordering": args.ordering,
+      "search": args.search,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 
 /**
  * A collection of arguments for invoking getGroups.
  */
 export interface GetGroupsOutputArgs {
-    attributes?: pulumi.Input<string>;
-    id?: pulumi.Input<string>;
-    includeUsers?: pulumi.Input<boolean>;
-    isSuperuser?: pulumi.Input<boolean>;
-    membersByPks?: pulumi.Input<pulumi.Input<number>[]>;
-    membersByUsernames?: pulumi.Input<pulumi.Input<string>[]>;
-    name?: pulumi.Input<string>;
-    ordering?: pulumi.Input<string>;
-    search?: pulumi.Input<string>;
+  attributes?: pulumi.Input<string>;
+  id?: pulumi.Input<string>;
+  includeUsers?: pulumi.Input<boolean>;
+  isSuperuser?: pulumi.Input<boolean>;
+  membersByPks?: pulumi.Input<pulumi.Input<number>[]>;
+  membersByUsernames?: pulumi.Input<pulumi.Input<string>[]>;
+  name?: pulumi.Input<string>;
+  ordering?: pulumi.Input<string>;
+  search?: pulumi.Input<string>;
 }

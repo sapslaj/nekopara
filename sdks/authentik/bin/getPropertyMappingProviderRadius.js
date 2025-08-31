@@ -6,27 +6,37 @@ exports.getPropertyMappingProviderRadiusOutput = exports.getPropertyMappingProvi
 const pulumi = require("@pulumi/pulumi");
 const utilities = require("./utilities");
 function getPropertyMappingProviderRadius(args, opts) {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invoke("authentik:index/getPropertyMappingProviderRadius:getPropertyMappingProviderRadius", {
-        "id": args.id,
-        "ids": args.ids,
-        "managed": args.managed,
-        "managedLists": args.managedLists,
-        "name": args.name,
-    }, opts, utilities.getPackage());
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invoke(
+    "authentik:index/getPropertyMappingProviderRadius:getPropertyMappingProviderRadius",
+    {
+      "id": args.id,
+      "ids": args.ids,
+      "managed": args.managed,
+      "managedLists": args.managedLists,
+      "name": args.name,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 exports.getPropertyMappingProviderRadius = getPropertyMappingProviderRadius;
 function getPropertyMappingProviderRadiusOutput(args, opts) {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invokeOutput("authentik:index/getPropertyMappingProviderRadius:getPropertyMappingProviderRadius", {
-        "id": args.id,
-        "ids": args.ids,
-        "managed": args.managed,
-        "managedLists": args.managedLists,
-        "name": args.name,
-    }, opts, utilities.getPackage());
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invokeOutput(
+    "authentik:index/getPropertyMappingProviderRadius:getPropertyMappingProviderRadius",
+    {
+      "id": args.id,
+      "ids": args.ids,
+      "managed": args.managed,
+      "managedLists": args.managedLists,
+      "name": args.name,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 exports.getPropertyMappingProviderRadiusOutput = getPropertyMappingProviderRadiusOutput;
-//# sourceMappingURL=getPropertyMappingProviderRadius.js.map
+// # sourceMappingURL=getPropertyMappingProviderRadius.js.map

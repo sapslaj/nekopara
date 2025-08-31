@@ -6,45 +6,55 @@ exports.getUsersOutput = exports.getUsers = void 0;
 const pulumi = require("@pulumi/pulumi");
 const utilities = require("./utilities");
 function getUsers(args, opts) {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invoke("authentik:index/getUsers:getUsers", {
-        "attributes": args.attributes,
-        "email": args.email,
-        "groupsByNames": args.groupsByNames,
-        "groupsByPks": args.groupsByPks,
-        "id": args.id,
-        "isActive": args.isActive,
-        "isSuperuser": args.isSuperuser,
-        "name": args.name,
-        "ordering": args.ordering,
-        "path": args.path,
-        "pathStartswith": args.pathStartswith,
-        "search": args.search,
-        "username": args.username,
-        "uuid": args.uuid,
-    }, opts, utilities.getPackage());
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invoke(
+    "authentik:index/getUsers:getUsers",
+    {
+      "attributes": args.attributes,
+      "email": args.email,
+      "groupsByNames": args.groupsByNames,
+      "groupsByPks": args.groupsByPks,
+      "id": args.id,
+      "isActive": args.isActive,
+      "isSuperuser": args.isSuperuser,
+      "name": args.name,
+      "ordering": args.ordering,
+      "path": args.path,
+      "pathStartswith": args.pathStartswith,
+      "search": args.search,
+      "username": args.username,
+      "uuid": args.uuid,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 exports.getUsers = getUsers;
 function getUsersOutput(args, opts) {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invokeOutput("authentik:index/getUsers:getUsers", {
-        "attributes": args.attributes,
-        "email": args.email,
-        "groupsByNames": args.groupsByNames,
-        "groupsByPks": args.groupsByPks,
-        "id": args.id,
-        "isActive": args.isActive,
-        "isSuperuser": args.isSuperuser,
-        "name": args.name,
-        "ordering": args.ordering,
-        "path": args.path,
-        "pathStartswith": args.pathStartswith,
-        "search": args.search,
-        "username": args.username,
-        "uuid": args.uuid,
-    }, opts, utilities.getPackage());
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invokeOutput(
+    "authentik:index/getUsers:getUsers",
+    {
+      "attributes": args.attributes,
+      "email": args.email,
+      "groupsByNames": args.groupsByNames,
+      "groupsByPks": args.groupsByPks,
+      "id": args.id,
+      "isActive": args.isActive,
+      "isSuperuser": args.isSuperuser,
+      "name": args.name,
+      "ordering": args.ordering,
+      "path": args.path,
+      "pathStartswith": args.pathStartswith,
+      "search": args.search,
+      "username": args.username,
+      "uuid": args.uuid,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 exports.getUsersOutput = getUsersOutput;
-//# sourceMappingURL=getUsers.js.map
+// # sourceMappingURL=getUsers.js.map

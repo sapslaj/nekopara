@@ -6,51 +6,61 @@ exports.getBrandOutput = exports.getBrand = void 0;
 const pulumi = require("@pulumi/pulumi");
 const utilities = require("./utilities");
 function getBrand(args, opts) {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invoke("authentik:index/getBrand:getBrand", {
-        "brandingCustomCss": args.brandingCustomCss,
-        "brandingDefaultFlowBackground": args.brandingDefaultFlowBackground,
-        "brandingFavicon": args.brandingFavicon,
-        "brandingLogo": args.brandingLogo,
-        "brandingTitle": args.brandingTitle,
-        "clientCertificates": args.clientCertificates,
-        "default": args.default,
-        "defaultApplication": args.defaultApplication,
-        "domain": args.domain,
-        "flowAuthentication": args.flowAuthentication,
-        "flowDeviceCode": args.flowDeviceCode,
-        "flowInvalidation": args.flowInvalidation,
-        "flowRecovery": args.flowRecovery,
-        "flowUnenrollment": args.flowUnenrollment,
-        "flowUserSettings": args.flowUserSettings,
-        "id": args.id,
-        "webCertificate": args.webCertificate,
-    }, opts, utilities.getPackage());
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invoke(
+    "authentik:index/getBrand:getBrand",
+    {
+      "brandingCustomCss": args.brandingCustomCss,
+      "brandingDefaultFlowBackground": args.brandingDefaultFlowBackground,
+      "brandingFavicon": args.brandingFavicon,
+      "brandingLogo": args.brandingLogo,
+      "brandingTitle": args.brandingTitle,
+      "clientCertificates": args.clientCertificates,
+      "default": args.default,
+      "defaultApplication": args.defaultApplication,
+      "domain": args.domain,
+      "flowAuthentication": args.flowAuthentication,
+      "flowDeviceCode": args.flowDeviceCode,
+      "flowInvalidation": args.flowInvalidation,
+      "flowRecovery": args.flowRecovery,
+      "flowUnenrollment": args.flowUnenrollment,
+      "flowUserSettings": args.flowUserSettings,
+      "id": args.id,
+      "webCertificate": args.webCertificate,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 exports.getBrand = getBrand;
 function getBrandOutput(args, opts) {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invokeOutput("authentik:index/getBrand:getBrand", {
-        "brandingCustomCss": args.brandingCustomCss,
-        "brandingDefaultFlowBackground": args.brandingDefaultFlowBackground,
-        "brandingFavicon": args.brandingFavicon,
-        "brandingLogo": args.brandingLogo,
-        "brandingTitle": args.brandingTitle,
-        "clientCertificates": args.clientCertificates,
-        "default": args.default,
-        "defaultApplication": args.defaultApplication,
-        "domain": args.domain,
-        "flowAuthentication": args.flowAuthentication,
-        "flowDeviceCode": args.flowDeviceCode,
-        "flowInvalidation": args.flowInvalidation,
-        "flowRecovery": args.flowRecovery,
-        "flowUnenrollment": args.flowUnenrollment,
-        "flowUserSettings": args.flowUserSettings,
-        "id": args.id,
-        "webCertificate": args.webCertificate,
-    }, opts, utilities.getPackage());
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invokeOutput(
+    "authentik:index/getBrand:getBrand",
+    {
+      "brandingCustomCss": args.brandingCustomCss,
+      "brandingDefaultFlowBackground": args.brandingDefaultFlowBackground,
+      "brandingFavicon": args.brandingFavicon,
+      "brandingLogo": args.brandingLogo,
+      "brandingTitle": args.brandingTitle,
+      "clientCertificates": args.clientCertificates,
+      "default": args.default,
+      "defaultApplication": args.defaultApplication,
+      "domain": args.domain,
+      "flowAuthentication": args.flowAuthentication,
+      "flowDeviceCode": args.flowDeviceCode,
+      "flowInvalidation": args.flowInvalidation,
+      "flowRecovery": args.flowRecovery,
+      "flowUnenrollment": args.flowUnenrollment,
+      "flowUserSettings": args.flowUserSettings,
+      "id": args.id,
+      "webCertificate": args.webCertificate,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 exports.getBrandOutput = getBrandOutput;
-//# sourceMappingURL=getBrand.js.map
+// # sourceMappingURL=getBrand.js.map

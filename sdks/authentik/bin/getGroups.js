@@ -6,35 +6,45 @@ exports.getGroupsOutput = exports.getGroups = void 0;
 const pulumi = require("@pulumi/pulumi");
 const utilities = require("./utilities");
 function getGroups(args, opts) {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invoke("authentik:index/getGroups:getGroups", {
-        "attributes": args.attributes,
-        "id": args.id,
-        "includeUsers": args.includeUsers,
-        "isSuperuser": args.isSuperuser,
-        "membersByPks": args.membersByPks,
-        "membersByUsernames": args.membersByUsernames,
-        "name": args.name,
-        "ordering": args.ordering,
-        "search": args.search,
-    }, opts, utilities.getPackage());
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invoke(
+    "authentik:index/getGroups:getGroups",
+    {
+      "attributes": args.attributes,
+      "id": args.id,
+      "includeUsers": args.includeUsers,
+      "isSuperuser": args.isSuperuser,
+      "membersByPks": args.membersByPks,
+      "membersByUsernames": args.membersByUsernames,
+      "name": args.name,
+      "ordering": args.ordering,
+      "search": args.search,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 exports.getGroups = getGroups;
 function getGroupsOutput(args, opts) {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invokeOutput("authentik:index/getGroups:getGroups", {
-        "attributes": args.attributes,
-        "id": args.id,
-        "includeUsers": args.includeUsers,
-        "isSuperuser": args.isSuperuser,
-        "membersByPks": args.membersByPks,
-        "membersByUsernames": args.membersByUsernames,
-        "name": args.name,
-        "ordering": args.ordering,
-        "search": args.search,
-    }, opts, utilities.getPackage());
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invokeOutput(
+    "authentik:index/getGroups:getGroups",
+    {
+      "attributes": args.attributes,
+      "id": args.id,
+      "includeUsers": args.includeUsers,
+      "isSuperuser": args.isSuperuser,
+      "membersByPks": args.membersByPks,
+      "membersByUsernames": args.membersByUsernames,
+      "name": args.name,
+      "ordering": args.ordering,
+      "search": args.search,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 exports.getGroupsOutput = getGroupsOutput;
-//# sourceMappingURL=getGroups.js.map
+// # sourceMappingURL=getGroups.js.map

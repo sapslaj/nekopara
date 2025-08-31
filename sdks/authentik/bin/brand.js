@@ -6,81 +6,80 @@ exports.Brand = void 0;
 const pulumi = require("@pulumi/pulumi");
 const utilities = require("./utilities");
 class Brand extends pulumi.CustomResource {
-    /**
-     * Get an existing Brand resource's state with the given name, ID, and optional extra
-     * properties used to qualify the lookup.
-     *
-     * @param name The _unique_ name of the resulting resource.
-     * @param id The _unique_ provider ID of the resource to lookup.
-     * @param state Any extra arguments used during the lookup.
-     * @param opts Optional settings to control the behavior of the CustomResource.
-     */
-    static get(name, id, state, opts) {
-        return new Brand(name, state, Object.assign(Object.assign({}, opts), { id: id }));
+  /**
+   * Get an existing Brand resource's state with the given name, ID, and optional extra
+   * properties used to qualify the lookup.
+   *
+   * @param name The _unique_ name of the resulting resource.
+   * @param id The _unique_ provider ID of the resource to lookup.
+   * @param state Any extra arguments used during the lookup.
+   * @param opts Optional settings to control the behavior of the CustomResource.
+   */
+  static get(name, id, state, opts) {
+    return new Brand(name, state, Object.assign(Object.assign({}, opts), { id: id }));
+  }
+  /**
+   * Returns true if the given object is an instance of Brand.  This is designed to work even
+   * when multiple copies of the Pulumi SDK have been loaded into the same process.
+   */
+  static isInstance(obj) {
+    if (obj === undefined || obj === null) {
+      return false;
     }
-    /**
-     * Returns true if the given object is an instance of Brand.  This is designed to work even
-     * when multiple copies of the Pulumi SDK have been loaded into the same process.
-     */
-    static isInstance(obj) {
-        if (obj === undefined || obj === null) {
-            return false;
-        }
-        return obj['__pulumiType'] === Brand.__pulumiType;
+    return obj["__pulumiType"] === Brand.__pulumiType;
+  }
+  constructor(name, argsOrState, opts) {
+    let resourceInputs = {};
+    opts = opts || {};
+    if (opts.id) {
+      const state = argsOrState;
+      resourceInputs["attributes"] = state ? state.attributes : undefined;
+      resourceInputs["brandId"] = state ? state.brandId : undefined;
+      resourceInputs["brandingCustomCss"] = state ? state.brandingCustomCss : undefined;
+      resourceInputs["brandingDefaultFlowBackground"] = state ? state.brandingDefaultFlowBackground : undefined;
+      resourceInputs["brandingFavicon"] = state ? state.brandingFavicon : undefined;
+      resourceInputs["brandingLogo"] = state ? state.brandingLogo : undefined;
+      resourceInputs["brandingTitle"] = state ? state.brandingTitle : undefined;
+      resourceInputs["clientCertificates"] = state ? state.clientCertificates : undefined;
+      resourceInputs["default"] = state ? state.default : undefined;
+      resourceInputs["defaultApplication"] = state ? state.defaultApplication : undefined;
+      resourceInputs["domain"] = state ? state.domain : undefined;
+      resourceInputs["flowAuthentication"] = state ? state.flowAuthentication : undefined;
+      resourceInputs["flowDeviceCode"] = state ? state.flowDeviceCode : undefined;
+      resourceInputs["flowInvalidation"] = state ? state.flowInvalidation : undefined;
+      resourceInputs["flowRecovery"] = state ? state.flowRecovery : undefined;
+      resourceInputs["flowUnenrollment"] = state ? state.flowUnenrollment : undefined;
+      resourceInputs["flowUserSettings"] = state ? state.flowUserSettings : undefined;
+      resourceInputs["webCertificate"] = state ? state.webCertificate : undefined;
+    } else {
+      const args = argsOrState;
+      if ((!args || args.domain === undefined) && !opts.urn) {
+        throw new Error("Missing required property 'domain'");
+      }
+      resourceInputs["attributes"] = args ? args.attributes : undefined;
+      resourceInputs["brandId"] = args ? args.brandId : undefined;
+      resourceInputs["brandingCustomCss"] = args ? args.brandingCustomCss : undefined;
+      resourceInputs["brandingDefaultFlowBackground"] = args ? args.brandingDefaultFlowBackground : undefined;
+      resourceInputs["brandingFavicon"] = args ? args.brandingFavicon : undefined;
+      resourceInputs["brandingLogo"] = args ? args.brandingLogo : undefined;
+      resourceInputs["brandingTitle"] = args ? args.brandingTitle : undefined;
+      resourceInputs["clientCertificates"] = args ? args.clientCertificates : undefined;
+      resourceInputs["default"] = args ? args.default : undefined;
+      resourceInputs["defaultApplication"] = args ? args.defaultApplication : undefined;
+      resourceInputs["domain"] = args ? args.domain : undefined;
+      resourceInputs["flowAuthentication"] = args ? args.flowAuthentication : undefined;
+      resourceInputs["flowDeviceCode"] = args ? args.flowDeviceCode : undefined;
+      resourceInputs["flowInvalidation"] = args ? args.flowInvalidation : undefined;
+      resourceInputs["flowRecovery"] = args ? args.flowRecovery : undefined;
+      resourceInputs["flowUnenrollment"] = args ? args.flowUnenrollment : undefined;
+      resourceInputs["flowUserSettings"] = args ? args.flowUserSettings : undefined;
+      resourceInputs["webCertificate"] = args ? args.webCertificate : undefined;
     }
-    constructor(name, argsOrState, opts) {
-        let resourceInputs = {};
-        opts = opts || {};
-        if (opts.id) {
-            const state = argsOrState;
-            resourceInputs["attributes"] = state ? state.attributes : undefined;
-            resourceInputs["brandId"] = state ? state.brandId : undefined;
-            resourceInputs["brandingCustomCss"] = state ? state.brandingCustomCss : undefined;
-            resourceInputs["brandingDefaultFlowBackground"] = state ? state.brandingDefaultFlowBackground : undefined;
-            resourceInputs["brandingFavicon"] = state ? state.brandingFavicon : undefined;
-            resourceInputs["brandingLogo"] = state ? state.brandingLogo : undefined;
-            resourceInputs["brandingTitle"] = state ? state.brandingTitle : undefined;
-            resourceInputs["clientCertificates"] = state ? state.clientCertificates : undefined;
-            resourceInputs["default"] = state ? state.default : undefined;
-            resourceInputs["defaultApplication"] = state ? state.defaultApplication : undefined;
-            resourceInputs["domain"] = state ? state.domain : undefined;
-            resourceInputs["flowAuthentication"] = state ? state.flowAuthentication : undefined;
-            resourceInputs["flowDeviceCode"] = state ? state.flowDeviceCode : undefined;
-            resourceInputs["flowInvalidation"] = state ? state.flowInvalidation : undefined;
-            resourceInputs["flowRecovery"] = state ? state.flowRecovery : undefined;
-            resourceInputs["flowUnenrollment"] = state ? state.flowUnenrollment : undefined;
-            resourceInputs["flowUserSettings"] = state ? state.flowUserSettings : undefined;
-            resourceInputs["webCertificate"] = state ? state.webCertificate : undefined;
-        }
-        else {
-            const args = argsOrState;
-            if ((!args || args.domain === undefined) && !opts.urn) {
-                throw new Error("Missing required property 'domain'");
-            }
-            resourceInputs["attributes"] = args ? args.attributes : undefined;
-            resourceInputs["brandId"] = args ? args.brandId : undefined;
-            resourceInputs["brandingCustomCss"] = args ? args.brandingCustomCss : undefined;
-            resourceInputs["brandingDefaultFlowBackground"] = args ? args.brandingDefaultFlowBackground : undefined;
-            resourceInputs["brandingFavicon"] = args ? args.brandingFavicon : undefined;
-            resourceInputs["brandingLogo"] = args ? args.brandingLogo : undefined;
-            resourceInputs["brandingTitle"] = args ? args.brandingTitle : undefined;
-            resourceInputs["clientCertificates"] = args ? args.clientCertificates : undefined;
-            resourceInputs["default"] = args ? args.default : undefined;
-            resourceInputs["defaultApplication"] = args ? args.defaultApplication : undefined;
-            resourceInputs["domain"] = args ? args.domain : undefined;
-            resourceInputs["flowAuthentication"] = args ? args.flowAuthentication : undefined;
-            resourceInputs["flowDeviceCode"] = args ? args.flowDeviceCode : undefined;
-            resourceInputs["flowInvalidation"] = args ? args.flowInvalidation : undefined;
-            resourceInputs["flowRecovery"] = args ? args.flowRecovery : undefined;
-            resourceInputs["flowUnenrollment"] = args ? args.flowUnenrollment : undefined;
-            resourceInputs["flowUserSettings"] = args ? args.flowUserSettings : undefined;
-            resourceInputs["webCertificate"] = args ? args.webCertificate : undefined;
-        }
-        opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
-        super(Brand.__pulumiType, name, resourceInputs, opts, false /*dependency*/, utilities.getPackage());
-    }
+    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
+    super(Brand.__pulumiType, name, resourceInputs, opts, false, /*dependency*/ utilities.getPackage());
+  }
 }
 exports.Brand = Brand;
 /** @internal */
-Brand.__pulumiType = 'authentik:index/brand:Brand';
-//# sourceMappingURL=brand.js.map
+Brand.__pulumiType = "authentik:index/brand:Brand";
+// # sourceMappingURL=brand.js.map

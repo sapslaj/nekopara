@@ -6,71 +6,74 @@ exports.StageAuthenticatorDuo = void 0;
 const pulumi = require("@pulumi/pulumi");
 const utilities = require("./utilities");
 class StageAuthenticatorDuo extends pulumi.CustomResource {
-    /**
-     * Get an existing StageAuthenticatorDuo resource's state with the given name, ID, and optional extra
-     * properties used to qualify the lookup.
-     *
-     * @param name The _unique_ name of the resulting resource.
-     * @param id The _unique_ provider ID of the resource to lookup.
-     * @param state Any extra arguments used during the lookup.
-     * @param opts Optional settings to control the behavior of the CustomResource.
-     */
-    static get(name, id, state, opts) {
-        return new StageAuthenticatorDuo(name, state, Object.assign(Object.assign({}, opts), { id: id }));
+  /**
+   * Get an existing StageAuthenticatorDuo resource's state with the given name, ID, and optional extra
+   * properties used to qualify the lookup.
+   *
+   * @param name The _unique_ name of the resulting resource.
+   * @param id The _unique_ provider ID of the resource to lookup.
+   * @param state Any extra arguments used during the lookup.
+   * @param opts Optional settings to control the behavior of the CustomResource.
+   */
+  static get(name, id, state, opts) {
+    return new StageAuthenticatorDuo(name, state, Object.assign(Object.assign({}, opts), { id: id }));
+  }
+  /**
+   * Returns true if the given object is an instance of StageAuthenticatorDuo.  This is designed to work even
+   * when multiple copies of the Pulumi SDK have been loaded into the same process.
+   */
+  static isInstance(obj) {
+    if (obj === undefined || obj === null) {
+      return false;
     }
-    /**
-     * Returns true if the given object is an instance of StageAuthenticatorDuo.  This is designed to work even
-     * when multiple copies of the Pulumi SDK have been loaded into the same process.
-     */
-    static isInstance(obj) {
-        if (obj === undefined || obj === null) {
-            return false;
-        }
-        return obj['__pulumiType'] === StageAuthenticatorDuo.__pulumiType;
+    return obj["__pulumiType"] === StageAuthenticatorDuo.__pulumiType;
+  }
+  constructor(name, argsOrState, opts) {
+    let resourceInputs = {};
+    opts = opts || {};
+    if (opts.id) {
+      const state = argsOrState;
+      resourceInputs["adminIntegrationKey"] = state ? state.adminIntegrationKey : undefined;
+      resourceInputs["adminSecretKey"] = state ? state.adminSecretKey : undefined;
+      resourceInputs["apiHostname"] = state ? state.apiHostname : undefined;
+      resourceInputs["clientId"] = state ? state.clientId : undefined;
+      resourceInputs["clientSecret"] = state ? state.clientSecret : undefined;
+      resourceInputs["configureFlow"] = state ? state.configureFlow : undefined;
+      resourceInputs["friendlyName"] = state ? state.friendlyName : undefined;
+      resourceInputs["name"] = state ? state.name : undefined;
+      resourceInputs["stageAuthenticatorDuoId"] = state ? state.stageAuthenticatorDuoId : undefined;
+    } else {
+      const args = argsOrState;
+      if ((!args || args.apiHostname === undefined) && !opts.urn) {
+        throw new Error("Missing required property 'apiHostname'");
+      }
+      if ((!args || args.clientId === undefined) && !opts.urn) {
+        throw new Error("Missing required property 'clientId'");
+      }
+      if ((!args || args.clientSecret === undefined) && !opts.urn) {
+        throw new Error("Missing required property 'clientSecret'");
+      }
+      resourceInputs["adminIntegrationKey"] = args ? args.adminIntegrationKey : undefined;
+      resourceInputs["adminSecretKey"] = (args === null || args === void 0 ? void 0 : args.adminSecretKey)
+        ? pulumi.secret(args.adminSecretKey)
+        : undefined;
+      resourceInputs["apiHostname"] = args ? args.apiHostname : undefined;
+      resourceInputs["clientId"] = args ? args.clientId : undefined;
+      resourceInputs["clientSecret"] = (args === null || args === void 0 ? void 0 : args.clientSecret)
+        ? pulumi.secret(args.clientSecret)
+        : undefined;
+      resourceInputs["configureFlow"] = args ? args.configureFlow : undefined;
+      resourceInputs["friendlyName"] = args ? args.friendlyName : undefined;
+      resourceInputs["name"] = args ? args.name : undefined;
+      resourceInputs["stageAuthenticatorDuoId"] = args ? args.stageAuthenticatorDuoId : undefined;
     }
-    constructor(name, argsOrState, opts) {
-        let resourceInputs = {};
-        opts = opts || {};
-        if (opts.id) {
-            const state = argsOrState;
-            resourceInputs["adminIntegrationKey"] = state ? state.adminIntegrationKey : undefined;
-            resourceInputs["adminSecretKey"] = state ? state.adminSecretKey : undefined;
-            resourceInputs["apiHostname"] = state ? state.apiHostname : undefined;
-            resourceInputs["clientId"] = state ? state.clientId : undefined;
-            resourceInputs["clientSecret"] = state ? state.clientSecret : undefined;
-            resourceInputs["configureFlow"] = state ? state.configureFlow : undefined;
-            resourceInputs["friendlyName"] = state ? state.friendlyName : undefined;
-            resourceInputs["name"] = state ? state.name : undefined;
-            resourceInputs["stageAuthenticatorDuoId"] = state ? state.stageAuthenticatorDuoId : undefined;
-        }
-        else {
-            const args = argsOrState;
-            if ((!args || args.apiHostname === undefined) && !opts.urn) {
-                throw new Error("Missing required property 'apiHostname'");
-            }
-            if ((!args || args.clientId === undefined) && !opts.urn) {
-                throw new Error("Missing required property 'clientId'");
-            }
-            if ((!args || args.clientSecret === undefined) && !opts.urn) {
-                throw new Error("Missing required property 'clientSecret'");
-            }
-            resourceInputs["adminIntegrationKey"] = args ? args.adminIntegrationKey : undefined;
-            resourceInputs["adminSecretKey"] = (args === null || args === void 0 ? void 0 : args.adminSecretKey) ? pulumi.secret(args.adminSecretKey) : undefined;
-            resourceInputs["apiHostname"] = args ? args.apiHostname : undefined;
-            resourceInputs["clientId"] = args ? args.clientId : undefined;
-            resourceInputs["clientSecret"] = (args === null || args === void 0 ? void 0 : args.clientSecret) ? pulumi.secret(args.clientSecret) : undefined;
-            resourceInputs["configureFlow"] = args ? args.configureFlow : undefined;
-            resourceInputs["friendlyName"] = args ? args.friendlyName : undefined;
-            resourceInputs["name"] = args ? args.name : undefined;
-            resourceInputs["stageAuthenticatorDuoId"] = args ? args.stageAuthenticatorDuoId : undefined;
-        }
-        opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
-        const secretOpts = { additionalSecretOutputs: ["adminSecretKey", "clientSecret"] };
-        opts = pulumi.mergeOptions(opts, secretOpts);
-        super(StageAuthenticatorDuo.__pulumiType, name, resourceInputs, opts, false /*dependency*/, utilities.getPackage());
-    }
+    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
+    const secretOpts = { additionalSecretOutputs: ["adminSecretKey", "clientSecret"] };
+    opts = pulumi.mergeOptions(opts, secretOpts);
+    super(StageAuthenticatorDuo.__pulumiType, name, resourceInputs, opts, false, /*dependency*/ utilities.getPackage());
+  }
 }
 exports.StageAuthenticatorDuo = StageAuthenticatorDuo;
 /** @internal */
-StageAuthenticatorDuo.__pulumiType = 'authentik:index/stageAuthenticatorDuo:StageAuthenticatorDuo';
-//# sourceMappingURL=stageAuthenticatorDuo.js.map
+StageAuthenticatorDuo.__pulumiType = "authentik:index/stageAuthenticatorDuo:StageAuthenticatorDuo";
+// # sourceMappingURL=stageAuthenticatorDuo.js.map

@@ -6,23 +6,33 @@ exports.getUserOutput = exports.getUser = void 0;
 const pulumi = require("@pulumi/pulumi");
 const utilities = require("./utilities");
 function getUser(args, opts) {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invoke("authentik:index/getUser:getUser", {
-        "id": args.id,
-        "pk": args.pk,
-        "username": args.username,
-    }, opts, utilities.getPackage());
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invoke(
+    "authentik:index/getUser:getUser",
+    {
+      "id": args.id,
+      "pk": args.pk,
+      "username": args.username,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 exports.getUser = getUser;
 function getUserOutput(args, opts) {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invokeOutput("authentik:index/getUser:getUser", {
-        "id": args.id,
-        "pk": args.pk,
-        "username": args.username,
-    }, opts, utilities.getPackage());
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invokeOutput(
+    "authentik:index/getUser:getUser",
+    {
+      "id": args.id,
+      "pk": args.pk,
+      "username": args.username,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 exports.getUserOutput = getUserOutput;
-//# sourceMappingURL=getUser.js.map
+// # sourceMappingURL=getUser.js.map

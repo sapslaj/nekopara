@@ -6,33 +6,43 @@ exports.getPropertyMappingProviderSamlOutput = exports.getPropertyMappingProvide
 const pulumi = require("@pulumi/pulumi");
 const utilities = require("./utilities");
 function getPropertyMappingProviderSaml(args, opts) {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invoke("authentik:index/getPropertyMappingProviderSaml:getPropertyMappingProviderSaml", {
-        "expression": args.expression,
-        "friendlyName": args.friendlyName,
-        "id": args.id,
-        "ids": args.ids,
-        "managed": args.managed,
-        "managedLists": args.managedLists,
-        "name": args.name,
-        "samlName": args.samlName,
-    }, opts, utilities.getPackage());
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invoke(
+    "authentik:index/getPropertyMappingProviderSaml:getPropertyMappingProviderSaml",
+    {
+      "expression": args.expression,
+      "friendlyName": args.friendlyName,
+      "id": args.id,
+      "ids": args.ids,
+      "managed": args.managed,
+      "managedLists": args.managedLists,
+      "name": args.name,
+      "samlName": args.samlName,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 exports.getPropertyMappingProviderSaml = getPropertyMappingProviderSaml;
 function getPropertyMappingProviderSamlOutput(args, opts) {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invokeOutput("authentik:index/getPropertyMappingProviderSaml:getPropertyMappingProviderSaml", {
-        "expression": args.expression,
-        "friendlyName": args.friendlyName,
-        "id": args.id,
-        "ids": args.ids,
-        "managed": args.managed,
-        "managedLists": args.managedLists,
-        "name": args.name,
-        "samlName": args.samlName,
-    }, opts, utilities.getPackage());
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invokeOutput(
+    "authentik:index/getPropertyMappingProviderSaml:getPropertyMappingProviderSaml",
+    {
+      "expression": args.expression,
+      "friendlyName": args.friendlyName,
+      "id": args.id,
+      "ids": args.ids,
+      "managed": args.managed,
+      "managedLists": args.managedLists,
+      "name": args.name,
+      "samlName": args.samlName,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 exports.getPropertyMappingProviderSamlOutput = getPropertyMappingProviderSamlOutput;
-//# sourceMappingURL=getPropertyMappingProviderSaml.js.map
+// # sourceMappingURL=getPropertyMappingProviderSaml.js.map

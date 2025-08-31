@@ -6,23 +6,33 @@ exports.getCertificateKeyPairOutput = exports.getCertificateKeyPair = void 0;
 const pulumi = require("@pulumi/pulumi");
 const utilities = require("./utilities");
 function getCertificateKeyPair(args, opts) {
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invoke("authentik:index/getCertificateKeyPair:getCertificateKeyPair", {
-        "fetchCertificate": args.fetchCertificate,
-        "fetchKey": args.fetchKey,
-        "keyData": args.keyData,
-        "name": args.name,
-    }, opts, utilities.getPackage());
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invoke(
+    "authentik:index/getCertificateKeyPair:getCertificateKeyPair",
+    {
+      "fetchCertificate": args.fetchCertificate,
+      "fetchKey": args.fetchKey,
+      "keyData": args.keyData,
+      "name": args.name,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 exports.getCertificateKeyPair = getCertificateKeyPair;
 function getCertificateKeyPairOutput(args, opts) {
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invokeOutput("authentik:index/getCertificateKeyPair:getCertificateKeyPair", {
-        "fetchCertificate": args.fetchCertificate,
-        "fetchKey": args.fetchKey,
-        "keyData": args.keyData,
-        "name": args.name,
-    }, opts, utilities.getPackage());
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invokeOutput(
+    "authentik:index/getCertificateKeyPair:getCertificateKeyPair",
+    {
+      "fetchCertificate": args.fetchCertificate,
+      "fetchKey": args.fetchKey,
+      "keyData": args.keyData,
+      "name": args.name,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 exports.getCertificateKeyPairOutput = getCertificateKeyPairOutput;
-//# sourceMappingURL=getCertificateKeyPair.js.map
+// # sourceMappingURL=getCertificateKeyPair.js.map

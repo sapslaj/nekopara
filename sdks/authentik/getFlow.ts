@@ -5,54 +5,67 @@ import * as pulumi from "@pulumi/pulumi";
 import * as utilities from "./utilities";
 
 export function getFlow(args?: GetFlowArgs, opts?: pulumi.InvokeOptions): Promise<GetFlowResult> {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invoke("authentik:index/getFlow:getFlow", {
-        "authentication": args.authentication,
-        "designation": args.designation,
-        "id": args.id,
-        "slug": args.slug,
-    }, opts, utilities.getPackage());
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invoke(
+    "authentik:index/getFlow:getFlow",
+    {
+      "authentication": args.authentication,
+      "designation": args.designation,
+      "id": args.id,
+      "slug": args.slug,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 
 /**
  * A collection of arguments for invoking getFlow.
  */
 export interface GetFlowArgs {
-    authentication?: string;
-    designation?: string;
-    id?: string;
-    slug?: string;
+  authentication?: string;
+  designation?: string;
+  id?: string;
+  slug?: string;
 }
 
 /**
  * A collection of values returned by getFlow.
  */
 export interface GetFlowResult {
-    readonly authentication: string;
-    readonly designation: string;
-    readonly id: string;
-    readonly name: string;
-    readonly slug: string;
-    readonly title: string;
+  readonly authentication: string;
+  readonly designation: string;
+  readonly id: string;
+  readonly name: string;
+  readonly slug: string;
+  readonly title: string;
 }
-export function getFlowOutput(args?: GetFlowOutputArgs, opts?: pulumi.InvokeOutputOptions): pulumi.Output<GetFlowResult> {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invokeOutput("authentik:index/getFlow:getFlow", {
-        "authentication": args.authentication,
-        "designation": args.designation,
-        "id": args.id,
-        "slug": args.slug,
-    }, opts, utilities.getPackage());
+export function getFlowOutput(
+  args?: GetFlowOutputArgs,
+  opts?: pulumi.InvokeOutputOptions,
+): pulumi.Output<GetFlowResult> {
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invokeOutput(
+    "authentik:index/getFlow:getFlow",
+    {
+      "authentication": args.authentication,
+      "designation": args.designation,
+      "id": args.id,
+      "slug": args.slug,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 
 /**
  * A collection of arguments for invoking getFlow.
  */
 export interface GetFlowOutputArgs {
-    authentication?: pulumi.Input<string>;
-    designation?: pulumi.Input<string>;
-    id?: pulumi.Input<string>;
-    slug?: pulumi.Input<string>;
+  authentication?: pulumi.Input<string>;
+  designation?: pulumi.Input<string>;
+  id?: pulumi.Input<string>;
+  slug?: pulumi.Input<string>;
 }

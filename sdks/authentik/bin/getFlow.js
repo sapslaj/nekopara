@@ -6,25 +6,35 @@ exports.getFlowOutput = exports.getFlow = void 0;
 const pulumi = require("@pulumi/pulumi");
 const utilities = require("./utilities");
 function getFlow(args, opts) {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invoke("authentik:index/getFlow:getFlow", {
-        "authentication": args.authentication,
-        "designation": args.designation,
-        "id": args.id,
-        "slug": args.slug,
-    }, opts, utilities.getPackage());
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invoke(
+    "authentik:index/getFlow:getFlow",
+    {
+      "authentication": args.authentication,
+      "designation": args.designation,
+      "id": args.id,
+      "slug": args.slug,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 exports.getFlow = getFlow;
 function getFlowOutput(args, opts) {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invokeOutput("authentik:index/getFlow:getFlow", {
-        "authentication": args.authentication,
-        "designation": args.designation,
-        "id": args.id,
-        "slug": args.slug,
-    }, opts, utilities.getPackage());
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invokeOutput(
+    "authentik:index/getFlow:getFlow",
+    {
+      "authentication": args.authentication,
+      "designation": args.designation,
+      "id": args.id,
+      "slug": args.slug,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 exports.getFlowOutput = getFlowOutput;
-//# sourceMappingURL=getFlow.js.map
+// # sourceMappingURL=getFlow.js.map

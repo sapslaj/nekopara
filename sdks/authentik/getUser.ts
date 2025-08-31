@@ -5,60 +5,73 @@ import * as pulumi from "@pulumi/pulumi";
 import * as utilities from "./utilities";
 
 export function getUser(args?: GetUserArgs, opts?: pulumi.InvokeOptions): Promise<GetUserResult> {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invoke("authentik:index/getUser:getUser", {
-        "id": args.id,
-        "pk": args.pk,
-        "username": args.username,
-    }, opts, utilities.getPackage());
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invoke(
+    "authentik:index/getUser:getUser",
+    {
+      "id": args.id,
+      "pk": args.pk,
+      "username": args.username,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 
 /**
  * A collection of arguments for invoking getUser.
  */
 export interface GetUserArgs {
-    id?: string;
-    pk?: number;
-    username?: string;
+  id?: string;
+  pk?: number;
+  username?: string;
 }
 
 /**
  * A collection of values returned by getUser.
  */
 export interface GetUserResult {
-    readonly attributes: string;
-    readonly avatar: string;
-    readonly dateJoined: string;
-    readonly email: string;
-    readonly groups: string[];
-    readonly id: string;
-    readonly isActive: boolean;
-    readonly isSuperuser: boolean;
-    readonly lastLogin: string;
-    readonly name: string;
-    readonly path: string;
-    readonly pk: number;
-    readonly type: string;
-    readonly uid: string;
-    readonly username: string;
-    readonly uuid: string;
+  readonly attributes: string;
+  readonly avatar: string;
+  readonly dateJoined: string;
+  readonly email: string;
+  readonly groups: string[];
+  readonly id: string;
+  readonly isActive: boolean;
+  readonly isSuperuser: boolean;
+  readonly lastLogin: string;
+  readonly name: string;
+  readonly path: string;
+  readonly pk: number;
+  readonly type: string;
+  readonly uid: string;
+  readonly username: string;
+  readonly uuid: string;
 }
-export function getUserOutput(args?: GetUserOutputArgs, opts?: pulumi.InvokeOutputOptions): pulumi.Output<GetUserResult> {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invokeOutput("authentik:index/getUser:getUser", {
-        "id": args.id,
-        "pk": args.pk,
-        "username": args.username,
-    }, opts, utilities.getPackage());
+export function getUserOutput(
+  args?: GetUserOutputArgs,
+  opts?: pulumi.InvokeOutputOptions,
+): pulumi.Output<GetUserResult> {
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invokeOutput(
+    "authentik:index/getUser:getUser",
+    {
+      "id": args.id,
+      "pk": args.pk,
+      "username": args.username,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 
 /**
  * A collection of arguments for invoking getUser.
  */
 export interface GetUserOutputArgs {
-    id?: pulumi.Input<string>;
-    pk?: pulumi.Input<number>;
-    username?: pulumi.Input<string>;
+  id?: pulumi.Input<string>;
+  pk?: pulumi.Input<number>;
+  username?: pulumi.Input<string>;
 }

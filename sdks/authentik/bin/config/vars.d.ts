@@ -2,7 +2,7 @@
  * Optional HTTP headers sent with every request
  */
 export declare const headers: {
-    [key: string]: string;
+  [key: string]: string;
 } | undefined;
 /**
  * Whether to skip TLS verification, can optionally be passed as `AUTHENTIK_INSECURE` environmental variable

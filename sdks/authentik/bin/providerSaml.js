@@ -6,107 +6,106 @@ exports.ProviderSaml = void 0;
 const pulumi = require("@pulumi/pulumi");
 const utilities = require("./utilities");
 class ProviderSaml extends pulumi.CustomResource {
-    /**
-     * Get an existing ProviderSaml resource's state with the given name, ID, and optional extra
-     * properties used to qualify the lookup.
-     *
-     * @param name The _unique_ name of the resulting resource.
-     * @param id The _unique_ provider ID of the resource to lookup.
-     * @param state Any extra arguments used during the lookup.
-     * @param opts Optional settings to control the behavior of the CustomResource.
-     */
-    static get(name, id, state, opts) {
-        return new ProviderSaml(name, state, Object.assign(Object.assign({}, opts), { id: id }));
+  /**
+   * Get an existing ProviderSaml resource's state with the given name, ID, and optional extra
+   * properties used to qualify the lookup.
+   *
+   * @param name The _unique_ name of the resulting resource.
+   * @param id The _unique_ provider ID of the resource to lookup.
+   * @param state Any extra arguments used during the lookup.
+   * @param opts Optional settings to control the behavior of the CustomResource.
+   */
+  static get(name, id, state, opts) {
+    return new ProviderSaml(name, state, Object.assign(Object.assign({}, opts), { id: id }));
+  }
+  /**
+   * Returns true if the given object is an instance of ProviderSaml.  This is designed to work even
+   * when multiple copies of the Pulumi SDK have been loaded into the same process.
+   */
+  static isInstance(obj) {
+    if (obj === undefined || obj === null) {
+      return false;
     }
-    /**
-     * Returns true if the given object is an instance of ProviderSaml.  This is designed to work even
-     * when multiple copies of the Pulumi SDK have been loaded into the same process.
-     */
-    static isInstance(obj) {
-        if (obj === undefined || obj === null) {
-            return false;
-        }
-        return obj['__pulumiType'] === ProviderSaml.__pulumiType;
+    return obj["__pulumiType"] === ProviderSaml.__pulumiType;
+  }
+  constructor(name, argsOrState, opts) {
+    let resourceInputs = {};
+    opts = opts || {};
+    if (opts.id) {
+      const state = argsOrState;
+      resourceInputs["acsUrl"] = state ? state.acsUrl : undefined;
+      resourceInputs["assertionValidNotBefore"] = state ? state.assertionValidNotBefore : undefined;
+      resourceInputs["assertionValidNotOnOrAfter"] = state ? state.assertionValidNotOnOrAfter : undefined;
+      resourceInputs["audience"] = state ? state.audience : undefined;
+      resourceInputs["authenticationFlow"] = state ? state.authenticationFlow : undefined;
+      resourceInputs["authnContextClassRefMapping"] = state ? state.authnContextClassRefMapping : undefined;
+      resourceInputs["authorizationFlow"] = state ? state.authorizationFlow : undefined;
+      resourceInputs["defaultRelayState"] = state ? state.defaultRelayState : undefined;
+      resourceInputs["digestAlgorithm"] = state ? state.digestAlgorithm : undefined;
+      resourceInputs["encryptionKp"] = state ? state.encryptionKp : undefined;
+      resourceInputs["invalidationFlow"] = state ? state.invalidationFlow : undefined;
+      resourceInputs["issuer"] = state ? state.issuer : undefined;
+      resourceInputs["name"] = state ? state.name : undefined;
+      resourceInputs["nameIdMapping"] = state ? state.nameIdMapping : undefined;
+      resourceInputs["propertyMappings"] = state ? state.propertyMappings : undefined;
+      resourceInputs["providerSamlId"] = state ? state.providerSamlId : undefined;
+      resourceInputs["sessionValidNotOnOrAfter"] = state ? state.sessionValidNotOnOrAfter : undefined;
+      resourceInputs["signAssertion"] = state ? state.signAssertion : undefined;
+      resourceInputs["signResponse"] = state ? state.signResponse : undefined;
+      resourceInputs["signatureAlgorithm"] = state ? state.signatureAlgorithm : undefined;
+      resourceInputs["signingKp"] = state ? state.signingKp : undefined;
+      resourceInputs["spBinding"] = state ? state.spBinding : undefined;
+      resourceInputs["urlSloPost"] = state ? state.urlSloPost : undefined;
+      resourceInputs["urlSloRedirect"] = state ? state.urlSloRedirect : undefined;
+      resourceInputs["urlSsoInit"] = state ? state.urlSsoInit : undefined;
+      resourceInputs["urlSsoPost"] = state ? state.urlSsoPost : undefined;
+      resourceInputs["urlSsoRedirect"] = state ? state.urlSsoRedirect : undefined;
+      resourceInputs["verificationKp"] = state ? state.verificationKp : undefined;
+    } else {
+      const args = argsOrState;
+      if ((!args || args.acsUrl === undefined) && !opts.urn) {
+        throw new Error("Missing required property 'acsUrl'");
+      }
+      if ((!args || args.authorizationFlow === undefined) && !opts.urn) {
+        throw new Error("Missing required property 'authorizationFlow'");
+      }
+      if ((!args || args.invalidationFlow === undefined) && !opts.urn) {
+        throw new Error("Missing required property 'invalidationFlow'");
+      }
+      resourceInputs["acsUrl"] = args ? args.acsUrl : undefined;
+      resourceInputs["assertionValidNotBefore"] = args ? args.assertionValidNotBefore : undefined;
+      resourceInputs["assertionValidNotOnOrAfter"] = args ? args.assertionValidNotOnOrAfter : undefined;
+      resourceInputs["audience"] = args ? args.audience : undefined;
+      resourceInputs["authenticationFlow"] = args ? args.authenticationFlow : undefined;
+      resourceInputs["authnContextClassRefMapping"] = args ? args.authnContextClassRefMapping : undefined;
+      resourceInputs["authorizationFlow"] = args ? args.authorizationFlow : undefined;
+      resourceInputs["defaultRelayState"] = args ? args.defaultRelayState : undefined;
+      resourceInputs["digestAlgorithm"] = args ? args.digestAlgorithm : undefined;
+      resourceInputs["encryptionKp"] = args ? args.encryptionKp : undefined;
+      resourceInputs["invalidationFlow"] = args ? args.invalidationFlow : undefined;
+      resourceInputs["issuer"] = args ? args.issuer : undefined;
+      resourceInputs["name"] = args ? args.name : undefined;
+      resourceInputs["nameIdMapping"] = args ? args.nameIdMapping : undefined;
+      resourceInputs["propertyMappings"] = args ? args.propertyMappings : undefined;
+      resourceInputs["providerSamlId"] = args ? args.providerSamlId : undefined;
+      resourceInputs["sessionValidNotOnOrAfter"] = args ? args.sessionValidNotOnOrAfter : undefined;
+      resourceInputs["signAssertion"] = args ? args.signAssertion : undefined;
+      resourceInputs["signResponse"] = args ? args.signResponse : undefined;
+      resourceInputs["signatureAlgorithm"] = args ? args.signatureAlgorithm : undefined;
+      resourceInputs["signingKp"] = args ? args.signingKp : undefined;
+      resourceInputs["spBinding"] = args ? args.spBinding : undefined;
+      resourceInputs["urlSloPost"] = args ? args.urlSloPost : undefined;
+      resourceInputs["urlSloRedirect"] = args ? args.urlSloRedirect : undefined;
+      resourceInputs["urlSsoInit"] = args ? args.urlSsoInit : undefined;
+      resourceInputs["urlSsoPost"] = args ? args.urlSsoPost : undefined;
+      resourceInputs["urlSsoRedirect"] = args ? args.urlSsoRedirect : undefined;
+      resourceInputs["verificationKp"] = args ? args.verificationKp : undefined;
     }
-    constructor(name, argsOrState, opts) {
-        let resourceInputs = {};
-        opts = opts || {};
-        if (opts.id) {
-            const state = argsOrState;
-            resourceInputs["acsUrl"] = state ? state.acsUrl : undefined;
-            resourceInputs["assertionValidNotBefore"] = state ? state.assertionValidNotBefore : undefined;
-            resourceInputs["assertionValidNotOnOrAfter"] = state ? state.assertionValidNotOnOrAfter : undefined;
-            resourceInputs["audience"] = state ? state.audience : undefined;
-            resourceInputs["authenticationFlow"] = state ? state.authenticationFlow : undefined;
-            resourceInputs["authnContextClassRefMapping"] = state ? state.authnContextClassRefMapping : undefined;
-            resourceInputs["authorizationFlow"] = state ? state.authorizationFlow : undefined;
-            resourceInputs["defaultRelayState"] = state ? state.defaultRelayState : undefined;
-            resourceInputs["digestAlgorithm"] = state ? state.digestAlgorithm : undefined;
-            resourceInputs["encryptionKp"] = state ? state.encryptionKp : undefined;
-            resourceInputs["invalidationFlow"] = state ? state.invalidationFlow : undefined;
-            resourceInputs["issuer"] = state ? state.issuer : undefined;
-            resourceInputs["name"] = state ? state.name : undefined;
-            resourceInputs["nameIdMapping"] = state ? state.nameIdMapping : undefined;
-            resourceInputs["propertyMappings"] = state ? state.propertyMappings : undefined;
-            resourceInputs["providerSamlId"] = state ? state.providerSamlId : undefined;
-            resourceInputs["sessionValidNotOnOrAfter"] = state ? state.sessionValidNotOnOrAfter : undefined;
-            resourceInputs["signAssertion"] = state ? state.signAssertion : undefined;
-            resourceInputs["signResponse"] = state ? state.signResponse : undefined;
-            resourceInputs["signatureAlgorithm"] = state ? state.signatureAlgorithm : undefined;
-            resourceInputs["signingKp"] = state ? state.signingKp : undefined;
-            resourceInputs["spBinding"] = state ? state.spBinding : undefined;
-            resourceInputs["urlSloPost"] = state ? state.urlSloPost : undefined;
-            resourceInputs["urlSloRedirect"] = state ? state.urlSloRedirect : undefined;
-            resourceInputs["urlSsoInit"] = state ? state.urlSsoInit : undefined;
-            resourceInputs["urlSsoPost"] = state ? state.urlSsoPost : undefined;
-            resourceInputs["urlSsoRedirect"] = state ? state.urlSsoRedirect : undefined;
-            resourceInputs["verificationKp"] = state ? state.verificationKp : undefined;
-        }
-        else {
-            const args = argsOrState;
-            if ((!args || args.acsUrl === undefined) && !opts.urn) {
-                throw new Error("Missing required property 'acsUrl'");
-            }
-            if ((!args || args.authorizationFlow === undefined) && !opts.urn) {
-                throw new Error("Missing required property 'authorizationFlow'");
-            }
-            if ((!args || args.invalidationFlow === undefined) && !opts.urn) {
-                throw new Error("Missing required property 'invalidationFlow'");
-            }
-            resourceInputs["acsUrl"] = args ? args.acsUrl : undefined;
-            resourceInputs["assertionValidNotBefore"] = args ? args.assertionValidNotBefore : undefined;
-            resourceInputs["assertionValidNotOnOrAfter"] = args ? args.assertionValidNotOnOrAfter : undefined;
-            resourceInputs["audience"] = args ? args.audience : undefined;
-            resourceInputs["authenticationFlow"] = args ? args.authenticationFlow : undefined;
-            resourceInputs["authnContextClassRefMapping"] = args ? args.authnContextClassRefMapping : undefined;
-            resourceInputs["authorizationFlow"] = args ? args.authorizationFlow : undefined;
-            resourceInputs["defaultRelayState"] = args ? args.defaultRelayState : undefined;
-            resourceInputs["digestAlgorithm"] = args ? args.digestAlgorithm : undefined;
-            resourceInputs["encryptionKp"] = args ? args.encryptionKp : undefined;
-            resourceInputs["invalidationFlow"] = args ? args.invalidationFlow : undefined;
-            resourceInputs["issuer"] = args ? args.issuer : undefined;
-            resourceInputs["name"] = args ? args.name : undefined;
-            resourceInputs["nameIdMapping"] = args ? args.nameIdMapping : undefined;
-            resourceInputs["propertyMappings"] = args ? args.propertyMappings : undefined;
-            resourceInputs["providerSamlId"] = args ? args.providerSamlId : undefined;
-            resourceInputs["sessionValidNotOnOrAfter"] = args ? args.sessionValidNotOnOrAfter : undefined;
-            resourceInputs["signAssertion"] = args ? args.signAssertion : undefined;
-            resourceInputs["signResponse"] = args ? args.signResponse : undefined;
-            resourceInputs["signatureAlgorithm"] = args ? args.signatureAlgorithm : undefined;
-            resourceInputs["signingKp"] = args ? args.signingKp : undefined;
-            resourceInputs["spBinding"] = args ? args.spBinding : undefined;
-            resourceInputs["urlSloPost"] = args ? args.urlSloPost : undefined;
-            resourceInputs["urlSloRedirect"] = args ? args.urlSloRedirect : undefined;
-            resourceInputs["urlSsoInit"] = args ? args.urlSsoInit : undefined;
-            resourceInputs["urlSsoPost"] = args ? args.urlSsoPost : undefined;
-            resourceInputs["urlSsoRedirect"] = args ? args.urlSsoRedirect : undefined;
-            resourceInputs["verificationKp"] = args ? args.verificationKp : undefined;
-        }
-        opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
-        super(ProviderSaml.__pulumiType, name, resourceInputs, opts, false /*dependency*/, utilities.getPackage());
-    }
+    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
+    super(ProviderSaml.__pulumiType, name, resourceInputs, opts, false, /*dependency*/ utilities.getPackage());
+  }
 }
 exports.ProviderSaml = ProviderSaml;
 /** @internal */
-ProviderSaml.__pulumiType = 'authentik:index/providerSaml:ProviderSaml';
-//# sourceMappingURL=providerSaml.js.map
+ProviderSaml.__pulumiType = "authentik:index/providerSaml:ProviderSaml";
+// # sourceMappingURL=providerSaml.js.map

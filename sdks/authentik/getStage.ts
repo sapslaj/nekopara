@@ -5,42 +5,55 @@ import * as pulumi from "@pulumi/pulumi";
 import * as utilities from "./utilities";
 
 export function getStage(args?: GetStageArgs, opts?: pulumi.InvokeOptions): Promise<GetStageResult> {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invoke("authentik:index/getStage:getStage", {
-        "id": args.id,
-        "name": args.name,
-    }, opts, utilities.getPackage());
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invoke(
+    "authentik:index/getStage:getStage",
+    {
+      "id": args.id,
+      "name": args.name,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 
 /**
  * A collection of arguments for invoking getStage.
  */
 export interface GetStageArgs {
-    id?: string;
-    name?: string;
+  id?: string;
+  name?: string;
 }
 
 /**
  * A collection of values returned by getStage.
  */
 export interface GetStageResult {
-    readonly id: string;
-    readonly name: string;
+  readonly id: string;
+  readonly name: string;
 }
-export function getStageOutput(args?: GetStageOutputArgs, opts?: pulumi.InvokeOutputOptions): pulumi.Output<GetStageResult> {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invokeOutput("authentik:index/getStage:getStage", {
-        "id": args.id,
-        "name": args.name,
-    }, opts, utilities.getPackage());
+export function getStageOutput(
+  args?: GetStageOutputArgs,
+  opts?: pulumi.InvokeOutputOptions,
+): pulumi.Output<GetStageResult> {
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invokeOutput(
+    "authentik:index/getStage:getStage",
+    {
+      "id": args.id,
+      "name": args.name,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 
 /**
  * A collection of arguments for invoking getStage.
  */
 export interface GetStageOutputArgs {
-    id?: pulumi.Input<string>;
-    name?: pulumi.Input<string>;
+  id?: pulumi.Input<string>;
+  name?: pulumi.Input<string>;
 }

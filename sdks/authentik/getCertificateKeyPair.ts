@@ -4,57 +4,73 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as utilities from "./utilities";
 
-export function getCertificateKeyPair(args: GetCertificateKeyPairArgs, opts?: pulumi.InvokeOptions): Promise<GetCertificateKeyPairResult> {
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invoke("authentik:index/getCertificateKeyPair:getCertificateKeyPair", {
-        "fetchCertificate": args.fetchCertificate,
-        "fetchKey": args.fetchKey,
-        "keyData": args.keyData,
-        "name": args.name,
-    }, opts, utilities.getPackage());
+export function getCertificateKeyPair(
+  args: GetCertificateKeyPairArgs,
+  opts?: pulumi.InvokeOptions,
+): Promise<GetCertificateKeyPairResult> {
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invoke(
+    "authentik:index/getCertificateKeyPair:getCertificateKeyPair",
+    {
+      "fetchCertificate": args.fetchCertificate,
+      "fetchKey": args.fetchKey,
+      "keyData": args.keyData,
+      "name": args.name,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 
 /**
  * A collection of arguments for invoking getCertificateKeyPair.
  */
 export interface GetCertificateKeyPairArgs {
-    fetchCertificate?: boolean;
-    fetchKey?: boolean;
-    keyData?: string;
-    name: string;
+  fetchCertificate?: boolean;
+  fetchKey?: boolean;
+  keyData?: string;
+  name: string;
 }
 
 /**
  * A collection of values returned by getCertificateKeyPair.
  */
 export interface GetCertificateKeyPairResult {
-    readonly certificateData: string;
-    readonly expiry: string;
-    readonly fetchCertificate?: boolean;
-    readonly fetchKey?: boolean;
-    readonly fingerprint1: string;
-    readonly fingerprint256: string;
-    readonly id: string;
-    readonly keyData: string;
-    readonly name: string;
-    readonly subject: string;
+  readonly certificateData: string;
+  readonly expiry: string;
+  readonly fetchCertificate?: boolean;
+  readonly fetchKey?: boolean;
+  readonly fingerprint1: string;
+  readonly fingerprint256: string;
+  readonly id: string;
+  readonly keyData: string;
+  readonly name: string;
+  readonly subject: string;
 }
-export function getCertificateKeyPairOutput(args: GetCertificateKeyPairOutputArgs, opts?: pulumi.InvokeOutputOptions): pulumi.Output<GetCertificateKeyPairResult> {
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invokeOutput("authentik:index/getCertificateKeyPair:getCertificateKeyPair", {
-        "fetchCertificate": args.fetchCertificate,
-        "fetchKey": args.fetchKey,
-        "keyData": args.keyData,
-        "name": args.name,
-    }, opts, utilities.getPackage());
+export function getCertificateKeyPairOutput(
+  args: GetCertificateKeyPairOutputArgs,
+  opts?: pulumi.InvokeOutputOptions,
+): pulumi.Output<GetCertificateKeyPairResult> {
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invokeOutput(
+    "authentik:index/getCertificateKeyPair:getCertificateKeyPair",
+    {
+      "fetchCertificate": args.fetchCertificate,
+      "fetchKey": args.fetchKey,
+      "keyData": args.keyData,
+      "name": args.name,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 
 /**
  * A collection of arguments for invoking getCertificateKeyPair.
  */
 export interface GetCertificateKeyPairOutputArgs {
-    fetchCertificate?: pulumi.Input<boolean>;
-    fetchKey?: pulumi.Input<boolean>;
-    keyData?: pulumi.Input<string>;
-    name: pulumi.Input<string>;
+  fetchCertificate?: pulumi.Input<boolean>;
+  fetchKey?: pulumi.Input<boolean>;
+  keyData?: pulumi.Input<string>;
+  name: pulumi.Input<string>;
 }

@@ -6,21 +6,31 @@ exports.getWebauthnDeviceTypeOutput = exports.getWebauthnDeviceType = void 0;
 const pulumi = require("@pulumi/pulumi");
 const utilities = require("./utilities");
 function getWebauthnDeviceType(args, opts) {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invoke("authentik:index/getWebauthnDeviceType:getWebauthnDeviceType", {
-        "description": args.description,
-        "id": args.id,
-    }, opts, utilities.getPackage());
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invoke(
+    "authentik:index/getWebauthnDeviceType:getWebauthnDeviceType",
+    {
+      "description": args.description,
+      "id": args.id,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 exports.getWebauthnDeviceType = getWebauthnDeviceType;
 function getWebauthnDeviceTypeOutput(args, opts) {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invokeOutput("authentik:index/getWebauthnDeviceType:getWebauthnDeviceType", {
-        "description": args.description,
-        "id": args.id,
-    }, opts, utilities.getPackage());
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invokeOutput(
+    "authentik:index/getWebauthnDeviceType:getWebauthnDeviceType",
+    {
+      "description": args.description,
+      "id": args.id,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 exports.getWebauthnDeviceTypeOutput = getWebauthnDeviceTypeOutput;
-//# sourceMappingURL=getWebauthnDeviceType.js.map
+// # sourceMappingURL=getWebauthnDeviceType.js.map

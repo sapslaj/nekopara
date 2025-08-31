@@ -6,61 +6,67 @@ exports.RbacInitialPermissions = void 0;
 const pulumi = require("@pulumi/pulumi");
 const utilities = require("./utilities");
 class RbacInitialPermissions extends pulumi.CustomResource {
-    /**
-     * Get an existing RbacInitialPermissions resource's state with the given name, ID, and optional extra
-     * properties used to qualify the lookup.
-     *
-     * @param name The _unique_ name of the resulting resource.
-     * @param id The _unique_ provider ID of the resource to lookup.
-     * @param state Any extra arguments used during the lookup.
-     * @param opts Optional settings to control the behavior of the CustomResource.
-     */
-    static get(name, id, state, opts) {
-        return new RbacInitialPermissions(name, state, Object.assign(Object.assign({}, opts), { id: id }));
+  /**
+   * Get an existing RbacInitialPermissions resource's state with the given name, ID, and optional extra
+   * properties used to qualify the lookup.
+   *
+   * @param name The _unique_ name of the resulting resource.
+   * @param id The _unique_ provider ID of the resource to lookup.
+   * @param state Any extra arguments used during the lookup.
+   * @param opts Optional settings to control the behavior of the CustomResource.
+   */
+  static get(name, id, state, opts) {
+    return new RbacInitialPermissions(name, state, Object.assign(Object.assign({}, opts), { id: id }));
+  }
+  /**
+   * Returns true if the given object is an instance of RbacInitialPermissions.  This is designed to work even
+   * when multiple copies of the Pulumi SDK have been loaded into the same process.
+   */
+  static isInstance(obj) {
+    if (obj === undefined || obj === null) {
+      return false;
     }
-    /**
-     * Returns true if the given object is an instance of RbacInitialPermissions.  This is designed to work even
-     * when multiple copies of the Pulumi SDK have been loaded into the same process.
-     */
-    static isInstance(obj) {
-        if (obj === undefined || obj === null) {
-            return false;
-        }
-        return obj['__pulumiType'] === RbacInitialPermissions.__pulumiType;
+    return obj["__pulumiType"] === RbacInitialPermissions.__pulumiType;
+  }
+  constructor(name, argsOrState, opts) {
+    let resourceInputs = {};
+    opts = opts || {};
+    if (opts.id) {
+      const state = argsOrState;
+      resourceInputs["mode"] = state ? state.mode : undefined;
+      resourceInputs["name"] = state ? state.name : undefined;
+      resourceInputs["permissions"] = state ? state.permissions : undefined;
+      resourceInputs["rbacInitialPermissionsId"] = state ? state.rbacInitialPermissionsId : undefined;
+      resourceInputs["role"] = state ? state.role : undefined;
+    } else {
+      const args = argsOrState;
+      if ((!args || args.mode === undefined) && !opts.urn) {
+        throw new Error("Missing required property 'mode'");
+      }
+      if ((!args || args.permissions === undefined) && !opts.urn) {
+        throw new Error("Missing required property 'permissions'");
+      }
+      if ((!args || args.role === undefined) && !opts.urn) {
+        throw new Error("Missing required property 'role'");
+      }
+      resourceInputs["mode"] = args ? args.mode : undefined;
+      resourceInputs["name"] = args ? args.name : undefined;
+      resourceInputs["permissions"] = args ? args.permissions : undefined;
+      resourceInputs["rbacInitialPermissionsId"] = args ? args.rbacInitialPermissionsId : undefined;
+      resourceInputs["role"] = args ? args.role : undefined;
     }
-    constructor(name, argsOrState, opts) {
-        let resourceInputs = {};
-        opts = opts || {};
-        if (opts.id) {
-            const state = argsOrState;
-            resourceInputs["mode"] = state ? state.mode : undefined;
-            resourceInputs["name"] = state ? state.name : undefined;
-            resourceInputs["permissions"] = state ? state.permissions : undefined;
-            resourceInputs["rbacInitialPermissionsId"] = state ? state.rbacInitialPermissionsId : undefined;
-            resourceInputs["role"] = state ? state.role : undefined;
-        }
-        else {
-            const args = argsOrState;
-            if ((!args || args.mode === undefined) && !opts.urn) {
-                throw new Error("Missing required property 'mode'");
-            }
-            if ((!args || args.permissions === undefined) && !opts.urn) {
-                throw new Error("Missing required property 'permissions'");
-            }
-            if ((!args || args.role === undefined) && !opts.urn) {
-                throw new Error("Missing required property 'role'");
-            }
-            resourceInputs["mode"] = args ? args.mode : undefined;
-            resourceInputs["name"] = args ? args.name : undefined;
-            resourceInputs["permissions"] = args ? args.permissions : undefined;
-            resourceInputs["rbacInitialPermissionsId"] = args ? args.rbacInitialPermissionsId : undefined;
-            resourceInputs["role"] = args ? args.role : undefined;
-        }
-        opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
-        super(RbacInitialPermissions.__pulumiType, name, resourceInputs, opts, false /*dependency*/, utilities.getPackage());
-    }
+    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
+    super(
+      RbacInitialPermissions.__pulumiType,
+      name,
+      resourceInputs,
+      opts,
+      false, /*dependency*/
+      utilities.getPackage(),
+    );
+  }
 }
 exports.RbacInitialPermissions = RbacInitialPermissions;
 /** @internal */
-RbacInitialPermissions.__pulumiType = 'authentik:index/rbacInitialPermissions:RbacInitialPermissions';
-//# sourceMappingURL=rbacInitialPermissions.js.map
+RbacInitialPermissions.__pulumiType = "authentik:index/rbacInitialPermissions:RbacInitialPermissions";
+// # sourceMappingURL=rbacInitialPermissions.js.map

@@ -6,67 +6,66 @@ exports.FlowStageBinding = void 0;
 const pulumi = require("@pulumi/pulumi");
 const utilities = require("./utilities");
 class FlowStageBinding extends pulumi.CustomResource {
-    /**
-     * Get an existing FlowStageBinding resource's state with the given name, ID, and optional extra
-     * properties used to qualify the lookup.
-     *
-     * @param name The _unique_ name of the resulting resource.
-     * @param id The _unique_ provider ID of the resource to lookup.
-     * @param state Any extra arguments used during the lookup.
-     * @param opts Optional settings to control the behavior of the CustomResource.
-     */
-    static get(name, id, state, opts) {
-        return new FlowStageBinding(name, state, Object.assign(Object.assign({}, opts), { id: id }));
+  /**
+   * Get an existing FlowStageBinding resource's state with the given name, ID, and optional extra
+   * properties used to qualify the lookup.
+   *
+   * @param name The _unique_ name of the resulting resource.
+   * @param id The _unique_ provider ID of the resource to lookup.
+   * @param state Any extra arguments used during the lookup.
+   * @param opts Optional settings to control the behavior of the CustomResource.
+   */
+  static get(name, id, state, opts) {
+    return new FlowStageBinding(name, state, Object.assign(Object.assign({}, opts), { id: id }));
+  }
+  /**
+   * Returns true if the given object is an instance of FlowStageBinding.  This is designed to work even
+   * when multiple copies of the Pulumi SDK have been loaded into the same process.
+   */
+  static isInstance(obj) {
+    if (obj === undefined || obj === null) {
+      return false;
     }
-    /**
-     * Returns true if the given object is an instance of FlowStageBinding.  This is designed to work even
-     * when multiple copies of the Pulumi SDK have been loaded into the same process.
-     */
-    static isInstance(obj) {
-        if (obj === undefined || obj === null) {
-            return false;
-        }
-        return obj['__pulumiType'] === FlowStageBinding.__pulumiType;
+    return obj["__pulumiType"] === FlowStageBinding.__pulumiType;
+  }
+  constructor(name, argsOrState, opts) {
+    let resourceInputs = {};
+    opts = opts || {};
+    if (opts.id) {
+      const state = argsOrState;
+      resourceInputs["evaluateOnPlan"] = state ? state.evaluateOnPlan : undefined;
+      resourceInputs["flowStageBindingId"] = state ? state.flowStageBindingId : undefined;
+      resourceInputs["invalidResponseAction"] = state ? state.invalidResponseAction : undefined;
+      resourceInputs["order"] = state ? state.order : undefined;
+      resourceInputs["policyEngineMode"] = state ? state.policyEngineMode : undefined;
+      resourceInputs["reEvaluatePolicies"] = state ? state.reEvaluatePolicies : undefined;
+      resourceInputs["stage"] = state ? state.stage : undefined;
+      resourceInputs["target"] = state ? state.target : undefined;
+    } else {
+      const args = argsOrState;
+      if ((!args || args.order === undefined) && !opts.urn) {
+        throw new Error("Missing required property 'order'");
+      }
+      if ((!args || args.stage === undefined) && !opts.urn) {
+        throw new Error("Missing required property 'stage'");
+      }
+      if ((!args || args.target === undefined) && !opts.urn) {
+        throw new Error("Missing required property 'target'");
+      }
+      resourceInputs["evaluateOnPlan"] = args ? args.evaluateOnPlan : undefined;
+      resourceInputs["flowStageBindingId"] = args ? args.flowStageBindingId : undefined;
+      resourceInputs["invalidResponseAction"] = args ? args.invalidResponseAction : undefined;
+      resourceInputs["order"] = args ? args.order : undefined;
+      resourceInputs["policyEngineMode"] = args ? args.policyEngineMode : undefined;
+      resourceInputs["reEvaluatePolicies"] = args ? args.reEvaluatePolicies : undefined;
+      resourceInputs["stage"] = args ? args.stage : undefined;
+      resourceInputs["target"] = args ? args.target : undefined;
     }
-    constructor(name, argsOrState, opts) {
-        let resourceInputs = {};
-        opts = opts || {};
-        if (opts.id) {
-            const state = argsOrState;
-            resourceInputs["evaluateOnPlan"] = state ? state.evaluateOnPlan : undefined;
-            resourceInputs["flowStageBindingId"] = state ? state.flowStageBindingId : undefined;
-            resourceInputs["invalidResponseAction"] = state ? state.invalidResponseAction : undefined;
-            resourceInputs["order"] = state ? state.order : undefined;
-            resourceInputs["policyEngineMode"] = state ? state.policyEngineMode : undefined;
-            resourceInputs["reEvaluatePolicies"] = state ? state.reEvaluatePolicies : undefined;
-            resourceInputs["stage"] = state ? state.stage : undefined;
-            resourceInputs["target"] = state ? state.target : undefined;
-        }
-        else {
-            const args = argsOrState;
-            if ((!args || args.order === undefined) && !opts.urn) {
-                throw new Error("Missing required property 'order'");
-            }
-            if ((!args || args.stage === undefined) && !opts.urn) {
-                throw new Error("Missing required property 'stage'");
-            }
-            if ((!args || args.target === undefined) && !opts.urn) {
-                throw new Error("Missing required property 'target'");
-            }
-            resourceInputs["evaluateOnPlan"] = args ? args.evaluateOnPlan : undefined;
-            resourceInputs["flowStageBindingId"] = args ? args.flowStageBindingId : undefined;
-            resourceInputs["invalidResponseAction"] = args ? args.invalidResponseAction : undefined;
-            resourceInputs["order"] = args ? args.order : undefined;
-            resourceInputs["policyEngineMode"] = args ? args.policyEngineMode : undefined;
-            resourceInputs["reEvaluatePolicies"] = args ? args.reEvaluatePolicies : undefined;
-            resourceInputs["stage"] = args ? args.stage : undefined;
-            resourceInputs["target"] = args ? args.target : undefined;
-        }
-        opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
-        super(FlowStageBinding.__pulumiType, name, resourceInputs, opts, false /*dependency*/, utilities.getPackage());
-    }
+    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
+    super(FlowStageBinding.__pulumiType, name, resourceInputs, opts, false, /*dependency*/ utilities.getPackage());
+  }
 }
 exports.FlowStageBinding = FlowStageBinding;
 /** @internal */
-FlowStageBinding.__pulumiType = 'authentik:index/flowStageBinding:FlowStageBinding';
-//# sourceMappingURL=flowStageBinding.js.map
+FlowStageBinding.__pulumiType = "authentik:index/flowStageBinding:FlowStageBinding";
+// # sourceMappingURL=flowStageBinding.js.map

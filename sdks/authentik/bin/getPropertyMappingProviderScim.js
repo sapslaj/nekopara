@@ -6,27 +6,37 @@ exports.getPropertyMappingProviderScimOutput = exports.getPropertyMappingProvide
 const pulumi = require("@pulumi/pulumi");
 const utilities = require("./utilities");
 function getPropertyMappingProviderScim(args, opts) {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invoke("authentik:index/getPropertyMappingProviderScim:getPropertyMappingProviderScim", {
-        "id": args.id,
-        "ids": args.ids,
-        "managed": args.managed,
-        "managedLists": args.managedLists,
-        "name": args.name,
-    }, opts, utilities.getPackage());
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invoke(
+    "authentik:index/getPropertyMappingProviderScim:getPropertyMappingProviderScim",
+    {
+      "id": args.id,
+      "ids": args.ids,
+      "managed": args.managed,
+      "managedLists": args.managedLists,
+      "name": args.name,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 exports.getPropertyMappingProviderScim = getPropertyMappingProviderScim;
 function getPropertyMappingProviderScimOutput(args, opts) {
-    args = args || {};
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
-    return pulumi.runtime.invokeOutput("authentik:index/getPropertyMappingProviderScim:getPropertyMappingProviderScim", {
-        "id": args.id,
-        "ids": args.ids,
-        "managed": args.managed,
-        "managedLists": args.managedLists,
-        "name": args.name,
-    }, opts, utilities.getPackage());
+  args = args || {};
+  opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts || {});
+  return pulumi.runtime.invokeOutput(
+    "authentik:index/getPropertyMappingProviderScim:getPropertyMappingProviderScim",
+    {
+      "id": args.id,
+      "ids": args.ids,
+      "managed": args.managed,
+      "managedLists": args.managedLists,
+      "name": args.name,
+    },
+    opts,
+    utilities.getPackage(),
+  );
 }
 exports.getPropertyMappingProviderScimOutput = getPropertyMappingProviderScimOutput;
-//# sourceMappingURL=getPropertyMappingProviderScim.js.map
+// # sourceMappingURL=getPropertyMappingProviderScim.js.map

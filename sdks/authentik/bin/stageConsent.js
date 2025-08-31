@@ -6,50 +6,49 @@ exports.StageConsent = void 0;
 const pulumi = require("@pulumi/pulumi");
 const utilities = require("./utilities");
 class StageConsent extends pulumi.CustomResource {
-    /**
-     * Get an existing StageConsent resource's state with the given name, ID, and optional extra
-     * properties used to qualify the lookup.
-     *
-     * @param name The _unique_ name of the resulting resource.
-     * @param id The _unique_ provider ID of the resource to lookup.
-     * @param state Any extra arguments used during the lookup.
-     * @param opts Optional settings to control the behavior of the CustomResource.
-     */
-    static get(name, id, state, opts) {
-        return new StageConsent(name, state, Object.assign(Object.assign({}, opts), { id: id }));
+  /**
+   * Get an existing StageConsent resource's state with the given name, ID, and optional extra
+   * properties used to qualify the lookup.
+   *
+   * @param name The _unique_ name of the resulting resource.
+   * @param id The _unique_ provider ID of the resource to lookup.
+   * @param state Any extra arguments used during the lookup.
+   * @param opts Optional settings to control the behavior of the CustomResource.
+   */
+  static get(name, id, state, opts) {
+    return new StageConsent(name, state, Object.assign(Object.assign({}, opts), { id: id }));
+  }
+  /**
+   * Returns true if the given object is an instance of StageConsent.  This is designed to work even
+   * when multiple copies of the Pulumi SDK have been loaded into the same process.
+   */
+  static isInstance(obj) {
+    if (obj === undefined || obj === null) {
+      return false;
     }
-    /**
-     * Returns true if the given object is an instance of StageConsent.  This is designed to work even
-     * when multiple copies of the Pulumi SDK have been loaded into the same process.
-     */
-    static isInstance(obj) {
-        if (obj === undefined || obj === null) {
-            return false;
-        }
-        return obj['__pulumiType'] === StageConsent.__pulumiType;
+    return obj["__pulumiType"] === StageConsent.__pulumiType;
+  }
+  constructor(name, argsOrState, opts) {
+    let resourceInputs = {};
+    opts = opts || {};
+    if (opts.id) {
+      const state = argsOrState;
+      resourceInputs["consentExpireIn"] = state ? state.consentExpireIn : undefined;
+      resourceInputs["mode"] = state ? state.mode : undefined;
+      resourceInputs["name"] = state ? state.name : undefined;
+      resourceInputs["stageConsentId"] = state ? state.stageConsentId : undefined;
+    } else {
+      const args = argsOrState;
+      resourceInputs["consentExpireIn"] = args ? args.consentExpireIn : undefined;
+      resourceInputs["mode"] = args ? args.mode : undefined;
+      resourceInputs["name"] = args ? args.name : undefined;
+      resourceInputs["stageConsentId"] = args ? args.stageConsentId : undefined;
     }
-    constructor(name, argsOrState, opts) {
-        let resourceInputs = {};
-        opts = opts || {};
-        if (opts.id) {
-            const state = argsOrState;
-            resourceInputs["consentExpireIn"] = state ? state.consentExpireIn : undefined;
-            resourceInputs["mode"] = state ? state.mode : undefined;
-            resourceInputs["name"] = state ? state.name : undefined;
-            resourceInputs["stageConsentId"] = state ? state.stageConsentId : undefined;
-        }
-        else {
-            const args = argsOrState;
-            resourceInputs["consentExpireIn"] = args ? args.consentExpireIn : undefined;
-            resourceInputs["mode"] = args ? args.mode : undefined;
-            resourceInputs["name"] = args ? args.name : undefined;
-            resourceInputs["stageConsentId"] = args ? args.stageConsentId : undefined;
-        }
-        opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
-        super(StageConsent.__pulumiType, name, resourceInputs, opts, false /*dependency*/, utilities.getPackage());
-    }
+    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
+    super(StageConsent.__pulumiType, name, resourceInputs, opts, false, /*dependency*/ utilities.getPackage());
+  }
 }
 exports.StageConsent = StageConsent;
 /** @internal */
-StageConsent.__pulumiType = 'authentik:index/stageConsent:StageConsent';
-//# sourceMappingURL=stageConsent.js.map
+StageConsent.__pulumiType = "authentik:index/stageConsent:StageConsent";
+// # sourceMappingURL=stageConsent.js.map
