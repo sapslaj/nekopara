@@ -92,6 +92,9 @@ bots:
   #   expression: load_15m <= 4.0 # make sure to end the load comparison in a .0
   #   weight:
   #     adjust: -10
+  - name: nextcloud
+    action: ALLOW
+    expression: userAgent.contains("Nextcloud")
 
   # Generic catchall rule
   - name: generic-browser

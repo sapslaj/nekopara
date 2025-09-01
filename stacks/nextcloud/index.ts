@@ -213,7 +213,7 @@ const chart = new kubernetes.helm.v3.Chart("nextcloud", {
       enabled: true,
       className: "traefik",
       annotations: {
-        // "traefik.ingress.kubernetes.io/router.middlewares": "traefik-anubis@kubernetescrd",
+        "traefik.ingress.kubernetes.io/router.middlewares": "traefik-anubis@kubernetescrd",
       },
     },
     nextcloud: {
