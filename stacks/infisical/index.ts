@@ -4,9 +4,12 @@ import * as pulumi from "@pulumi/pulumi";
 import * as random from "@pulumi/random";
 
 import { iamPolicyDocument } from "../../components/aws-utils";
-import { newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";
+import { newK3sProvider } from "../../components/k3s-shared";
 import { IngressDNS } from "../../components/k8s/IngressDNS";
 import { Valkey } from "../../components/k8s/Valkey";
+import * as authentik from "../../sdks/authentik";
+
+const image = "oci.sapslaj.xyz/infisical/infisical:2025-08-31T22-30-13-04-00";
 
 const provider = newK3sProvider();
 
@@ -16,9 +19,57 @@ const namespace = new kubernetes.core.v1.Namespace("infisical", {
   },
 }, { provider });
 
-const iamUser = new aws.iam.User(`authentik-${pulumi.getStack()}`, {});
+const clientID = new random.RandomId("client-id", {
+  byteLength: 16,
+});
 
-new aws.iam.UserPolicy("authentik", {
+const authentikGroupAccess = new authentik.Group("infisical-access", {
+  name: "Infisical Access",
+});
+
+const authentikProvider = new authentik.ProviderOauth2("infisical", {
+  name: "Infisical",
+  clientId: clientID.id,
+  authorizationFlow: authentik.getFlowOutput({
+    slug: "default-provider-authorization-implicit-consent",
+  }).id,
+  invalidationFlow: authentik.getFlowOutput({
+    slug: "default-provider-invalidation-flow",
+  }).id,
+  allowedRedirectUris: [
+    {
+      matching_mode: "strict",
+      url: "https://infisical.sapslaj.cloud/api/v1/sso/oidc/callback",
+    },
+  ],
+  propertyMappings: [
+    authentik.getPropertyMappingProviderScopeOutput({
+      name: "authentik default OAuth Mapping: OpenID 'email'",
+    }).id,
+    authentik.getPropertyMappingProviderScopeOutput({
+      name: "authentik default OAuth Mapping: OpenID 'profile'",
+    }).id,
+    authentik.getPropertyMappingProviderScopeOutput({
+      name: "authentik default OAuth Mapping: OpenID 'openid'",
+    }).id,
+  ],
+});
+
+const authentikApplication = new authentik.Application("infisical", {
+  name: "Infisical",
+  slug: "infisical",
+  protocolProvider: authentikProvider.providerOauth2Id.apply((id) => parseInt(id)),
+});
+
+new authentik.PolicyBinding("infisical-access", {
+  order: 100,
+  target: authentikApplication.uuid,
+  group: authentikGroupAccess.id,
+});
+
+const iamUser = new aws.iam.User(`infisical-${pulumi.getStack()}`, {});
+
+new aws.iam.UserPolicy("infisical", {
   user: iamUser.name,
   policy: iamPolicyDocument({
     statements: [
@@ -34,6 +85,10 @@ const awsSecret = new kubernetes.core.v1.Secret("infisical-aws-credentials", {
   metadata: {
     name: "infisical-aws-credentials",
     namespace: namespace.metadata.name,
+    labels: {
+      "app.kubernetes.io/managed-by": "Pulumi",
+      "k3s.sapslaj.xyz/stack": "nekopara.infisical",
+    },
     annotations: {
       "aws-credentials-secret-injector.sapslaj.cloud/user-name": iamUser.name,
     },
@@ -44,6 +99,24 @@ const awsSecret = new kubernetes.core.v1.Secret("infisical-aws-credentials", {
     "data",
     "stringData",
   ],
+});
+
+const licenseSecret = new kubernetes.core.v1.Secret("infisical-license", {
+  metadata: {
+    name: "infisical-license",
+    namespace: namespace.metadata.name,
+    labels: {
+      "app.kubernetes.io/managed-by": "Pulumi",
+      "k3s.sapslaj.xyz/stack": "nekopara.infisical",
+    },
+  },
+  stringData: {
+    LICENSE_KEY: aws.ssm.getParameterOutput({
+      name: "/nekopara/infisical/license-key",
+    }).value,
+  },
+}, {
+  provider,
 });
 
 const sesIdentity = new aws.sesv2.EmailIdentity("infisical", {
@@ -175,6 +248,82 @@ const service = new kubernetes.core.v1.Service("infisical", {
   },
 }, { provider });
 
+const env: pulumi.Input<kubernetes.types.input.core.v1.EnvVar>[] = [
+  {
+    name: "REDIS_URL",
+    value: "redis://infisical-valkey-rw:6379",
+  },
+  {
+    name: "SITE_URL",
+    value: "https://infisical.sapslaj.cloud",
+  },
+  {
+    name: "DB_CONNECTION_URI",
+    valueFrom: {
+      secretKeyRef: {
+        name: pulumi.concat(postgresql.metadata.name, "-app"),
+        key: "uri",
+      },
+    },
+  },
+  {
+    name: "LICENSE_KEY",
+    valueFrom: {
+      secretKeyRef: {
+        name: licenseSecret.metadata.name,
+        key: "LICENSE_KEY",
+      },
+    },
+  },
+  {
+    name: "SMTP_HOST",
+    value: "email-smtp.us-east-1.amazonaws.com",
+  },
+  {
+    name: "SMTP_USERNAME",
+    valueFrom: {
+      secretKeyRef: {
+        name: awsSecret.metadata.name,
+        key: "AWS_ACCESS_KEY_ID",
+      },
+    },
+  },
+  {
+    name: "SMTP_PASSWORD",
+    valueFrom: {
+      secretKeyRef: {
+        name: awsSecret.metadata.name,
+        key: "AWS_SES_SMTP_PASSWORD_V4",
+      },
+    },
+  },
+  {
+    name: "SMTP_PORT",
+    value: "587",
+  },
+  {
+    name: "SMTP_FROM_ADDRESS",
+    value: sesIdentity.emailIdentity,
+  },
+  {
+    name: "SMTP_FROM_NAME",
+    value: "Infisical",
+  },
+];
+
+const envFrom: pulumi.Input<kubernetes.types.input.core.v1.EnvFromSource>[] = [
+  {
+    secretRef: {
+      name: secret.metadata.name,
+    },
+  },
+  {
+    secretRef: {
+      name: awsSecret.metadata.name,
+    },
+  },
+];
+
 const deployment = new kubernetes.apps.v1.Deployment("infisical", {
   metadata: {
     name: "infisical",
@@ -216,83 +365,20 @@ const deployment = new kubernetes.apps.v1.Deployment("infisical", {
         initContainers: [
           {
             name: "schema-migration",
-            image: "proxy.oci.sapslaj.xyz/docker-hub/infisical/infisical:v0.93.1-postgres",
+            image,
             command: [
               "npm",
               "run",
               "migration:latest",
             ],
-            env: [
-              {
-                name: "REDIS_URL",
-                value: "redis://infisical-valkey-rw:6379",
-              },
-              {
-                name: "SITE_URL",
-                value: "https://infisical.sapslaj.cloud",
-              },
-              {
-                name: "DB_CONNECTION_URI",
-                valueFrom: {
-                  secretKeyRef: {
-                    name: pulumi.concat(postgresql.metadata.name, "-app"),
-                    key: "uri",
-                  },
-                },
-              },
-              {
-                name: "SMTP_HOST",
-                value: "email-smtp.us-east-1.amazonaws.com",
-              },
-              {
-                name: "SMTP_USERNAME",
-                valueFrom: {
-                  secretKeyRef: {
-                    name: awsSecret.metadata.name,
-                    key: "AWS_ACCESS_KEY_ID",
-                  },
-                },
-              },
-              {
-                name: "SMTP_PASSWORD",
-                valueFrom: {
-                  secretKeyRef: {
-                    name: awsSecret.metadata.name,
-                    key: "AWS_SES_SMTP_PASSWORD_V4",
-                  },
-                },
-              },
-              {
-                name: "SMTP_PORT",
-                value: "465",
-              },
-              {
-                name: "SMTP_FROM_ADDRESS",
-                value: sesIdentity.emailIdentity,
-              },
-              {
-                name: "SMTP_FROM_NAME",
-                value: "Infisical",
-              },
-            ],
-            envFrom: [
-              {
-                secretRef: {
-                  name: secret.metadata.name,
-                },
-              },
-              {
-                secretRef: {
-                  name: awsSecret.metadata.name,
-                },
-              },
-            ],
+            env,
+            envFrom,
           },
         ],
         containers: [
           {
             name: "infisical",
-            image: "proxy.oci.sapslaj.xyz/docker-hub/infisical/infisical:v0.93.1-postgres",
+            image,
             readinessProbe: {
               initialDelaySeconds: 10,
               periodSeconds: 5,
@@ -307,32 +393,8 @@ const deployment = new kubernetes.apps.v1.Deployment("infisical", {
                 containerPort: 8080,
               },
             ],
-            env: [
-              {
-                name: "REDIS_URL",
-                value: "redis://infisical-valkey-rw:6379",
-              },
-              {
-                name: "SITE_URL",
-                value: "https://infisical.sapslaj.cloud",
-              },
-              {
-                name: "DB_CONNECTION_URI",
-                valueFrom: {
-                  secretKeyRef: {
-                    name: pulumi.concat(postgresql.metadata.name, "-app"),
-                    key: "uri",
-                  },
-                },
-              },
-            ],
-            envFrom: [
-              {
-                secretRef: {
-                  name: secret.metadata.name,
-                },
-              },
-            ],
+            env,
+            envFrom,
             resources: {
               limits: {
                 memory: "1Gi",
