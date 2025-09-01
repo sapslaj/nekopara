@@ -256,6 +256,7 @@ const allowList = new kubernetes.apiextensions.CustomResource("traefik-dashboard
   spec: {
     ipAllowList: {
       sourceRange: [
+        "100.64.0.0/10",
         "172.24.4.0/24",
         "172.24.5.0/24",
       ],
