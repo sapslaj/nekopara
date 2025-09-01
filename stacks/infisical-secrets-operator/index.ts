@@ -2,7 +2,6 @@ import * as kubernetes from "@pulumi/kubernetes";
 import * as pulumi from "@pulumi/pulumi";
 
 import { newK3sProvider } from "../../components/k3s-shared";
-import * as infisical from "../../sdks/infisical";
 
 const provider = newK3sProvider();
 
@@ -61,8 +60,3 @@ new kubernetes.apiextensions.CustomResource("infisical-secrets-operator-servicem
     ],
   },
 }, { provider });
-
-const sharedIdentity = new infisical.Identity("kubernetes-shared", {
-  orgId: "sapslaj",
-  role: "member",
-});
