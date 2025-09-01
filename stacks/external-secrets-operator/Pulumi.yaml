@@ -1,0 +1,5 @@
+name: nekopara.external-secrets-operator
+runtime:
+  name: nodejs
+  options:
+    packagemanager: npm

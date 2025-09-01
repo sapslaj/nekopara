@@ -1,0 +1,6 @@
+external-secrets:
+  installCRDs: false
+  serviceMonitor:
+    enabled: true
+  grafanaDashboard:
+    enabled: true

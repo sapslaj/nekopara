@@ -69,7 +69,7 @@ const opensearchOperatorCRDs = new kubernetes.kustomize.v2.Directory("opensearch
   provider,
 });
 
-const chart = new kubernetes.helm.v3.Chart("infisical-secrets-operator", {
+const infisicalSecretsOperatorCRDs = new kubernetes.helm.v3.Chart("infisical-secrets-operator", {
   chart: "secrets-operator",
   fetchOpts: {
     repo: "https://dl.cloudsmith.io/public/infisical/helm-charts/helm/charts/",
@@ -88,6 +88,13 @@ const chart = new kubernetes.helm.v3.Chart("infisical-secrets-operator", {
       }
     },
   ],
+}, {
+  provider,
+});
+
+const esoCRDs = new kubernetes.kustomize.v2.Directory("external-secrets-operator", {
+  namespace: "kube-system",
+  directory: "./crds/external-secrets-operator/",
 }, {
   provider,
 });

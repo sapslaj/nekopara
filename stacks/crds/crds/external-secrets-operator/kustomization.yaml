@@ -1,0 +1,2 @@
+resources:
+   - https://raw.githubusercontent.com/external-secrets/external-secrets/refs/tags/v0.19.2/deploy/crds/bundle.yaml
