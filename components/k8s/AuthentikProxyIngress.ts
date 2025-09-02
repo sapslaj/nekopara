@@ -17,6 +17,7 @@ export interface AuthentikProxyIngressProps {
   };
   additionalMiddlewares?: any[];
   enableAnubis?: boolean;
+  enableIngressRoute?: boolean;
 }
 
 export class AuthentikProxyIngress extends pulumi.ComponentResource {
@@ -26,7 +27,7 @@ export class AuthentikProxyIngress extends pulumi.ComponentResource {
   accessGroupPolicyBinding: authentik.PolicyBinding;
   outpost: authentik.Outpost;
   forwardAuthMiddleware: kubernetes.apiextensions.CustomResource;
-  ingressRoute: kubernetes.apiextensions.CustomResource;
+  ingressRoute?: kubernetes.apiextensions.CustomResource;
   ingressDNS: IngressDNS;
 
   constructor(name: string, props: AuthentikProxyIngressProps, opts: pulumi.ComponentResourceOptions = {}) {
@@ -133,56 +134,58 @@ export class AuthentikProxyIngress extends pulumi.ComponentResource {
       parent: this,
     });
 
-    this.ingressRoute = new kubernetes.apiextensions.CustomResource(`${name}-ingressroute`, {
-      apiVersion: "traefik.io/v1alpha1",
-      kind: "IngressRoute",
-      metadata: {
-        name: slug,
-        namespace: props.namespace,
-      },
-      spec: {
-        routes: [
-          {
-            match: pulumi.concat("Host(`", props.hostname, "`)"),
-            kind: "Rule",
-            middlewares: [
-              {
-                name: this.forwardAuthMiddleware.metadata.name,
-                namespace: this.forwardAuthMiddleware.metadata.namespace,
-              },
-              ...(props.enableAnubis === false ? [] : [
+    if (props.enableIngressRoute !== false) {
+      this.ingressRoute = new kubernetes.apiextensions.CustomResource(`${name}-ingressroute`, {
+        apiVersion: "traefik.io/v1alpha1",
+        kind: "IngressRoute",
+        metadata: {
+          name: slug,
+          namespace: props.namespace,
+        },
+        spec: {
+          routes: [
+            {
+              match: pulumi.concat("Host(`", props.hostname, "`)"),
+              kind: "Rule",
+              middlewares: [
                 {
-                  name: "anubis",
-                  namespace: "traefik",
+                  name: this.forwardAuthMiddleware.metadata.name,
+                  namespace: this.forwardAuthMiddleware.metadata.namespace,
                 },
-              ]),
-              ...(props.additionalMiddlewares ?? []),
-            ],
-            priority: 10,
-            services: [
-              {
-                namespace: props.namespace,
-                ...props.service,
-              },
-            ],
-          },
-          {
-            match: pulumi.concat("Host(`", props.hostname, "`)  && PathPrefix(`/outpost.goauthentik.io/`)"),
-            kind: "Rule",
-            priority: 15,
-            services: [
-              {
-                name: pulumi.interpolate`ak-outpost-${slug}`,
-                namespace: "authentik",
-                kind: "Service",
-                port: 9000,
-              },
-            ],
-          },
-        ],
-      },
-    }, {
-      parent: this,
-    });
+                ...(props.enableAnubis === false ? [] : [
+                  {
+                    name: "anubis",
+                    namespace: "traefik",
+                  },
+                ]),
+                ...(props.additionalMiddlewares ?? []),
+              ],
+              priority: 10,
+              services: [
+                {
+                  namespace: props.namespace,
+                  ...props.service,
+                },
+              ],
+            },
+            {
+              match: pulumi.concat("Host(`", props.hostname, "`)  && PathPrefix(`/outpost.goauthentik.io/`)"),
+              kind: "Rule",
+              priority: 15,
+              services: [
+                {
+                  name: pulumi.interpolate`ak-outpost-${slug}`,
+                  namespace: "authentik",
+                  kind: "Service",
+                  port: 9000,
+                },
+              ],
+            },
+          ],
+        },
+      }, {
+        parent: this,
+      });
+    }
   }
 }
