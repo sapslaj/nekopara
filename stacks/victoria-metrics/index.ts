@@ -2,10 +2,11 @@ import * as aws from "@pulumi/aws";
 import * as kubernetes from "@pulumi/kubernetes";
 import * as pulumi from "@pulumi/pulumi";
 import * as random from "@pulumi/random";
+import * as infisical from "@sapslaj/pulumi-infisical";
 import * as YAML from "yaml";
 
 import { iamPolicyDocument } from "../../components/aws-utils";
-import { getSecretValueOutput } from "../../components/infisical";
+import { getSecretValueOutput, projectIds } from "../../components/infisical";
 import { newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";
 import { AuthentikProxyIngress } from "../../components/k8s/AuthentikProxyIngress";
 import { DNSRecord } from "../../components/shimiko";
@@ -53,6 +54,13 @@ const sesIdentity = new aws.sesv2.EmailIdentity("victoriametrics", {
   });
 });
 
+const infisicalFolder = new infisical.SecretFolder("victoria-metrics-ingress-users", {
+  environmentSlug: "prod",
+  name: "victoria-metrics-ingress-users",
+  folderPath: "/",
+  projectId: projectIds.homelab,
+});
+
 const basicAuthUsers = [
   "grafana",
   "remotewrite",
@@ -65,6 +73,26 @@ const basicAuthUsers = [
     type: "SecureString",
     name: `/nekopara/victoria-metrics/ingress-user/${username}/password`,
     value: randomPassword.result,
+  });
+  const folder = new infisical.SecretFolder(username, {
+    folderPath: pulumi.concat(infisicalFolder.folderPath, infisicalFolder.name),
+    name: username,
+    environmentSlug: infisicalFolder.environmentSlug,
+    projectId: infisicalFolder.projectId,
+  });
+  new infisical.Secret(`${username}-plaintext`, {
+    folderPath: pulumi.concat(folder.folderPath, "/", folder.name),
+    envSlug: folder.environmentSlug,
+    workspaceId: folder.projectId,
+    name: "plaintext",
+    value: randomPassword.result,
+  });
+  new infisical.Secret(`${username}-bcrypthash`, {
+    folderPath: pulumi.concat(folder.folderPath, "/", folder.name),
+    envSlug: folder.environmentSlug,
+    workspaceId: folder.projectId,
+    name: "bcrypthash",
+    value: randomPassword.bcryptHash,
   });
   return {
     username,
@@ -696,22 +724,30 @@ new kubernetes.apiextensions.CustomResource("static-scrape-node-exporter", {
   provider,
 });
 
-const hassTokenState = new random.RandomPassword("hass-token", {
-  length: 1,
-}, {
-  ignoreChanges: ["*"],
-});
-
-const hassToken = new kubernetes.core.v1.Secret("hass-token", {
+const hassToken = new kubernetes.apiextensions.CustomResource("hass-token", {
+  apiVersion: "external-secrets.io/v1",
+  kind: "ExternalSecret",
   metadata: {
     name: "hass-token",
     namespace: namespace.metadata.name,
   },
-  stringData: {
-    HASS_TOKEN: hassTokenState.result,
+  spec: {
+    secretStoreRef: {
+      kind: "ClusterSecretStore",
+      name: "infisical-homelab-prod",
+    },
+    target: {
+      name: "hass-token",
+    },
+    data: [
+      {
+        secretKey: "HASS_TOKEN",
+        remoteRef: {
+          key: "HASS_TOKEN",
+        },
+      },
+    ],
   },
-}, {
-  provider,
 });
 
 new kubernetes.apiextensions.CustomResource("static-scrape-homeassistant", {
