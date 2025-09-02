@@ -5,6 +5,7 @@
     "cluster",
     "core",
     "crds",
+    "external-secrets-operator",
     "nodegroups",
     "shortrack"
   ]

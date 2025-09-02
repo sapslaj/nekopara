@@ -1,17 +1,24 @@
+import * as aws from "@pulumi/aws";
 import * as kubernetes from "@pulumi/kubernetes";
 import * as pulumi from "@pulumi/pulumi";
+import * as infisical from "@sapslaj/pulumi-infisical";
 
+import { getSecretValueOutput, projectSlugs } from "../../components/infisical";
 import { newK3sProvider } from "../../components/k3s-shared";
+
+// NOTE: using internal cluster endpoint instead of public one for funsies
+// const hostAPI = "https://infisical.sapslaj.cloud";
+const hostAPI = "http://infisical.infisical.svc.cluster.local:80";
 
 const provider = newK3sProvider();
 
-const namespace = new kubernetes.core.v1.Namespace("infisical-secrets-operator", {
+const namespace = new kubernetes.core.v1.Namespace("infisical-operator-system", {
   metadata: {
-    name: "infisical-secrets-operator",
+    name: "infisical-operator-system",
   },
 }, { provider });
 
-const chart = new kubernetes.helm.v3.Chart("infisical-secrets-operator", {
+new kubernetes.helm.v3.Chart("infisical-secrets-operator", {
   chart: "secrets-operator",
   fetchOpts: {
     repo: "https://dl.cloudsmith.io/public/infisical/helm-charts/helm/charts/",
@@ -58,5 +65,100 @@ new kubernetes.apiextensions.CustomResource("infisical-secrets-operator-servicem
         },
       },
     ],
+  },
+}, { provider });
+
+new kubernetes.core.v1.ConfigMap("infisical-config", {
+  metadata: {
+    name: "infisical-config",
+    namespace: namespace.metadata.name,
+  },
+  data: {
+    hostAPI,
+  },
+}, { provider });
+
+// this is technically for ESO but whatever
+const esoSecret = new kubernetes.core.v1.Secret("infisical-eso", {
+  metadata: {
+    name: "infisical",
+    namespace: "external-secrets-operator",
+  },
+  type: "Opaque",
+  stringData: {
+    clientId: getSecretValueOutput({
+      folder: "/infisical",
+      key: "INFISICAL_CLIENT_ID",
+    }),
+    clientSecret: getSecretValueOutput({
+      folder: "/infisical",
+      key: "INFISICAL_CLIENT_SECRET",
+    }),
+  },
+}, { provider });
+
+new kubernetes.apiextensions.CustomResource("cluster-secret-store-infisical-homelab-prod", {
+  apiVersion: "external-secrets.io/v1",
+  kind: "ClusterSecretStore",
+  metadata: {
+    name: "infisical-homelab-prod",
+  },
+  spec: {
+    provider: {
+      infisical: {
+        hostAPI,
+        auth: {
+          universalAuthCredentials: {
+            clientId: {
+              key: "clientId",
+              namespace: esoSecret.metadata.namespace,
+              name: esoSecret.metadata.name,
+            },
+            clientSecret: {
+              key: "clientSecret",
+              namespace: esoSecret.metadata.namespace,
+              name: esoSecret.metadata.name,
+            },
+          },
+        },
+        secretsScope: {
+          projectSlug: projectSlugs.homelab,
+          environmentSlug: "prod",
+        },
+      },
+    },
+  },
+}, { provider });
+
+new kubernetes.apiextensions.CustomResource("cluster-secret-store-infisical-homelab-dev", {
+  apiVersion: "external-secrets.io/v1",
+  kind: "ClusterSecretStore",
+  metadata: {
+    name: "infisical-homelab-dev",
+  },
+  spec: {
+    provider: {
+      infisical: {
+        hostAPI,
+        auth: {
+          universalAuthCredentials: {
+            clientId: {
+              key: "clientId",
+              namespace: esoSecret.metadata.namespace,
+              name: esoSecret.metadata.name,
+            },
+            clientSecret: {
+              key: "clientSecret",
+              namespace: esoSecret.metadata.namespace,
+              name: esoSecret.metadata.name,
+            },
+          },
+        },
+        secretsScope: {
+          projectSlug: projectSlugs.homelab,
+          environmentSlug: "dev",
+        },
+      },
+    },
   },
 }, { provider });

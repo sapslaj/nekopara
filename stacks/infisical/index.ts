@@ -69,12 +69,77 @@ new authentik.PolicyBinding("infisical-access", {
 
 const iamUser = new aws.iam.User(`infisical-${pulumi.getStack()}`, {});
 
+const iamRole = new aws.iam.Role(`infisical-${pulumi.getStack()}`, {
+  name: iamUser.name,
+  assumeRolePolicy: iamPolicyDocument({
+    statements: [
+      {
+        actions: ["sts:AssumeRole"],
+        principals: [
+          {
+            type: "AWS",
+            identifiers: [iamUser.arn],
+          },
+        ],
+      },
+    ],
+  }),
+});
+
 new aws.iam.UserPolicy("infisical", {
   user: iamUser.name,
   policy: iamPolicyDocument({
     statements: [
       {
         actions: ["ses:SendRawEmail"],
+        resources: ["*"],
+      },
+      {
+        actions: ["sts:AssumeRole"],
+        resources: [iamRole.arn],
+      },
+    ],
+  }),
+});
+
+new aws.iam.RolePolicy("infisical", {
+  role: iamRole.name,
+  policy: iamPolicyDocument({
+    statements: [
+      {
+        actions: [
+          "kms:Decrypt",
+          "kms:DescribeKey",
+          "kms:Encrypt",
+          "kms:ListAliases",
+        ],
+        resources: ["*"],
+      },
+      {
+        actions: [
+          "secretsmanager:BatchGetSecretValue",
+          "secretsmanager:CreateSecret",
+          "secretsmanager:DeleteSecret",
+          "secretsmanager:DescribeSecret",
+          "secretsmanager:GetSecretValue",
+          "secretsmanager:ListSecrets",
+          "secretsmanager:TagResource",
+          "secretsmanager:UntagResource",
+          "secretsmanager:UpdateSecret",
+        ],
+        resources: ["*"],
+      },
+      {
+        actions: [
+          "ssm:PutParameter",
+          "ssm:GetParameters",
+          "ssm:GetParametersByPath",
+          "ssm:DescribeParameters",
+          "ssm:DeleteParameters",
+          "ssm:ListTagsForResource",
+          "ssm:AddTagsToResource",
+          "ssm:RemoveTagsFromResource",
+        ],
         resources: ["*"],
       },
     ],
@@ -248,6 +313,38 @@ const service = new kubernetes.core.v1.Service("infisical", {
   },
 }, { provider });
 
+const appConnectionsSMSecret = new aws.secretsmanager.Secret("infisical-app-connections");
+
+const appConnectionsExternalSecret = new kubernetes.apiextensions.CustomResource(
+  "infisical-app-connections-externalsecret",
+  {
+    apiVersion: "external-secrets.io/v1",
+    kind: "ExternalSecret",
+    metadata: {
+      name: "infisical-app-connections",
+      namespace: namespace.metadata.name,
+    },
+    spec: {
+      refreshInterval: "1h",
+      secretStoreRef: {
+        kind: "ClusterSecretStore",
+        name: "aws-secretsmanager-us-east-1",
+      },
+      target: {
+        name: "infisical-app-connections",
+      },
+      dataFrom: [
+        {
+          extract: {
+            key: appConnectionsSMSecret.name,
+          },
+        },
+      ],
+    },
+  },
+  { provider },
+);
+
 const env: pulumi.Input<kubernetes.types.input.core.v1.EnvVar>[] = [
   {
     name: "REDIS_URL",
@@ -309,6 +406,24 @@ const env: pulumi.Input<kubernetes.types.input.core.v1.EnvVar>[] = [
     name: "SMTP_FROM_NAME",
     value: "Infisical",
   },
+  {
+    name: "INF_APP_CONNECTION_AWS_ACCESS_KEY_ID",
+    valueFrom: {
+      secretKeyRef: {
+        name: awsSecret.metadata.name,
+        key: "AWS_ACCESS_KEY_ID",
+      },
+    },
+  },
+  {
+    name: "INF_APP_CONNECTION_AWS_SECRET_ACCESS_KEY",
+    valueFrom: {
+      secretKeyRef: {
+        name: awsSecret.metadata.name,
+        key: "AWS_SECRET_ACCESS_KEY",
+      },
+    },
+  },
 ];
 
 const envFrom: pulumi.Input<kubernetes.types.input.core.v1.EnvFromSource>[] = [
@@ -320,6 +435,11 @@ const envFrom: pulumi.Input<kubernetes.types.input.core.v1.EnvFromSource>[] = [
   {
     secretRef: {
       name: awsSecret.metadata.name,
+    },
+  },
+  {
+    secretRef: {
+      name: appConnectionsExternalSecret.metadata.name,
     },
   },
 ];
