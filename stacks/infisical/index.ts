@@ -458,6 +458,7 @@ const deployment = new kubernetes.apps.v1.Deployment("infisical", {
     },
     annotations: {
       "reloader.stakater.com/auto": "true",
+      "reloader.stakater.com/rollout-strategy": "restart",
     },
   },
   spec: {
