@@ -428,11 +428,39 @@ const victoriaMetrics = new kubernetes.helm.v3.Chart("victoria-metrics", {
             },
             {
               receiver: "blackhole",
-              matchers: [`alertname="Watchdog"`],
+              matchers: [`alertname=Watchdog`],
             },
             {
               receiver: "blackhole",
-              matchers: [`alertname="InfoInhibitor"`],
+              matchers: [`alertname=InfoInhibitor`],
+            },
+            {
+              receiver: "blackhole",
+              matchers: [
+                `alertname=NodeSystemdServiceFailed`,
+                `hostname=aqua`,
+                `name="rclone-sync@exos-volumes.service"`,
+              ],
+            },
+            {
+              // FIXME: temp disable alert until noise floor does down
+              receiver: "blackhole",
+              matchers: [`alertname=LogErrors`],
+            },
+            {
+              // FIXME: temp disable alert until noise floor does down
+              receiver: "blackhole",
+              matchers: [`alertname=ScrapePoolHasNoTargets`],
+            },
+            {
+              // FIXME: temp disable alert until noise floor does down
+              receiver: "blackhole",
+              matchers: [`alertname=TooManyScrapeErrors`],
+            },
+            {
+              // FIXME: temp disable alert until noise floor does down
+              receiver: "blackhole",
+              matchers: [`alertname=ReconcileErrors`],
             },
           ],
         },
@@ -645,7 +673,7 @@ const victoriaLogs = new kubernetes.helm.v3.Chart("victoria-logs", {
 new kubernetes.kustomize.v2.Directory("alert-rules", {
   directory: "./alert-rules/",
   namespace: namespace.metadata.name,
-})
+});
 
 new kubernetes.apiextensions.CustomResource("static-scrape-node-exporter", {
   apiVersion: "operator.victoriametrics.com/v1beta1",
