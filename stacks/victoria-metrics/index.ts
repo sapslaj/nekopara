@@ -4,7 +4,10 @@ import * as pulumi from "@pulumi/pulumi";
 import * as random from "@pulumi/random";
 import * as YAML from "yaml";
 
+import { iamPolicyDocument } from "../../components/aws-utils";
+import { getSecretValueOutput } from "../../components/infisical";
 import { newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";
+import { AuthentikProxyIngress } from "../../components/k8s/AuthentikProxyIngress";
 import { DNSRecord } from "../../components/shimiko";
 
 const provider = newK3sProvider();
@@ -14,6 +17,28 @@ const namespace = new kubernetes.core.v1.Namespace("victoria-metrics", {
     name: "victoria-metrics",
   },
 }, { provider });
+
+const iamUser = new aws.iam.User(`victoriametrics-${pulumi.getStack()}`, {});
+
+const iamKey = new aws.iam.AccessKey("victoriametrics", {
+  user: iamUser.name,
+});
+
+new aws.iam.UserPolicy("victoriametrics", {
+  user: iamUser.name,
+  policy: iamPolicyDocument({
+    statements: [
+      {
+        actions: ["ses:SendRawEmail"],
+        resources: ["*"],
+      },
+    ],
+  }),
+});
+
+const sesIdentity = new aws.sesv2.EmailIdentity("victoriametrics", {
+  emailIdentity: "victoriametrics@sapslaj.cloud",
+});
 
 [
   "victoriametrics-vlinsert",
@@ -178,6 +203,109 @@ const victoriaMetricsOperator = new kubernetes.helm.v3.Chart("victoria-metrics-o
   provider,
 });
 
+const severityMapping = {
+  "none": "min",
+  "info": "min",
+  "warning": "default",
+  "error": "high",
+  "critical": "high",
+};
+
+// have to compile a ternary expression nightmare due to the limitations of
+// gval.
+const notificationPriorityGvalExpression = Object.entries(severityMapping)
+  .map(([key, value]) => {
+    return `labels["severity"] == "${key}" ? "${value}" : `;
+  })
+  .reduce((full, expr) => {
+    return full + expr;
+  }, `status != "firing" ? "default" : `) + `"default"`;
+
+const alertmanagerNtfyService = new kubernetes.helm.v3.Chart("alertmanager-ntfy", {
+  chart: "alertmanager-ntfy",
+  fetchOpts: {
+    repo: "https://djjudas21.github.io/charts/",
+  },
+  version: "0.1.1",
+  skipCRDRendering: true,
+  namespace: namespace.metadata.name,
+  values: {
+    config: {
+      ntfy: {
+        auth: {
+          basic: null,
+          token: getSecretValueOutput({
+            key: "ntfy_alertmanager_token",
+          }),
+        },
+        notification: {
+          topic: "sapslaj-alerts-46c11718-75ab-4082-9829-9dc2e75deec3",
+          priority: notificationPriorityGvalExpression,
+        },
+      },
+    },
+  },
+  transformations: [
+    (obj: any, opts: pulumi.CustomResourceOptions) => {
+      if (obj.kind === "Deployment") {
+        obj.metadata.annotations = {
+          ...obj.metadata.annotations,
+          "reloader.stakater.com/auto": "true",
+          "reloader.stakater.com/rollout-strategy": "restart",
+        };
+      }
+    },
+  ],
+}, { provider });
+
+new AuthentikProxyIngress("alertmanager", {
+  name: "Alertmanager",
+  namespace: namespace.metadata.name,
+  hostname: "alertmanager.sapslaj.xyz",
+  service: {
+    kind: "Service",
+    name: "vmalertmanager-victoria-metrics",
+    port: 9093,
+  },
+  enableAnubis: false,
+}, {
+  providers: {
+    kubernetes: provider,
+  },
+});
+
+new AuthentikProxyIngress("vmalert", {
+  name: "VMAlert",
+  namespace: namespace.metadata.name,
+  hostname: "vmalert.sapslaj.xyz",
+  service: {
+    kind: "Service",
+    name: "vmalert-victoria-metrics",
+    port: 8080,
+  },
+  enableAnubis: false,
+}, {
+  providers: {
+    kubernetes: provider,
+  },
+});
+
+new AuthentikProxyIngress("vmagent", {
+  name: "VMAgent",
+  namespace: namespace.metadata.name,
+  hostname: "vmagent.sapslaj.xyz",
+  service: {
+    kind: "Service",
+    name: "vmagent-victoria-metrics",
+    port: 8429,
+  },
+  enableAnubis: false,
+}, {
+  providers: {
+    kubernetes: provider,
+  },
+});
+
 const victoriaMetrics = new kubernetes.helm.v3.Chart("victoria-metrics", {
   chart: "victoria-metrics-k8s-stack",
   fetchOpts: {
@@ -203,6 +331,16 @@ const victoriaMetrics = new kubernetes.helm.v3.Chart("victoria-metrics", {
       enabled: true,
       labels: {
         "grafana_dashboard": "1",
+      },
+    },
+    defaultRules: {
+      groups: {
+        kubernetesSystemScheduler: {
+          create: false,
+        },
+        kubernetesSystemControllerManager: {
+          create: false,
+        },
       },
     },
     vmsingle: {
@@ -255,6 +393,84 @@ const victoriaMetrics = new kubernetes.helm.v3.Chart("victoria-metrics", {
           hosts: [
             "victoriametrics-vminsert.sapslaj.xyz",
           ],
+        },
+      },
+    },
+    alertmanager: {
+      enabled: true,
+      spec: {
+        externalURL: "https://alertmanager.sapslaj.xyz",
+      },
+      config: {
+        global: {
+          smtp_from: sesIdentity.emailIdentity,
+          smtp_smarthost: "email-smtp.us-east-1.amazonaws.com:587",
+          smtp_auth_username: iamKey.id,
+          smtp_auth_password: iamKey.sesSmtpPasswordV4,
+        },
+        route: {
+          receiver: "ntfy",
+          routes: [
+            {
+              receiver: "email",
+              matchers: [`alertname="AlertmanagerFailedToSendAlerts"`],
+              continue: true,
+            },
+            {
+              receiver: "blackhole",
+              matchers: [`alertname="Watchdog"`],
+            },
+            {
+              receiver: "blackhole",
+              matchers: [`alertname="InfoInhibitor"`],
+            },
+          ],
+        },
+        receivers: [
+          {
+            name: "blackhole",
+          },
+          {
+            name: "email",
+            to: "alerts@sapslaj.com",
+          },
+          {
+            name: "ntfy",
+            webhook_configs: [
+              {
+                url: "http://alertmanager-ntfy:8000/hook",
+                http_config: {
+                  basic_auth: {
+                    username: "alertmanager",
+                    password: "verysecure",
+                  },
+                },
+              },
+            ],
+          },
+        ],
+      },
+    },
+    vmalert: {
+      enabled: true,
+      spec: {
+        extraArgs: {
+          "external.url": "https://vmalert.sapslaj.xyz",
+        },
+      },
+    },
+    vmagent: {
+      enabled: true,
+      spec: {
+        resources: {
+          limits: {
+            cpu: "1",
+            memory: "500Mi",
+          },
+          requests: {
+            cpu: "200m",
+            memory: "200Mi",
+          },
         },
       },
     },
