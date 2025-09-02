@@ -489,6 +489,16 @@ const victoriaMetrics = new kubernetes.helm.v3.Chart("victoria-metrics", {
       forceDeployDatasource: true,
     },
   },
+  transformations: [
+    (obj: any, opts: pulumi.CustomResourceOptions) => {
+      if (obj.kind === "VMRule" && obj.metadata.name === "victoria-metrics-node-exporter") {
+        // node-exporter alert rules are overridden elsewhere, but we want to
+        // keep the rewrite rules.
+        obj.apiVersion = "v1";
+        obj.kind = "List";
+      }
+    },
+  ],
 }, {
   provider,
   dependsOn: [
@@ -631,6 +641,11 @@ const victoriaLogs = new kubernetes.helm.v3.Chart("victoria-logs", {
     transformSkipIngressAwait(),
   ],
 });
+
+new kubernetes.kustomize.v2.Directory("alert-rules", {
+  directory: "./alert-rules/",
+  namespace: namespace.metadata.name,
+})
 
 new kubernetes.apiextensions.CustomResource("static-scrape-node-exporter", {
   apiVersion: "operator.victoriametrics.com/v1beta1",
