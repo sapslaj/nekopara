@@ -1,3 +1,4 @@
+import * as aws from "@pulumi/aws";
 import * as kubernetes from "@pulumi/kubernetes";
 import * as pulumi from "@pulumi/pulumi";
 
@@ -17,3 +18,56 @@ const eso = new kubernetes.kustomize.v2.Directory("external-secrets-operator", {
 }, {
   provider,
 });
+
+const awsUser = new aws.iam.User(`external-secrets-operator-${pulumi.getStack()}`);
+
+new aws.iam.UserPolicyAttachment("SecretsManagerReadWrite", {
+  user: awsUser.name,
+  policyArn: "arn:aws:iam::aws:policy/SecretsManagerReadWrite",
+});
+
+const awsSecret = new kubernetes.core.v1.Secret("external-secrets-operator-aws", {
+  metadata: {
+    name: "external-secrets-operator-aws",
+    namespace: namespace.metadata.name,
+    annotations: {
+      "aws-credentials-secret-injector.sapslaj.cloud/user-name": awsUser.name,
+    },
+  },
+}, {
+  provider,
+  ignoreChanges: [
+    "data",
+    "stringData",
+  ],
+});
+
+new kubernetes.apiextensions.CustomResource("cluster-secret-store-aws-secretsmanager-us-east-1", {
+  apiVersion: "external-secrets.io/v1",
+  kind: "ClusterSecretStore",
+  metadata: {
+    name: "aws-secretsmanager-us-east-1",
+  },
+  spec: {
+    provider: {
+      aws: {
+        service: "SecretsManager",
+        region: "us-east-1",
+        auth: {
+          secretRef: {
+            accessKeyIDSecretRef: {
+              namespace: awsSecret.metadata.namespace,
+              name: awsSecret.metadata.name,
+              key: "AWS_ACCESS_KEY_ID",
+            },
+            secretAccessKeySecretRef: {
+              namespace: awsSecret.metadata.namespace,
+              name: awsSecret.metadata.name,
+              key: "AWS_SECRET_ACCESS_KEY",
+            },
+          },
+        },
+      },
+    },
+  },
+}, { provider });
