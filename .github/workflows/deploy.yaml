@@ -7,12 +7,12 @@ on:
 env:
   NODE_AUTH_TOKEN: ${{ secrets.GH_ACTIONS_READ_TOKEN }}
   PULUMI_CONFIG_PASSPHRASE: ""
-  PROXMOX_VE_ENDPOINT: ${{ vars.PROXMOX_VE_ENDPOINT }}
-  PROXMOX_VE_USERNAME: ${{ vars.PROXMOX_VE_USERNAME }}
+  PROXMOX_VE_ENDPOINT: ${{ secrets.PROXMOX_VE_ENDPOINT }}
+  PROXMOX_VE_USERNAME: ${{ secrets.PROXMOX_VE_USERNAME }}
   PROXMOX_VE_PASSWORD: ${{ secrets.PROXMOX_VE_PASSWORD }}
   PROXMOX_VE_INSECURE: "true"
-  VYOS_HOST: ${{ vars.VYOS_HOST }}
-  VYOS_USERNAME: ${{ vars.VYOS_USERNAME }}
+  VYOS_HOST: ${{ secrets.VYOS_HOST }}
+  VYOS_USERNAME: ${{ secrets.VYOS_USERNAME }}
   VYOS_PASSWORD: ${{ secrets.VYOS_PASSWORD }}
 jobs:
   deploy-cluster:
@@ -28,6 +28,26 @@ jobs:
           registry-url: https://npm.pkg.github.com
       - id: deploy-cluster
         run: echo fake-deploying stack cluster...
+  deploy-external-secrets-operator:
+    runs-on: ubuntu-latest
+    needs:
+      - deploy-authentik
+      - deploy-cloudnative-pg
+      - deploy-cluster
+      - deploy-core
+      - deploy-crds
+      - deploy-nodegroups
+      - deploy-shortrack
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+          cache-dependency-path: package-lock.json
+          registry-url: https://npm.pkg.github.com
+      - id: deploy-external-secrets-operator
+        run: echo fake-deploying stack external-secrets-operator...
   deploy-crds:
     runs-on: ubuntu-latest
     needs:
@@ -140,6 +160,23 @@ jobs:
           registry-url: https://npm.pkg.github.com
       - id: deploy-opensearch-operator
         run: echo fake-deploying stack opensearch-operator...
+  deploy-reloader:
+    runs-on: ubuntu-latest
+    needs:
+      - deploy-cluster
+      - deploy-core
+      - deploy-crds
+      - deploy-nodegroups
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+          cache-dependency-path: package-lock.json
+          registry-url: https://npm.pkg.github.com
+      - id: deploy-reloader
+        run: echo fake-deploying stack reloader...
   deploy-shortrack:
     runs-on: ubuntu-latest
     needs:
@@ -251,6 +288,24 @@ jobs:
           registry-url: https://npm.pkg.github.com
       - id: deploy-authentik
         run: echo fake-deploying stack authentik...
+  deploy-aws-credentials-secret-injector:
+    runs-on: ubuntu-latest
+    needs:
+      - deploy-authentik
+      - deploy-cluster
+      - deploy-core
+      - deploy-crds
+      - deploy-nodegroups
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+          cache-dependency-path: package-lock.json
+          registry-url: https://npm.pkg.github.com
+      - id: deploy-aws-credentials-secret-injector
+        run: echo fake-deploying stack aws-credentials-secret-injector...
   deploy-external-services:
     runs-on: ubuntu-latest
     needs:
@@ -269,6 +324,26 @@ jobs:
           registry-url: https://npm.pkg.github.com
       - id: deploy-external-services
         run: echo fake-deploying stack external-services...
+  deploy-gitea:
+    runs-on: ubuntu-latest
+    needs:
+      - deploy-authentik
+      - deploy-cloudnative-pg
+      - deploy-cluster
+      - deploy-core
+      - deploy-crds
+      - deploy-nodegroups
+      - deploy-shortrack
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+          cache-dependency-path: package-lock.json
+          registry-url: https://npm.pkg.github.com
+      - id: deploy-gitea
+        run: echo fake-deploying stack gitea...
   deploy-grafana:
     runs-on: ubuntu-latest
     needs:
@@ -289,6 +364,87 @@ jobs:
           registry-url: https://npm.pkg.github.com
       - id: deploy-grafana
         run: echo fake-deploying stack grafana...
+  deploy-immich:
+    runs-on: ubuntu-latest
+    needs:
+      - deploy-authentik
+      - deploy-cloudnative-pg
+      - deploy-cluster
+      - deploy-core
+      - deploy-crds
+      - deploy-nodegroups
+      - deploy-shortrack
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+          cache-dependency-path: package-lock.json
+          registry-url: https://npm.pkg.github.com
+      - id: deploy-immich
+        run: echo fake-deploying stack immich...
+  deploy-infisical:
+    runs-on: ubuntu-latest
+    needs:
+      - deploy-authentik
+      - deploy-cloudnative-pg
+      - deploy-cluster
+      - deploy-core
+      - deploy-crds
+      - deploy-external-secrets-operator
+      - deploy-nodegroups
+      - deploy-shortrack
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+          cache-dependency-path: package-lock.json
+          registry-url: https://npm.pkg.github.com
+      - id: deploy-infisical
+        run: echo fake-deploying stack infisical...
+  deploy-jaeger:
+    runs-on: ubuntu-latest
+    needs:
+      - deploy-authentik
+      - deploy-cluster
+      - deploy-core
+      - deploy-crds
+      - deploy-nodegroups
+      - deploy-opensearch-operator
+      - deploy-shortrack
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+          cache-dependency-path: package-lock.json
+          registry-url: https://npm.pkg.github.com
+      - id: deploy-jaeger
+        run: echo fake-deploying stack jaeger...
+  deploy-nextcloud:
+    runs-on: ubuntu-latest
+    needs:
+      - deploy-authentik
+      - deploy-cloudnative-pg
+      - deploy-cluster
+      - deploy-core
+      - deploy-crds
+      - deploy-nodegroups
+      - deploy-shortrack
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+          cache-dependency-path: package-lock.json
+          registry-url: https://npm.pkg.github.com
+      - id: deploy-nextcloud
+        run: echo fake-deploying stack nextcloud...
   deploy-oxidized:
     runs-on: ubuntu-latest
     needs:
@@ -308,3 +464,24 @@ jobs:
           registry-url: https://npm.pkg.github.com
       - id: deploy-oxidized
         run: echo fake-deploying stack oxidized...
+  deploy-infisical-secrets-operator:
+    runs-on: ubuntu-latest
+    needs:
+      - deploy-authentik
+      - deploy-cloudnative-pg
+      - deploy-cluster
+      - deploy-core
+      - deploy-crds
+      - deploy-infisical
+      - deploy-nodegroups
+      - deploy-shortrack
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+          cache-dependency-path: package-lock.json
+          registry-url: https://npm.pkg.github.com
+      - id: deploy-infisical-secrets-operator
+        run: echo fake-deploying stack infisical-secrets-operator...
