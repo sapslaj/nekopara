@@ -1,5 +1,4 @@
 import * as kubernetes from "@pulumi/kubernetes";
-import * as pulumi from "@pulumi/pulumi";
 import * as random from "@pulumi/random";
 import * as std from "@pulumi/std";
 import * as YAML from "yaml";

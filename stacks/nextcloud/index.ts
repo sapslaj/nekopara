@@ -3,13 +3,12 @@ import * as kubernetes from "@pulumi/kubernetes";
 import * as pulumi from "@pulumi/pulumi";
 import * as random from "@pulumi/random";
 import * as time from "@pulumiverse/time";
+import * as authentik from "@sapslaj/pulumi-authentik";
 
 import { iamPolicyDocument } from "../../components/aws-utils";
 import { newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";
 import { IngressDNS } from "../../components/k8s/IngressDNS";
 import { Valkey } from "../../components/k8s/Valkey";
-import { WeedBucket } from "../../components/weed";
-import * as authentik from "../../sdks/authentik";
 
 const iamUser = new aws.iam.User(`nextcloud-${pulumi.getStack()}`, {});
 

@@ -2,12 +2,12 @@ import * as aws from "@pulumi/aws";
 import * as kubernetes from "@pulumi/kubernetes";
 import * as pulumi from "@pulumi/pulumi";
 import * as random from "@pulumi/random";
+import * as authentik from "@sapslaj/pulumi-authentik";
 
 import { iamPolicyDocument } from "../../components/aws-utils";
 import { newK3sProvider } from "../../components/k3s-shared";
 import { IngressDNS } from "../../components/k8s/IngressDNS";
 import { Valkey } from "../../components/k8s/Valkey";
-import * as authentik from "../../sdks/authentik";
 
 const image = "oci.sapslaj.xyz/infisical/infisical:2025-08-31T22-30-13-04-00";
 

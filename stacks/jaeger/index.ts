@@ -1,5 +1,4 @@
 import * as kubernetes from "@pulumi/kubernetes";
-import * as pulumi from "@pulumi/pulumi";
 import * as YAML from "yaml";
 
 import { newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";

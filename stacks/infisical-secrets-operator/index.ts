@@ -1,7 +1,4 @@
-import * as aws from "@pulumi/aws";
 import * as kubernetes from "@pulumi/kubernetes";
-import * as pulumi from "@pulumi/pulumi";
-import * as infisical from "@sapslaj/pulumi-infisical";
 
 import { getSecretValueOutput, projectSlugs } from "../../components/infisical";
 import { newK3sProvider } from "../../components/k3s-shared";

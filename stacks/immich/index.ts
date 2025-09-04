@@ -2,11 +2,11 @@ import * as docker_build from "@pulumi/docker-build";
 import * as kubernetes from "@pulumi/kubernetes";
 import * as pulumi from "@pulumi/pulumi";
 import * as random from "@pulumi/random";
+import * as authentik from "@sapslaj/pulumi-authentik";
 
 import { newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";
 import { IngressDNS } from "../../components/k8s/IngressDNS";
 import { Valkey } from "../../components/k8s/Valkey";
-import * as authentik from "../../sdks/authentik";
 
 const postgresqlImage = new docker_build.Image("immich-postgresql", {
   buildArgs: {

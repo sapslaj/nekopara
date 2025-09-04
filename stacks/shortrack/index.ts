@@ -1,5 +1,4 @@
 import * as kubernetes from "@pulumi/kubernetes";
-import * as pulumi from "@pulumi/pulumi";
 
 import { newK3sProvider } from "../../components/k3s-shared";
 
