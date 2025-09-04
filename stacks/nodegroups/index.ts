@@ -48,7 +48,7 @@ new NodeGroup("ngb", {
   serverUri,
   privateKey,
   distro: Distro.UBUNTU_24_04,
-  nodeCount: 3,
+  nodeCount: 5,
   vmConfig: {
     cpu: {
       cores: 4,
