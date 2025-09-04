@@ -175,20 +175,25 @@ export class RotatingAccessKey extends pulumi.dynamic.Resource implements Rotati
   public readonly sesSmtpPassword!: pulumi.Output<string>;
 
   constructor(name: string, props: RotatingAccessKeyArgs, opts?: pulumi.CustomResourceOptions) {
-    throw new Error("this does not work at the moment due to weird Pulumi bugs");
     super(
       RotatingAccessKeyProvider,
       name,
-      props,
+      {
+        ...props,
+        expiresAt: undefined,
+        createDate: undefined,
+        secret: undefined,
+        sesSmtpPassword: undefined,
+      },
       pulumi.mergeOptions(opts, {
         replaceOnChanges: [
           "user",
           "trigger",
         ],
-        // additionalSecretOutputs: [
-        //   "secret",
-        //   "sesSmtpPassword",
-        // ],
+        additionalSecretOutputs: [
+          "secret",
+          "sesSmtpPassword",
+        ],
       }),
       "sapslaj:aws",
       "RotatingAccessKey",

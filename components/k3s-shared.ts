@@ -7,7 +7,7 @@ export function getClusterStack(
   opts?: pulumi.CustomResourceOptions,
 ): pulumi.StackReference {
   return new pulumi.StackReference(
-    name ?? `organization/nekopara.cluster/${pulumi.getStack()}`,
+    name ?? `organization/nekopara.cluster/prod`,
     args,
     opts,
   );
