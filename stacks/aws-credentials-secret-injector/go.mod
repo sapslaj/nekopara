@@ -1,4 +1,4 @@
-module git.sapslaj.cloud/sapslaj/aws-credentials-secret-injector
+module git.sapslaj.cloud/sapslaj/nekopara/stacks/aws-credentials-secret-injector
 
 go 1.24.6
 
