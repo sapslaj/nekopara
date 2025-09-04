@@ -6,7 +6,7 @@ import * as infisical from "@sapslaj/pulumi-infisical";
 import * as YAML from "yaml";
 
 import { iamPolicyDocument } from "../../components/aws-utils";
-import { getSecretValueOutput, projectIds } from "../../components/infisical";
+import { getSecretValueOutput, projectIds, Secret, SecretFolder } from "../../components/infisical";
 import { newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";
 import { AuthentikProxyIngress } from "../../components/k8s/AuthentikProxyIngress";
 import { DNSRecord } from "../../components/shimiko";
@@ -54,11 +54,9 @@ const sesIdentity = new aws.sesv2.EmailIdentity("victoriametrics", {
   });
 });
 
-const infisicalFolder = new infisical.SecretFolder("victoria-metrics-ingress-users", {
-  environmentSlug: "prod",
+const infisicalFolder = new SecretFolder("victoria-metrics-ingress-users", {
   name: "victoria-metrics-ingress-users",
-  folderPath: "/",
-  projectId: projectIds.homelab,
+  parent: "/",
 });
 
 const basicAuthUsers = [
@@ -74,23 +72,17 @@ const basicAuthUsers = [
     name: `/nekopara/victoria-metrics/ingress-user/${username}/password`,
     value: randomPassword.result,
   });
-  const folder = new infisical.SecretFolder(username, {
-    folderPath: pulumi.concat(infisicalFolder.folderPath, infisicalFolder.name),
+  const folder = new SecretFolder(username, {
+    parent: infisicalFolder.path,
     name: username,
-    environmentSlug: infisicalFolder.environmentSlug,
-    projectId: infisicalFolder.projectId,
   });
-  new infisical.Secret(`${username}-plaintext`, {
-    folderPath: pulumi.concat(folder.folderPath, "/", folder.name),
-    envSlug: folder.environmentSlug,
-    workspaceId: folder.projectId,
+  new Secret(`${username}-plaintext`, {
+    parent: folder.path,
     name: "plaintext",
     value: randomPassword.result,
   });
-  new infisical.Secret(`${username}-bcrypthash`, {
-    folderPath: pulumi.concat(folder.folderPath, "/", folder.name),
-    envSlug: folder.environmentSlug,
-    workspaceId: folder.projectId,
+  new Secret(`${username}-bcrypthash`, {
+    parent: folder.path,
     name: "bcrypthash",
     value: randomPassword.bcryptHash,
   });
