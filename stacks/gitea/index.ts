@@ -190,6 +190,13 @@ const chart = new kubernetes.helm.v3.Chart("gitea", {
   namespace: namespace.metadata.name,
   skipCRDRendering: true,
   values: {
+    service: {
+      ssh: {
+        type: "NodePort",
+        clusterIP: null,
+        nodePort: 30022,
+      },
+    },
     ingress: {
       enabled: true,
       className: "traefik",
