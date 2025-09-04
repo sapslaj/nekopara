@@ -7,7 +7,7 @@ import * as YAML from "yaml";
 import { buildStackFromStackConfigs, getStackConfigs } from "./lib/stacks";
 
 (async () => {
-  const workflowPath = path.join(__dirname, "..", ".github", "workflows", "deploy.yaml");
+  const workflowPath = path.join(__dirname, "..", ".gitea", "workflows", "deploy.yaml");
 
   let workflow = YAML.parse(
     await fs.readFile(workflowPath, { encoding: "utf8" }),
