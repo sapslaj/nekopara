@@ -24,6 +24,29 @@ new kubernetes.helm.v3.Chart("infisical-secrets-operator", {
   namespace: namespace.metadata.name,
   skipCRDRendering: true,
   values: {
+    controllerManager: {
+      manager: {
+        args: [
+          "--metrics-bind-address=:8080",
+          "--metrics-secure=false",
+          "--leader-elect",
+          "--health-probe-bind-address=:8081",
+        ],
+        image: {
+          repository: "proxy.oci.sapslaj.xyz/docker-hub/infisical/kubernetes-operator",
+        },
+      },
+    },
+    metricsService: {
+      ports: [
+        {
+          name: "http",
+          port: 8080,
+          protocol: "TCP",
+          targetPort: 8080,
+        },
+      ],
+    },
     installCRDs: false,
   },
 }, {
@@ -34,7 +57,7 @@ new kubernetes.apiextensions.CustomResource("infisical-secrets-operator-servicem
   apiVersion: "monitoring.coreos.com/v1",
   kind: "ServiceMonitor",
   metadata: {
-    name: "anubis",
+    name: "infisical-secrets-operator",
     namespace: namespace.metadata.name,
     labels: {
       "app.kubernetes.io/managed-by": "Pulumi",
@@ -52,14 +75,10 @@ new kubernetes.apiextensions.CustomResource("infisical-secrets-operator-servicem
     },
     endpoints: [
       {
-        port: "https",
+        port: "http",
         interval: "30s",
         scrapeTimeout: "10s",
         path: "/metrics",
-        bearerTokenFile: "/var/run/secrets/kubernetes.io/serviceaccount/token",
-        tlsConfig: {
-          insecureSkipVerify: true,
-        },
       },
     ],
   },
