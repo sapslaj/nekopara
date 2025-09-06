@@ -1,9 +1,15 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
+  - ./apiserver_availability_rules.yaml
+  - ./apiserver_burnrate_rules.yaml
+  - ./apiserver_histogram_rules.yaml
   - ./blackbox_exporter.yaml
   - ./docker.yaml
+  - ./etcd.yaml
   - ./hass.yaml
+  - ./kube_scheduler_rules.yaml
+  - ./kubernetes_system_apiserver.yaml
   - ./litter_robot.yaml
   - ./node_exporter.yaml
   - ./zonepop.yaml

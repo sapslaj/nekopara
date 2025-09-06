@@ -605,6 +605,18 @@ const victoriaMetrics = new kubernetes.helm.v3.Chart("victoria-metrics", {
       enabled: false,
       forceDeployDatasource: true,
     },
+    kubeApiServer: {
+      enabled: false,
+    },
+    kubeControllerManager: {
+      enabled: false,
+    },
+    kubeEtcd: {
+      enabled: false,
+    },
+    kubeScheduler: {
+      enabled: false,
+    },
   },
   transformations: [
     (obj: any, opts: pulumi.CustomResourceOptions) => {
@@ -624,6 +636,33 @@ const victoriaMetrics = new kubernetes.helm.v3.Chart("victoria-metrics", {
   transforms: [
     transformSkipIngressAwait(),
   ],
+});
+
+new kubernetes.apiextensions.CustomResource("k3s-control-plane", {
+  apiVersion: "operator.victoriametrics.com/v1beta1",
+  kind: "VMNodeScrape",
+  metadata: {
+    name: "k3s-control-plane",
+    namespace: namespace.metadata.name,
+  },
+  spec: {
+    bearerTokenFile: "/var/run/secrets/kubernetes.io/serviceaccount/token",
+    interval: "30s",
+    path: "/metrics",
+    port: "6443",
+    scheme: "https",
+    selector: {
+      matchLabels: {
+        "k3s.sapslaj.xyz/role": "control-plane",
+      },
+    },
+    tlsConfig: {
+      caFile: "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt",
+      insecureSkipVerify: true,
+    },
+  },
+}, {
+  provider,
 });
 
 const victoriaLogs = new kubernetes.helm.v3.Chart("victoria-logs", {
