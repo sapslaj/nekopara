@@ -6,6 +6,7 @@ import * as time from "@pulumiverse/time";
 import * as authentik from "@sapslaj/pulumi-authentik";
 
 import { iamPolicyDocument } from "../../components/aws-utils";
+import { getSecretValueOutput } from "../../components/infisical";
 import { newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";
 import { IngressDNS } from "../../components/k8s/IngressDNS";
 import { Valkey } from "../../components/k8s/Valkey";
@@ -172,8 +173,11 @@ const adminSecret = new kubernetes.core.v1.Secret("nextcloud-admin", {
     namespace: namespace.metadata.name,
   },
   stringData: {
-    // "nextcloud-username": "admin",
-    // "nextcloud-password": adminPassword.result,
+    "nextcloud-username": "admin",
+    "nextcloud-password": adminPassword.result,
+    "nextcloud-token": getSecretValueOutput({
+      key: "nextcloud-token",
+    }),
     "smtp-username": iamKey.id,
     "smtp-password": iamKey.sesSmtpPasswordV4,
     "smtp-host": "email-smtp.us-east-1.amazonaws.com",
@@ -220,6 +224,7 @@ const chart = new kubernetes.helm.v3.Chart("nextcloud", {
       existingSecret: {
         enabled: true,
         secretName: adminSecret.metadata.name,
+        tokenKey: "nextcloud-token",
       },
       mail: {
         enabled: true,
@@ -361,6 +366,12 @@ const chart = new kubernetes.helm.v3.Chart("nextcloud", {
     },
     metrics: {
       enabled: true,
+      server: "https://nextcloud.sapslaj.cloud:443",
+      https: true,
+      info: {
+        apps: true,
+        update: true,
+      },
       image: {
         repository: "proxy.oci.sapslaj.xyz/docker-hub/xperimental/nextcloud-exporter",
       },
