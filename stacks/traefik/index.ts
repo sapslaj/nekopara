@@ -481,6 +481,7 @@ const anubisDeployment = new kubernetes.apps.v1.Deployment("anubis", {
           {
             name: "anubis",
             image: "ghcr.io/techarohq/anubis:main",
+            imagePullPolicy: "Always",
             volumeMounts: [
               {
                 name: "config",
@@ -500,11 +501,10 @@ const anubisDeployment = new kubernetes.apps.v1.Deployment("anubis", {
                 name: "POLICY_FNAME",
                 value: "/data/cfg/botPolicy.yaml",
               },
-              // TODO: enable if/when Anubis supports wildcards
-              // {
-              //   name: "REDIRECT_DOMAINS",
-              //   value: "*.sapslaj.cloud,*.sapslaj.xyz",
-              // },
+              {
+                name: "REDIRECT_DOMAINS",
+                value: "*.sapslaj.cloud",
+              },
               {
                 name: "COOKIE_DYNAMIC_DOMAIN",
                 value: "true",
