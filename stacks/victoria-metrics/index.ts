@@ -331,7 +331,7 @@ const victoriaMetrics = new kubernetes.helm.v3.Chart("victoria-metrics", {
   fetchOpts: {
     repo: "https://victoriametrics.github.io/helm-charts/",
   },
-  version: "0.58.1",
+  version: "0.59.5",
   skipCRDRendering: true,
   namespace: namespace.metadata.name,
   values: {
