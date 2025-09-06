@@ -543,6 +543,13 @@ const victoriaMetrics = new kubernetes.helm.v3.Chart("victoria-metrics", {
               ],
             },
             {
+              receiver: "blackhole",
+              matchers: [
+                `alertname=NodeDiskIOSaturation`,
+                `hostname=aqua`,
+              ],
+            },
+            {
               // FIXME: temp disable alert until noise floor does down
               receiver: "blackhole",
               matchers: [`alertname=LogErrors`],
