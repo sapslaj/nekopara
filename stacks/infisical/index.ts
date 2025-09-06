@@ -156,6 +156,7 @@ const awsSecret = new kubernetes.core.v1.Secret("infisical-aws-credentials", {
     },
     annotations: {
       "aws-credentials-secret-injector.sapslaj.cloud/user-name": iamUser.name,
+      "aws-credentials-secret-injector.sapslaj.cloud/maintenance-time": "06:10:00",
     },
   },
 }, {
