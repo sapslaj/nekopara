@@ -550,26 +550,6 @@ const victoriaMetrics = new kubernetes.helm.v3.Chart("victoria-metrics", {
               ],
             },
             {
-              // FIXME: temp disable alert until noise floor does down
-              receiver: "blackhole",
-              matchers: [`alertname=LogErrors`],
-            },
-            {
-              // FIXME: temp disable alert until noise floor does down
-              receiver: "blackhole",
-              matchers: [`alertname=ScrapePoolHasNoTargets`],
-            },
-            {
-              // FIXME: temp disable alert until noise floor does down
-              receiver: "blackhole",
-              matchers: [`alertname=TooManyScrapeErrors`],
-            },
-            {
-              // FIXME: temp disable alert until noise floor does down
-              receiver: "blackhole",
-              matchers: [`alertname=ReconcileErrors`],
-            },
-            {
               receiver: "ntfy",
               matchers: [`severity=~"(warning|critical|error)"`],
               continue: true,
