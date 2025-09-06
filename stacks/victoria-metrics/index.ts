@@ -439,7 +439,7 @@ const victoriaMetrics = new kubernetes.helm.v3.Chart("victoria-metrics", {
           smtp_auth_password: iamKey.sesSmtpPasswordV4,
         },
         route: {
-          receiver: "ntfy",
+          receiver: "discord",
           routes: [
             {
               receiver: "email",
@@ -482,6 +482,11 @@ const victoriaMetrics = new kubernetes.helm.v3.Chart("victoria-metrics", {
               receiver: "blackhole",
               matchers: [`alertname=ReconcileErrors`],
             },
+            {
+              receiver: "ntfy",
+              matchers: [`severity=critical`],
+              continue: true,
+            },
           ],
         },
         receivers: [
@@ -503,6 +508,17 @@ const victoriaMetrics = new kubernetes.helm.v3.Chart("victoria-metrics", {
                     password: "verysecure",
                   },
                 },
+              },
+            ],
+          },
+          {
+            name: "discord",
+            discord_configs: [
+              {
+                send_resolved: true,
+                webhook_url: getSecretValueOutput({
+                  key: "discord-homelab-alerts-webhook-url",
+                }),
               },
             ],
           },
