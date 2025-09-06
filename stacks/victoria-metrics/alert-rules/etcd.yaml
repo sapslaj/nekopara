@@ -14,7 +14,7 @@ spec:
             summary: etcd cluster members are down.
           expr: |-
             max without (endpoint) (
-              sum without (instance) (up{} == bool 0)
+              sum without (instance) (up{job="victoria-metrics/k3s-control-plane"} == bool 0)
             or
               count without (To) (
                 sum without (instance) (rate(etcd_network_peer_sent_failures_total{}[120s])) > 0.01
@@ -29,7 +29,7 @@ spec:
             description: 'etcd cluster "{{ $labels.job }}": insufficient members ({{ $value
               }}).'
             summary: etcd cluster has insufficient number of members.
-          expr: sum(up{} == bool 1) without (instance) < ((count(up{})
+          expr: sum(up{job="victoria-metrics/k3s-control-plane"} == bool 1) without (instance) < ((count(up{})
             without (instance) + 1) / 2)
           for: 3m
           labels:
