@@ -229,6 +229,18 @@ const chart = new kubernetes.helm.v4.Chart("netbox", {
       storageClass: "nfs",
       accessMode: "ReadWriteMany",
     },
+    resources: {
+      limits: {
+        cpu: "2",
+        "ephemeral-storage": "2Gi",
+        memory: "1.5Gi",
+      },
+      requests: {
+        cpu: "500m",
+        "ephemeral-storage": "50Mi",
+        memory: "1Gi",
+      },
+    },
     podAnnotations: {
       "nekopara.sapslaj.cloud/config-hashes": yamlencode({
         "oidc-secret": sha256(yamlencode(oidcSecret.data)),
