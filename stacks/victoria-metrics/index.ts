@@ -2,11 +2,11 @@ import * as aws from "@pulumi/aws";
 import * as kubernetes from "@pulumi/kubernetes";
 import * as pulumi from "@pulumi/pulumi";
 import * as random from "@pulumi/random";
-import * as infisical from "@sapslaj/pulumi-infisical";
 import * as YAML from "yaml";
 
 import { iamPolicyDocument } from "../../components/aws-utils";
-import { getSecretValueOutput, projectIds, Secret, SecretFolder } from "../../components/infisical";
+import { RotatingAccessKey } from "../../components/aws/RotatingAccessKey";
+import { getSecretValueOutput, Secret, SecretFolder } from "../../components/infisical";
 import { newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";
 import { AuthentikProxyIngress } from "../../components/k8s/AuthentikProxyIngress";
 import { DNSRecord } from "../../components/shimiko";
@@ -21,9 +21,25 @@ const namespace = new kubernetes.core.v1.Namespace("victoria-metrics", {
 
 const iamUser = new aws.iam.User(`victoriametrics-${pulumi.getStack()}`, {});
 
-const iamKey = new aws.iam.AccessKey("victoriametrics", {
+const iamKey = new RotatingAccessKey("victoriametrics", {
   user: iamUser.name,
 });
+
+const iamKeySecret = new kubernetes.core.v1.Secret("victoriametrics-aws", {
+  metadata: {
+    name: "victoriametrics-aws",
+    namespace: namespace.metadata.name,
+    labels: {
+      "app.kubernetes.io/managed-by": "Pulumi",
+      "k3s.sapslaj.xyz/stack": "nekopara.victoria-metrics",
+    },
+  },
+  stringData: {
+    AWS_ACCESS_KEY_ID: iamKey.id,
+    AWS_SECRET_ACESS_KEY: iamKey.secret,
+    AWS_SES_SMTP_PASSWORD_V4: iamKey.sesSmtpPassword,
+  },
+}, { provider });
 
 new aws.iam.UserPolicy("victoriametrics", {
   user: iamUser.name,
@@ -278,6 +294,22 @@ const alertmanagerNtfyService = new kubernetes.helm.v3.Chart("alertmanager-ntfy"
   ],
 }, { provider });
 
+const ntfyHttpBasicAuth = new kubernetes.core.v1.Secret("alertmanager-ntfy-alertmanager-auth", {
+  metadata: {
+    name: "alertmanager-ntfy-alertmanager-auth",
+    namespace: namespace.metadata.name,
+    labels: {
+      "app.kubernetes.io/managed-by": "Pulumi",
+      "k3s.sapslaj.xyz/stack": "nekopara.victoria-metrics",
+    },
+  },
+  type: "kubernetes.io/basic-auth",
+  stringData: {
+    username: "alertmanager",
+    password: "verysecure",
+  },
+}, { provider });
+
 new AuthentikProxyIngress("alertmanager", {
   name: "Alertmanager",
   namespace: namespace.metadata.name,
@@ -431,13 +463,61 @@ const victoriaMetrics = new kubernetes.helm.v3.Chart("victoria-metrics", {
       spec: {
         externalURL: "https://alertmanager.sapslaj.xyz",
       },
+      useManagedConfig: true,
       config: {
-        global: {
-          smtp_from: sesIdentity.emailIdentity,
-          smtp_smarthost: "email-smtp.us-east-1.amazonaws.com:587",
-          smtp_auth_username: iamKey.id,
-          smtp_auth_password: iamKey.sesSmtpPasswordV4,
-        },
+        inhibit_rules: [],
+        receivers: [
+          {
+            name: "blackhole",
+          },
+          {
+            name: "email",
+            email_configs: [
+              {
+                auth_password: {
+                  name: iamKeySecret.metadata.name,
+                  key: "AWS_SES_SMTP_PASSWORD_V4",
+                },
+                auth_username: iamKey.id,
+                from: sesIdentity.emailIdentity,
+                require_tls: true,
+                smarthost: "email-smtp.us-east-1.amazonaws.com:587",
+                to: "alerts@sapslaj.com",
+              },
+            ],
+          },
+          {
+            name: "ntfy",
+            webhook_configs: [
+              {
+                url: "http://alertmanager-ntfy:8000/hook",
+                http_config: {
+                  basic_auth: {
+                    username: {
+                      name: ntfyHttpBasicAuth.metadata.name,
+                      key: "username",
+                    },
+                    password: {
+                      name: ntfyHttpBasicAuth.metadata.name,
+                      key: "password",
+                    },
+                  },
+                },
+              },
+            ],
+          },
+          {
+            name: "discord",
+            discord_configs: [
+              {
+                send_resolved: true,
+                webhook_url: getSecretValueOutput({
+                  key: "discord-homelab-alerts-webhook-url",
+                }),
+              },
+            ],
+          },
+        ],
         route: {
           receiver: "discord",
           routes: [
@@ -484,45 +564,11 @@ const victoriaMetrics = new kubernetes.helm.v3.Chart("victoria-metrics", {
             },
             {
               receiver: "ntfy",
-              matchers: [`severity=critical`],
+              matchers: [`severity=~"(warning|critical|error)"`],
               continue: true,
             },
           ],
         },
-        receivers: [
-          {
-            name: "blackhole",
-          },
-          {
-            name: "email",
-            to: "alerts@sapslaj.com",
-          },
-          {
-            name: "ntfy",
-            webhook_configs: [
-              {
-                url: "http://alertmanager-ntfy:8000/hook",
-                http_config: {
-                  basic_auth: {
-                    username: "alertmanager",
-                    password: "verysecure",
-                  },
-                },
-              },
-            ],
-          },
-          {
-            name: "discord",
-            discord_configs: [
-              {
-                send_resolved: true,
-                webhook_url: getSecretValueOutput({
-                  key: "discord-homelab-alerts-webhook-url",
-                }),
-              },
-            ],
-          },
-        ],
       },
     },
     vmalert: {
