@@ -25,8 +25,10 @@ import (
 )
 
 const (
-	UserNameAnnotation  = "aws-credentials-secret-injector.sapslaj.cloud/user-name"
-	ExpiresAtAnnotation = "aws-credentials-secret-injector.sapslaj.cloud/expires-at"
+	UserNameAnnotation        = "aws-credentials-secret-injector.sapslaj.cloud/user-name"
+	ExpiresAtAnnotation       = "aws-credentials-secret-injector.sapslaj.cloud/expires-at"
+	TTLAnnotation             = "aws-credentials-secret-injector.sapslaj.cloud/ttl"
+	MaintenanceTimeAnnotation = "aws-credentials-secret-injector.sapslaj.cloud/maintenance-time"
 
 	Finalizer = "aws-credentials-secret-injector.sapslaj.cloud/finalizer"
 
@@ -186,6 +188,8 @@ func main() {
 					handlerLogger.ErrorContext(ctx, "error updating secret", slog.Any("error", err))
 					return err
 				}
+
+				return nil
 			}
 
 			if !slices.Contains(secret.GetFinalizers(), Finalizer) {
@@ -197,6 +201,19 @@ func main() {
 					handlerLogger.ErrorContext(ctx, "error updating secret", slog.Any("error", err))
 					return err
 				}
+			}
+
+			ttl := time.Hour
+			ttlRawValue, present := secret.Annotations[TTLAnnotation]
+			if present {
+				ttl, err = time.ParseDuration(ttlRawValue)
+				if err != nil {
+					ttl = time.Hour
+					handlerLogger.WarnContext(ctx, "error parsing TTL, using default", slog.Any("error", err))
+				}
+			} else {
+				handlerLogger.InfoContext(ctx, "ttl annotation not present, assuming default")
+				secret.Annotations[TTLAnnotation] = ttl.String()
 			}
 
 			expiresAt, present := secret.Annotations[ExpiresAtAnnotation]
@@ -214,6 +231,19 @@ func main() {
 				}
 			} else {
 				handlerLogger.InfoContext(ctx, "expires-at annotation not set")
+			}
+
+			maintenanceTime, present := secret.Annotations[MaintenanceTimeAnnotation]
+			if present {
+				start, err := time.Parse(time.RFC3339, maintenanceTime)
+				if err != nil {
+					handlerLogger.WarnContext(ctx, "error parsing maintenance-time", slog.Any("error", err))
+				}
+				now := time.Now()
+				// FIXME: this is not a good way to do this
+				if now.Hour() != start.Hour() && now.Minute() < start.Minute() {
+					handlerLogger.DebugContext(ctx, "maintenance time has not been reached yet, skipping")
+				}
 			}
 
 			_, err := iamClient.GetUser(ctx, &iam.GetUserInput{
