@@ -120,6 +120,17 @@ const traefik = new kubernetes.helm.v3.Chart("traefik", {
       access: {
         enabled: true,
         format: "json",
+        fields: {
+          headers: {
+            defaultmode: "keep",
+            names: {
+              "Authorization": "redact",
+              "Cookie": "redact",
+              "Proxy-Authorization": "redact",
+              "Set-Cookie": "redact",
+            },
+          },
+        },
       },
     },
     metrics: {
