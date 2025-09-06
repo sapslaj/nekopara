@@ -5,7 +5,6 @@ import * as aws from "@pulumi/aws";
 import * as kubernetes from "@pulumi/kubernetes";
 import * as pulumi from "@pulumi/pulumi";
 import * as random from "@pulumi/random";
-import * as time from "@pulumiverse/time";
 import * as YAML from "yaml";
 
 import { newK3sProvider } from "../../components/k3s-shared";
@@ -22,17 +21,6 @@ const namespace = new kubernetes.core.v1.Namespace("traefik", {
 
 const iamUser = new aws.iam.User(`traefik-nekopara-${pulumi.getStack()}`, {});
 
-const iamKeyRotation = new time.Rotating("traefik-iam-key", {
-  rotationDays: 30,
-});
-
-const iamKey = new aws.iam.AccessKey("traefik", {
-  user: iamUser.name,
-}, {
-  deleteBeforeReplace: false,
-  dependsOn: [iamKeyRotation],
-});
-
 new aws.iam.UserPolicyAttachment("traefik-route53", {
   user: iamUser.name,
   policyArn: "arn:aws:iam::aws:policy/AmazonRoute53FullAccess",
@@ -42,13 +30,22 @@ const awsSecret = new kubernetes.core.v1.Secret("traefik-aws", {
   metadata: {
     name: "traefik-aws",
     namespace: namespace.metadata.name,
-  },
-  stringData: {
-    AWS_ACCESS_KEY_ID: iamKey.id,
-    AWS_SECRET_ACCESS_KEY: iamKey.secret,
+    labels: {
+      "app.kubernetes.io/managed-by": "Pulumi",
+      "k3s.sapslaj.xyz/stack": "nekopara.traefik",
+    },
+    annotations: {
+      "aws-credentials-secret-injector.sapslaj.cloud/user-name": iamUser.name,
+      "aws-credentials-secret-injector.sapslaj.cloud/ttl": "730h",
+      "aws-credentials-secret-injector.sapslaj.cloud/maintenance-time": "06:00:00",
+    },
   },
 }, {
   provider,
+  ignoreChanges: [
+    "data",
+    "stringData",
+  ],
 });
 
 const traefik = new kubernetes.helm.v3.Chart("traefik", {
@@ -66,6 +63,10 @@ const traefik = new kubernetes.helm.v3.Chart("traefik", {
     deployment: {
       enabled: true,
       kind: "DaemonSet",
+      annotations: {
+        "reloader.stakater.com/auto": "true",
+        "reloader.stakater.com/rollout-strategy": "restart",
+      },
       initContainers: [
         {
           name: "volume-permissions",
