@@ -250,7 +250,7 @@ new kubernetes.batch.v1.CronJob("authentik-geoip-update", {
 
 const authentik = new kubernetes.helm.v3.Chart("authentik", {
   chart: "authentik",
-  version: "2025.6.4",
+  version: "2025.8.1",
   fetchOpts: {
     repo: "https://charts.goauthentik.io",
   },
