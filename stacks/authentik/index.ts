@@ -153,7 +153,7 @@ const mediaPVC = new kubernetes.core.v1.PersistentVolumeClaim("authentik-media",
     accessModes: [
       "ReadWriteMany",
     ],
-    storageClassName: "nfs",
+    storageClassName: "nfs-mitsuru",
     resources: {
       requests: {
         storage: "10Gi",
@@ -178,7 +178,7 @@ const geoipPVC = new kubernetes.core.v1.PersistentVolumeClaim("authentik-geoip",
     accessModes: [
       "ReadWriteMany",
     ],
-    storageClassName: "nfs",
+    storageClassName: "nfs-mitsuru",
     resources: {
       requests: {
         storage: "10Gi",
