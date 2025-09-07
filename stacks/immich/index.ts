@@ -254,6 +254,9 @@ const chart = new kubernetes.helm.v4.Chart("immich", {
       },
       REDIS_HOSTNAME: valkey.readWriteService.metadata.name,
     },
+    image: {
+      tag: "v1.140.1",
+    },
     immich: {
       metrics: {
         enabled: true,
