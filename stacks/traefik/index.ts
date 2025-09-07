@@ -7,9 +7,11 @@ import * as pulumi from "@pulumi/pulumi";
 import * as random from "@pulumi/random";
 import * as YAML from "yaml";
 
+import { getSecretValueOutput } from "../../components/infisical";
 import { newK3sProvider } from "../../components/k3s-shared";
 import { IngressDNS } from "../../components/k8s/IngressDNS";
 import { Valkey } from "../../components/k8s/Valkey";
+import { base64encode, jsonencode } from "../../components/std";
 
 const provider = newK3sProvider();
 
@@ -275,39 +277,6 @@ const allowList = new kubernetes.apiextensions.CustomResource("traefik-dashboard
     },
   },
 }, { provider });
-
-new kubernetes.apiextensions.CustomResource("traefik-dashboard", {
-  apiVersion: "traefik.io/v1alpha1",
-  kind: "IngressRoute",
-  metadata: {
-    name: "traefik-dashboard",
-    namespace: namespace.metadata.name,
-  },
-  spec: {
-    routes: [
-      {
-        match: "Host(`traefik.sapslaj.xyz`)",
-        kind: "Rule",
-        middlewares: [
-          {
-            name: allowList.metadata.name,
-            namespace: allowList.metadata.namespace,
-          },
-        ],
-        services: [
-          {
-            name: "api@internal",
-            kind: "TraefikService",
-          },
-        ],
-      },
-    ],
-  },
-}, {
-  provider,
-});
-
-new IngressDNS("traefik.sapslaj.xyz");
 
 const anubisValkey = new Valkey("anubis-valkey", {
   name: "anubis-valkey",
@@ -667,3 +636,605 @@ const anubisMiddleware = new kubernetes.apiextensions.CustomResource("anubis-mid
 }, { provider });
 
 new IngressDNS("anubis.sapslaj.cloud");
+
+const botstopperImagePullSecret = new kubernetes.core.v1.Secret("botstopper-image-pull-secret", {
+  metadata: {
+    name: "botstopper-image-pull-secret",
+    namespace: namespace.metadata.name,
+    labels: {
+      "app.kubernetes.io/component": "botstopper",
+      "app.kubernetes.io/instance": "botstopper",
+      "app.kubernetes.io/name": "botstopper-image-pull-secret",
+      "app.kubernetes.io/managed-by": "Pulumi",
+      "app.kubernetes.io/part-of": "traefik",
+      "k3s.sapslaj.xyz/stack": "nekopara.traefik",
+    },
+  },
+  type: "kubernetes.io/dockerconfigjson",
+  stringData: {
+    ".dockerconfigjson": jsonencode({
+      auths: {
+        "ghcr.io": {
+          username: "sapslaj",
+          password: getSecretValueOutput({
+            key: "ghcr-token",
+          }),
+          email: "saps.laj@gmail.com",
+          auth: base64encode(pulumi.concat(
+            "sapslaj:",
+            getSecretValueOutput({
+              key: "ghcr-token",
+            }),
+          )),
+        },
+      },
+    }),
+  },
+}, { provider });
+
+const botstopperKey = new kubernetes.core.v1.Secret("botstopper-key", {
+  metadata: {
+    name: "botstopper-key",
+    namespace: namespace.metadata.name,
+    labels: {
+      "app.kubernetes.io/component": "botstopper",
+      "app.kubernetes.io/instance": "botstopper",
+      "app.kubernetes.io/name": "botstopper-key",
+      "app.kubernetes.io/managed-by": "Pulumi",
+      "app.kubernetes.io/part-of": "traefik",
+      "k3s.sapslaj.xyz/stack": "nekopara.traefik",
+    },
+  },
+  stringData: {
+    ED25519_PRIVATE_KEY_HEX: new random.RandomBytes("botstopper-key", {
+      length: 32,
+    }).hex,
+  },
+}, { provider });
+
+const botstopperService = new kubernetes.core.v1.Service("botstopper", {
+  metadata: {
+    name: "botstopper",
+    namespace: namespace.metadata.name,
+    labels: {
+      "app.kubernetes.io/component": "botstopper",
+      "app.kubernetes.io/instance": "botstopper",
+      "app.kubernetes.io/name": "botstopper",
+      "app.kubernetes.io/managed-by": "Pulumi",
+      "app.kubernetes.io/part-of": "traefik",
+      "k3s.sapslaj.xyz/stack": "nekopara.traefik",
+    },
+  },
+  spec: {
+    selector: {
+      "app.kubernetes.io/component": "botstopper",
+      "app.kubernetes.io/instance": "botstopper",
+      "app.kubernetes.io/name": "botstopper",
+      "app.kubernetes.io/part-of": "traefik",
+    },
+    ports: [
+      {
+        name: "http",
+        port: 8923,
+        targetPort: 8923,
+        protocol: "TCP",
+      },
+      {
+        name: "metrics",
+        port: 9090,
+        targetPort: 9090,
+        protocol: "TCP",
+      },
+    ],
+  },
+}, { provider });
+
+const botstopperConfig = new kubernetes.core.v1.ConfigMap("botstopper", {
+  metadata: {
+    name: "botstopper",
+    namespace: namespace.metadata.name,
+    labels: {
+      "app.kubernetes.io/component": "botstopper",
+      "app.kubernetes.io/instance": "botstopper",
+      "app.kubernetes.io/name": "botstopper",
+      "app.kubernetes.io/managed-by": "Pulumi",
+      "app.kubernetes.io/part-of": "traefik",
+      "k3s.sapslaj.xyz/stack": "nekopara.traefik",
+    },
+  },
+  data: {
+    "botPolicy.yaml": anubisValkey.readWriteService.metadata.name.apply((serviceName) => {
+      const policy = YAML.parse(
+        fs.readFileSync(
+          path.join(__dirname, "botstopper-bot-policy.yaml"),
+          {
+            encoding: "utf-8",
+          },
+        ),
+      );
+      policy.store = {
+        backend: "valkey",
+        parameters: {
+          url: `redis://${serviceName}:6379/0`,
+        },
+      };
+      return YAML.stringify(policy);
+    }),
+  },
+}, { provider });
+
+const botstopperAssets = new kubernetes.core.v1.PersistentVolumeClaim("botstopper-assets", {
+  metadata: {
+    name: "botstopper-assets",
+    namespace: namespace.metadata.name,
+    labels: {
+      "app.kubernetes.io/component": "botstopper",
+      "app.kubernetes.io/instance": "botstopper",
+      "app.kubernetes.io/name": "botstopper-assets",
+      "app.kubernetes.io/managed-by": "Pulumi",
+      "app.kubernetes.io/part-of": "traefik",
+      "k3s.sapslaj.xyz/stack": "nekopara.traefik",
+    },
+  },
+  spec: {
+    accessModes: [
+      "ReadWriteMany",
+    ],
+    resources: {
+      requests: {
+        storage: "10Gi",
+      },
+    },
+    storageClassName: "nfs-mitsuru",
+  },
+}, { provider });
+
+const botstopperDeployment = new kubernetes.apps.v1.Deployment("botstopper", {
+  metadata: {
+    name: "botstopper",
+    namespace: namespace.metadata.name,
+    labels: {
+      "app.kubernetes.io/component": "botstopper",
+      "app.kubernetes.io/instance": "botstopper",
+      "app.kubernetes.io/name": "botstopper",
+      "app.kubernetes.io/managed-by": "Pulumi",
+      "app.kubernetes.io/part-of": "traefik",
+      "k3s.sapslaj.xyz/stack": "nekopara.traefik",
+    },
+  },
+  spec: {
+    replicas: 2,
+    selector: {
+      matchLabels: {
+        "app.kubernetes.io/component": "botstopper",
+        "app.kubernetes.io/instance": "botstopper",
+        "app.kubernetes.io/name": "botstopper",
+        "app.kubernetes.io/part-of": "traefik",
+      },
+    },
+    template: {
+      metadata: {
+        labels: {
+          "app.kubernetes.io/component": "botstopper",
+          "app.kubernetes.io/instance": "botstopper",
+          "app.kubernetes.io/name": "botstopper",
+          "app.kubernetes.io/managed-by": "Pulumi",
+          "app.kubernetes.io/part-of": "traefik",
+          "k3s.sapslaj.xyz/stack": "nekopara.traefik",
+        },
+      },
+      spec: {
+        volumes: [
+          {
+            name: "assets",
+            persistentVolumeClaim: {
+              claimName: botstopperAssets.metadata.name,
+            },
+          },
+          {
+            name: "config",
+            configMap: {
+              name: botstopperConfig.metadata.name,
+            },
+          },
+        ],
+        imagePullSecrets: [
+          {
+            name: botstopperImagePullSecret.metadata.name,
+          },
+        ],
+        containers: [
+          {
+            name: "botstopper",
+            image: "ghcr.io/techarohq/botstopper/anubis:latest",
+            imagePullPolicy: "Always",
+            volumeMounts: [
+              {
+                name: "assets",
+                mountPath: "/assets",
+              },
+              {
+                name: "config",
+                mountPath: "/data/cfg",
+              },
+            ],
+            env: [
+              {
+                name: "PUBLIC_URL",
+                value: "https://botstopper.sapslaj.xyz",
+              },
+              {
+                name: "TARGET",
+                value: " ",
+              },
+              {
+                name: "POLICY_FNAME",
+                value: "/data/cfg/botPolicy.yaml",
+              },
+              {
+                name: "REDIRECT_DOMAINS",
+                value: "*.sapslaj.xyz",
+              },
+              {
+                name: "COOKIE_DYNAMIC_DOMAIN",
+                value: "true",
+              },
+              {
+                name: "ED25519_PRIVATE_KEY_HEX",
+                valueFrom: {
+                  secretKeyRef: {
+                    name: botstopperKey.metadata.name,
+                    key: "ED25519_PRIVATE_KEY_HEX",
+                  },
+                },
+              },
+              {
+                name: "CHALLENGE_TITLE",
+                value: "nyaa nyaa nyaa...",
+              },
+              {
+                name: "ERROR_TITLE",
+                value: "oh nyoooo",
+              },
+              {
+                name: "OVERLAY_FOLDER",
+                value: "/assets",
+              },
+            ],
+            ports: [
+              {
+                name: "http",
+                protocol: "TCP",
+                containerPort: 8923,
+              },
+              {
+                name: "metrics",
+                protocol: "TCP",
+                containerPort: 9090,
+              },
+            ],
+            resources: {
+              limits: {
+                cpu: "1",
+                memory: "256Mi",
+              },
+              requests: {
+                cpu: "250m",
+                memory: "256Mi",
+              },
+            },
+            securityContext: {
+              runAsUser: 1000,
+              runAsGroup: 1000,
+              runAsNonRoot: true,
+              allowPrivilegeEscalation: false,
+              capabilities: {
+                drop: [
+                  "ALL",
+                ],
+              },
+              seccompProfile: {
+                type: "RuntimeDefault",
+              },
+            },
+            livenessProbe: {
+              httpGet: {
+                port: "metrics",
+                path: "/healthz",
+              },
+            },
+            readinessProbe: {
+              httpGet: {
+                port: "http",
+                path: "/",
+                httpHeaders: [
+                  {
+                    name: "X-Real-IP",
+                    value: "127.0.0.1",
+                  },
+                ],
+              },
+            },
+          },
+        ],
+      },
+    },
+  },
+}, { provider });
+
+new kubernetes.apiextensions.CustomResource("botstopper-servicemonitor", {
+  apiVersion: "monitoring.coreos.com/v1",
+  kind: "ServiceMonitor",
+  metadata: {
+    name: "botstopper",
+    namespace: namespace.metadata.name,
+    labels: {
+      "app.kubernetes.io/component": "botstopper",
+      "app.kubernetes.io/instance": "botstopper",
+      "app.kubernetes.io/name": "botstopper",
+      "app.kubernetes.io/managed-by": "Pulumi",
+      "app.kubernetes.io/part-of": "traefik",
+      "k3s.sapslaj.xyz/stack": "nekopara.traefik",
+    },
+  },
+  spec: {
+    selector: {
+      matchLabels: botstopperService.spec.selector,
+    },
+    endpoints: [
+      {
+        port: "metrics",
+        interval: "30s",
+        scrapeTimeout: "10s",
+        path: "/metrics",
+      },
+    ],
+  },
+}, { provider });
+
+const botstopperIngress = new kubernetes.networking.v1.Ingress("traefik-botstopper", {
+  metadata: {
+    name: "botstopper",
+    namespace: namespace.metadata.name,
+    labels: {
+      "app.kubernetes.io/component": "botstopper",
+      "app.kubernetes.io/instance": "botstopper",
+      "app.kubernetes.io/name": "botstopper",
+      "app.kubernetes.io/managed-by": "Pulumi",
+      "app.kubernetes.io/part-of": "traefik",
+      "k3s.sapslaj.xyz/stack": "nekopara.traefik",
+    },
+    annotations: {
+      "pulumi.com/skipAwait": "true",
+      "traefik.ingress.kubernetes.io/router.middlewares": "traefik-botstopper@kubernetescrd",
+    },
+  },
+  spec: {
+    ingressClassName: "traefik",
+    rules: [
+      {
+        host: "botstopper.sapslaj.xyz",
+        http: {
+          paths: [
+            {
+              path: "/",
+              pathType: "Prefix",
+              backend: {
+                service: {
+                  name: botstopperService.metadata.name,
+                  port: {
+                    name: "http",
+                  },
+                },
+              },
+            },
+          ],
+        },
+      },
+    ],
+  },
+}, { provider });
+
+const botstopperMiddleware = new kubernetes.apiextensions.CustomResource("botstopper-middleware", {
+  apiVersion: "traefik.io/v1alpha1",
+  kind: "Middleware",
+  metadata: {
+    name: "botstopper",
+    namespace: namespace.metadata.name,
+  },
+  spec: {
+    forwardAuth: {
+      address: "http://botstopper.traefik.svc.cluster.local:8923/.within.website/x/cmd/botstopper/api/check",
+    },
+  },
+}, { provider });
+
+new IngressDNS("botstopper.sapslaj.xyz");
+
+new kubernetes.apiextensions.CustomResource("traefik-dashboard", {
+  apiVersion: "traefik.io/v1alpha1",
+  kind: "IngressRoute",
+  metadata: {
+    name: "traefik-dashboard",
+    namespace: namespace.metadata.name,
+  },
+  spec: {
+    routes: [
+      {
+        match: "Host(`traefik.sapslaj.xyz`)",
+        kind: "Rule",
+        middlewares: [
+          {
+            name: allowList.metadata.name,
+            namespace: allowList.metadata.namespace,
+          },
+          {
+            name: botstopperMiddleware.metadata.name,
+            namespace: botstopperMiddleware.metadata.namespace,
+          },
+        ],
+        services: [
+          {
+            name: "api@internal",
+            kind: "TraefikService",
+          },
+        ],
+      },
+    ],
+  },
+}, {
+  provider,
+});
+
+new IngressDNS("traefik.sapslaj.xyz");
+
+const httpdebugService = new kubernetes.core.v1.Service("httpdebug", {
+  metadata: {
+    name: "httpdebug",
+    namespace: namespace.metadata.name,
+    labels: {
+      "app.kubernetes.io/component": "httpdebug",
+      "app.kubernetes.io/instance": "httpdebug",
+      "app.kubernetes.io/name": "httpdebug",
+      "app.kubernetes.io/managed-by": "Pulumi",
+      "app.kubernetes.io/part-of": "traefik",
+      "k3s.sapslaj.xyz/stack": "nekopara.traefik",
+    },
+  },
+  spec: {
+    selector: {
+      "app.kubernetes.io/component": "httpdebug",
+      "app.kubernetes.io/instance": "httpdebug",
+      "app.kubernetes.io/name": "httpdebug",
+      "app.kubernetes.io/part-of": "traefik",
+    },
+    ports: [
+      {
+        name: "http",
+        port: 8080,
+        targetPort: 8080,
+        protocol: "TCP",
+      },
+      {
+        name: "https",
+        port: 8443,
+        targetPort: 8443,
+        protocol: "TCP",
+      },
+    ],
+  },
+}, { provider });
+
+const httpdebugDeployment = new kubernetes.apps.v1.Deployment("httpdebug", {
+  metadata: {
+    name: "httpdebug",
+    namespace: namespace.metadata.name,
+    labels: {
+      "app.kubernetes.io/component": "httpdebug",
+      "app.kubernetes.io/instance": "httpdebug",
+      "app.kubernetes.io/name": "httpdebug",
+      "app.kubernetes.io/managed-by": "Pulumi",
+      "app.kubernetes.io/part-of": "traefik",
+      "k3s.sapslaj.xyz/stack": "nekopara.traefik",
+    },
+  },
+  spec: {
+    replicas: 2,
+    selector: {
+      matchLabels: {
+        "app.kubernetes.io/component": "httpdebug",
+        "app.kubernetes.io/instance": "httpdebug",
+        "app.kubernetes.io/name": "httpdebug",
+        "app.kubernetes.io/part-of": "traefik",
+      },
+    },
+    template: {
+      metadata: {
+        labels: {
+          "app.kubernetes.io/component": "httpdebug",
+          "app.kubernetes.io/instance": "httpdebug",
+          "app.kubernetes.io/name": "httpdebug",
+          "app.kubernetes.io/managed-by": "Pulumi",
+          "app.kubernetes.io/part-of": "traefik",
+          "k3s.sapslaj.xyz/stack": "nekopara.traefik",
+        },
+      },
+      spec: {
+        containers: [
+          {
+            name: "httpdebug",
+            image: "mendhak/http-https-echo:37",
+            imagePullPolicy: "Always",
+            ports: [
+              {
+                name: "http",
+                protocol: "TCP",
+                containerPort: 8080,
+              },
+              {
+                name: "https",
+                protocol: "TCP",
+                containerPort: 8443,
+              },
+            ],
+            resources: {
+              limits: {
+                cpu: "1",
+                memory: "256Mi",
+              },
+              requests: {
+                cpu: "250m",
+                memory: "256Mi",
+              },
+            },
+          },
+        ],
+      },
+    },
+  },
+}, { provider });
+
+const httpdebugIngress = new kubernetes.networking.v1.Ingress("httpdebug", {
+  metadata: {
+    name: "httpdebug",
+    namespace: namespace.metadata.name,
+    labels: {
+      "app.kubernetes.io/component": "httpdebug",
+      "app.kubernetes.io/instance": "httpdebug",
+      "app.kubernetes.io/name": "httpdebug",
+      "app.kubernetes.io/managed-by": "Pulumi",
+      "app.kubernetes.io/part-of": "traefik",
+      "k3s.sapslaj.xyz/stack": "nekopara.traefik",
+    },
+    annotations: {
+      "pulumi.com/skipAwait": "true",
+      "traefik.ingress.kubernetes.io/router.middlewares": "traefik-botstopper@kubernetescrd",
+    },
+  },
+  spec: {
+    ingressClassName: "traefik",
+    rules: [
+      {
+        host: "httpdebug.sapslaj.xyz",
+        http: {
+          paths: [
+            {
+              path: "/",
+              pathType: "Prefix",
+              backend: {
+                service: {
+                  name: httpdebugService.metadata.name,
+                  port: {
+                    name: "http",
+                  },
+                },
+              },
+            },
+          ],
+        },
+      },
+    ],
+  },
+}, { provider });
+
+new IngressDNS("httpdebug.sapslaj.xyz");

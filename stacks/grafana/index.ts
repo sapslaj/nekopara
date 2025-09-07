@@ -234,6 +234,7 @@ new kubernetes.networking.v1.Ingress("xyz-redirect", {
     annotations: {
       "pulumi.com/skipAwait": "true",
       "traefik.ingress.kubernetes.io/router.middlewares": pulumi.concat(
+        "traefik-botstopper@kubernetescrd,",
         xyzRedirect.metadata.namespace,
         "-",
         xyzRedirect.metadata.name,

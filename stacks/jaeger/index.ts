@@ -134,7 +134,7 @@ const chart = new kubernetes.helm.v3.Chart("jaeger", {
         ingressClassName: "traefik",
         annotations: {
           "traefik.ingress.kubernetes.io/router.middlewares":
-            "victoria-metrics-victoria-metrics-ingress-basic-auth@kubernetescrd",
+            "traefik-botstopper@kubernetescrd,victoria-metrics-victoria-metrics-ingress-basic-auth@kubernetescrd",
         },
         hosts: [
           {

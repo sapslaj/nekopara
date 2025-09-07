@@ -319,7 +319,7 @@ new AuthentikProxyIngress("alertmanager", {
     name: "vmalertmanager-victoria-metrics",
     port: 9093,
   },
-  enableAnubis: false,
+  enableAnubis: true,
 }, {
   providers: {
     kubernetes: provider,
@@ -335,7 +335,7 @@ new AuthentikProxyIngress("vmalert", {
     name: "vmalert-victoria-metrics",
     port: 8080,
   },
-  enableAnubis: false,
+  enableAnubis: true,
 }, {
   providers: {
     kubernetes: provider,
@@ -351,7 +351,7 @@ new AuthentikProxyIngress("vmagent", {
     name: "vmagent-victoria-metrics",
     port: 8429,
   },
-  enableAnubis: false,
+  enableAnubis: true,
 }, {
   providers: {
     kubernetes: provider,

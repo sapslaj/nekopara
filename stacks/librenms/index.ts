@@ -534,7 +534,7 @@ new kubernetes.networking.v1.Ingress("librenms", {
     annotations: {
       "pulumi.com/skipAwait": "true",
       "traefik.ingress.kubernetes.io/router.middlewares": pulumi
-        .interpolate`${allowList.metadata.namespace}-${allowList.metadata.name}@kubernetescrd`,
+        .interpolate`traefik-botstopper@kubernetescrd,${allowList.metadata.namespace}-${allowList.metadata.name}@kubernetescrd`,
     },
   },
   spec: {
