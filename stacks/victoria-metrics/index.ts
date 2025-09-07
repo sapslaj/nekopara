@@ -522,11 +522,6 @@ const victoriaMetrics = new kubernetes.helm.v3.Chart("victoria-metrics", {
           receiver: "discord",
           routes: [
             {
-              receiver: "email",
-              matchers: [`alertname="AlertmanagerFailedToSendAlerts"`],
-              continue: true,
-            },
-            {
               receiver: "blackhole",
               matchers: [`alertname=Watchdog`],
             },
@@ -550,8 +545,18 @@ const victoriaMetrics = new kubernetes.helm.v3.Chart("victoria-metrics", {
               ],
             },
             {
+              receiver: "email",
+              matchers: [`alertname="AlertmanagerFailedToSendAlerts"`],
+              continue: true,
+            },
+            {
               receiver: "ntfy",
-              matchers: [`severity=~"(warning|critical|error)"`],
+              matchers: [`severity=~"(critical|error)"`],
+              continue: true,
+            },
+            {
+              receiver: "discord",
+              matchers: [`severity=~"(critical|error)"`],
               continue: true,
             },
           ],
