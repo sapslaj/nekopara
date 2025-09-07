@@ -1,0 +1,9 @@
+{
+  "dependencies": [
+    "cluster",
+    "core",
+    "crds",
+    "nodegroups",
+    "traefik"
+  ]
+}

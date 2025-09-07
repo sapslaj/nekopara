@@ -89,7 +89,7 @@ const traefik = new kubernetes.helm.v3.Chart("traefik", {
     },
     podDisruptionBudget: {
       enabled: true,
-      minAvailable: 1,
+      maxUnavailable: 1,
     },
     ingressClass: {
       enabled: true,

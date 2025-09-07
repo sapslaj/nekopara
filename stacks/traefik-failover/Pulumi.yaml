@@ -1,0 +1,5 @@
+name: nekopara.traefik-failover
+runtime:
+  name: nodejs
+  options:
+    packagemanager: npm

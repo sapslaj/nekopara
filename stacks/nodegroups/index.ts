@@ -24,7 +24,7 @@ const serverUri = getServerUri();
 //   serverUri,
 //   privateKey,
 //   distro: Distro.UBUNTU_24_04,
-//   nodeCount: 3,
+//   nodeCount: 5,
 //   vmConfig: {
 //     cpu: {
 //       type: "qemu64",
@@ -71,7 +71,7 @@ new NodeGroup("ngb", {
 //   serverUri,
 //   privateKey,
 //   distro: Distro.UBUNTU_24_04,
-//   nodeCount: 2,
+//   nodeCount: 3,
 //   vmConfig: {
 //     cpu: {
 //       type: "qemu64",
@@ -106,7 +106,7 @@ new NodeGroup("ingb", {
   serverUri,
   privateKey,
   distro: Distro.UBUNTU_24_04,
-  nodeCount: 2,
+  nodeCount: 3,
   vmConfig: {
     cpu: {
       cores: 4,
