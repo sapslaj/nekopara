@@ -290,6 +290,9 @@ const chart = new kubernetes.helm.v4.Chart("immich", {
           ],
         },
       },
+      controller: {
+        replicas: 2,
+      },
     },
     "machine-learning": {
       enabled: true,
@@ -300,6 +303,9 @@ const chart = new kubernetes.helm.v4.Chart("immich", {
           accessMode: "ReadWriteMany",
           storageClass: "nfs",
         },
+      },
+      controller: {
+        replicas: 2,
       },
     },
   },
