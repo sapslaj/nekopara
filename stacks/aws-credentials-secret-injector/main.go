@@ -268,12 +268,7 @@ func main() {
 			var oldAccessKeyID string
 			oldAccessKeyIDRaw := secret.Data[AWS_ACCESS_KEY_ID]
 			if len(oldAccessKeyIDRaw) != 0 {
-				buf, err := base64.StdEncoding.DecodeString(string(oldAccessKeyIDRaw))
-				if err != nil {
-					handlerLogger.ErrorContext(ctx, "error decoding previous access key ID from secret", slog.Any("error", err))
-					return err
-				}
-				oldAccessKeyID = string(buf)
+				oldAccessKeyID = string(oldAccessKeyIDRaw)
 				handlerLogger = handlerLogger.With(slog.String("old_access_key_id", oldAccessKeyID))
 			} else {
 				handlerLogger.InfoContext(ctx, "no previous access key present")
