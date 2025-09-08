@@ -67,7 +67,6 @@ const traefik = new kubernetes.helm.v3.Chart("traefik", {
       kind: "DaemonSet",
       annotations: {
         "reloader.stakater.com/auto": "true",
-        "reloader.stakater.com/rollout-strategy": "restart",
       },
       initContainers: [
         {
