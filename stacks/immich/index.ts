@@ -278,6 +278,9 @@ const chart = new kubernetes.helm.v4.Chart("immich", {
       ingress: {
         main: {
           enabled: true,
+          annotations: {
+            "traefik.ingress.kubernetes.io/router.middlewares": "traefik-anubis@kubernetescrd",
+          },
           hosts: [
             {
               host: "photos.sapslaj.cloud",
