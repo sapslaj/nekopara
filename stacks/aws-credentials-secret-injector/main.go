@@ -211,10 +211,12 @@ func main() {
 					ttl = time.Hour
 					handlerLogger.WarnContext(ctx, "error parsing TTL, using default", slog.Any("error", err))
 				}
+				handlerLogger.DebugContext(ctx, "parsed ttl", slog.String("ttl", ttl.String()))
 			} else {
 				handlerLogger.InfoContext(ctx, "ttl annotation not present, assuming default")
 				secret.Annotations[TTLAnnotation] = ttl.String()
 			}
+			handlerLogger.With(slog.String("ttl", ttl.String()))
 
 			expiresAt, present := secret.Annotations[ExpiresAtAnnotation]
 			if present {
@@ -229,13 +231,15 @@ func main() {
 					handlerLogger.DebugContext(ctx, "credentials have not expired yet, skipping")
 					return nil
 				}
+				handlerLogger = handlerLogger.With(slog.Time("expired_at", parsed))
+				handlerLogger.DebugContext(ctx, "credentials expired")
 			} else {
 				handlerLogger.InfoContext(ctx, "expires-at annotation not set")
 			}
 
 			maintenanceTime, present := secret.Annotations[MaintenanceTimeAnnotation]
 			if present {
-				start, err := time.Parse(time.RFC3339, maintenanceTime)
+				start, err := time.Parse(time.TimeOnly, maintenanceTime)
 				if err != nil {
 					handlerLogger.WarnContext(ctx, "error parsing maintenance-time", slog.Any("error", err))
 				}
@@ -270,6 +274,7 @@ func main() {
 					return err
 				}
 				oldAccessKeyID = string(buf)
+				handlerLogger = handlerLogger.With(slog.String("old_access_key_id", oldAccessKeyID))
 			} else {
 				handlerLogger.InfoContext(ctx, "no previous access key present")
 			}
@@ -304,7 +309,9 @@ func main() {
 				return err
 			}
 
-			secret.ObjectMeta.Annotations[ExpiresAtAnnotation] = time.Now().Add(time.Hour).Format(time.RFC3339)
+			handlerLogger = handlerLogger.With(slog.String("new_access_key_id", *createAccessKeyOutput.AccessKey.AccessKeyId))
+
+			secret.ObjectMeta.Annotations[ExpiresAtAnnotation] = time.Now().Add(ttl).Format(time.RFC3339)
 
 			sesSmtpPassword := generateSesSmtpPassword(*createAccessKeyOutput.AccessKey.SecretAccessKey)
 
