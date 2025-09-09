@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/ganawaj/go-vyos/vyos"
+	"github.com/sapslaj/gstb/loglevel"
 	"github.com/spotahome/kooper/v2/controller"
 	kooperlog "github.com/spotahome/kooper/v2/log"
 	corev1 "k8s.io/api/core/v1"
@@ -60,7 +61,7 @@ var _ kooperlog.Logger = KooperLogger{}
 
 var DefaultLogger = slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
 	AddSource: true,
-	Level:     slog.LevelDebug,
+	Level:     loglevel.MustParseLogLevel(os.Getenv("LOG_LEVEL")),
 }))
 
 var FailoverLock = sync.Mutex{}

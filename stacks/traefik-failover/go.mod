@@ -4,6 +4,7 @@ go 1.24.6
 
 require (
 	github.com/ganawaj/go-vyos v0.1.0
+	github.com/sapslaj/gstb v0.0.0-20250909131109-16b21b8e1719
 	github.com/spotahome/kooper/v2 v2.9.0
 	k8s.io/api v0.33.0
 	k8s.io/apimachinery v0.33.0
