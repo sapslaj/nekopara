@@ -212,6 +212,10 @@ const victoriaMetricsOperator = new kubernetes.helm.v3.Chart("victoria-metrics-o
         name: "VM_VMALERTMANAGER_ALERTMANAGERDEFAULTBASEIMAGE",
         value: "quay.io/prometheus/alertmanager",
       },
+      {
+        name: "VM_ENABLEDPROMETHEUSCONVERTEROWNERREFERENCES",
+        value: "true",
+      },
     ],
     serviceMonitor: {
       enabled: true,
