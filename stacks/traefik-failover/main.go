@@ -7,6 +7,7 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 	"sync"
 	"time"
@@ -21,6 +22,8 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/cache"
+	"k8s.io/client-go/tools/clientcmd"
+	"k8s.io/client-go/util/homedir"
 )
 
 type KooperLogger struct {
@@ -57,6 +60,7 @@ var _ kooperlog.Logger = KooperLogger{}
 
 var DefaultLogger = slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
 	AddSource: true,
+	Level:     slog.LevelDebug,
 }))
 
 var FailoverLock = sync.Mutex{}
@@ -268,10 +272,22 @@ func main() {
 
 	logger := DefaultLogger
 
-	k8scfg, err := rest.InClusterConfig()
-	if err != nil {
-		logger.Error("error loading kubernetes configuration", slog.Any("error", err))
-		os.Exit(1)
+	var k8scfg *rest.Config
+	var err error
+	_, inCluster := os.LookupEnv("KUBERNETES_SERVICE_HOST")
+	if inCluster {
+		k8scfg, err = rest.InClusterConfig()
+		if err != nil {
+			logger.Error("error loading in-cluster kubernetes configuration", slog.Any("error", err))
+			os.Exit(1)
+		}
+	} else {
+		home := homedir.HomeDir()
+		k8scfg, err = clientcmd.BuildConfigFromFlags("", filepath.Join(home, ".kube", "config"))
+		if err != nil {
+			logger.Error("error loading out-of-cluster kubernetes configuration", slog.Any("error", err))
+			os.Exit(1)
+		}
 	}
 	k8sClient, err := kubernetes.NewForConfig(k8scfg)
 	if err != nil {
@@ -333,6 +349,32 @@ func main() {
 			return nil
 		}),
 	}
+
+	go func(parent context.Context) {
+		for range time.Tick(time.Second) {
+			ctx := context.WithValue(parent, "k8sClient", k8sClient)
+			logger.DebugContext(ctx, "starting background current health check")
+			current, err := GetCurrentNode(ctx)
+			if err != nil {
+				logger.ErrorContext(ctx, "error getting current", slog.Any("error", err))
+				continue
+			}
+			isHealthy, err := IsNodeHealthy(ctx, current)
+			if err != nil {
+				logger.ErrorContext(ctx, "error checking if current is healthy", slog.Any("error", err))
+				continue
+			}
+
+			if !isHealthy {
+				err = StartFailover(ctx)
+				if err != nil {
+					logger.ErrorContext(ctx, "error starting failover", slog.Any("error", err))
+					continue
+				}
+			}
+			logger.DebugContext(ctx, "finished background current health check")
+		}
+	}(ctx)
 
 	ctrl, err := controller.New(cfg)
 	if err != nil {
