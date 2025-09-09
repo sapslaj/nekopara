@@ -7,6 +7,7 @@ import { Distro, IDistro } from "../../components/homelab-config";
 import { BaselineUsers } from "../../components/mid/BaselineUsers";
 import { MidTarget } from "../../components/mid/MidTarget";
 import { CloudImageTrait } from "../../components/proxmox-vm/CloudImageTrait";
+import { DNSRecordTrait } from "../../components/proxmox-vm/DNSRecordTrait";
 import { PrivateKeyTrait } from "../../components/proxmox-vm/PrivateKeyTrait";
 import { ProxmoxVM, ProxmoxVMDiskConfig, ProxmoxVMProps } from "../../components/proxmox-vm/ProxmoxVM";
 import { DNSRecord } from "../../components/shimiko";
@@ -78,6 +79,10 @@ class ControlPlaneNode extends pulumi.ComponentResource {
         new PrivateKeyTrait("private-key", {
           privateKey: props.privateKey,
           addPrivateKeyToUserdata: true,
+        }),
+        new DNSRecordTrait("dns-record", {
+          enableIPv6: false,
+          lookupIPv6ViaSSH: false,
         }),
         ...(props.nodeConfig?.traits ?? []),
       ],
@@ -245,9 +250,18 @@ class ControlPlaneNode extends pulumi.ComponentResource {
 
     const nodeServerArgs: pulumi.Input<string>[] = [
       ...(props.serverArgs ?? []),
+      "--disable-helm-controller",
+      "--disable traefik",
+      "--disable coredns",
+      "--disable local-storage",
+      "--disable metrics-server",
+      "--write-kubeconfig-mode 644",
+      "--etcd-snapshot-retention 100",
+      "--etcd-snapshot-schedule-cron '0 * * * *'",
     ];
 
     nodeServerArgs.push("--tls-san", props.dnsFullName);
+    nodeServerArgs.push("--tls-san", pulumi.interpolate`${this.vm.name}.sapslaj.xyz`);
 
     nodeServerArgs.push(
       pulumi.output(props.serverUri).apply((server) => {
@@ -484,6 +498,10 @@ class NLBNode extends pulumi.ComponentResource {
           privateKey: props.privateKey,
           addPrivateKeyToUserdata: true,
         }),
+        new DNSRecordTrait("dns-record", {
+          enableIPv6: false,
+          lookupIPv6ViaSSH: false,
+        }),
         ...(props.nodeConfig?.traits ?? []),
       ],
       connectionArgs: {
@@ -529,6 +547,9 @@ class NLBNode extends pulumi.ComponentResource {
 
     const haproxyPackage = new mid.resource.Apt(`${id}-haproxy`, {
       connection: this.vm.connection,
+      config: {
+        check: false,
+      },
       triggers: {
         replace: [
           this.randomId.id,
@@ -574,7 +595,7 @@ class NLBNode extends pulumi.ComponentResource {
       configFragments.push(`  balance leastconn\n`);
 
       for (const [nodeID, node] of Object.entries(props.controlPlaneNodes)) {
-        configFragments.push(pulumi.interpolate`  server ${nodeID} ${node.vm.ipv4}:${port} check\n`);
+        configFragments.push(pulumi.interpolate`  server ${nodeID} ${node.vm.name}.sapslaj.xyz:${port} check\n`);
       }
 
       configFragments.push(`\n`);
@@ -600,8 +621,8 @@ class NLBNode extends pulumi.ComponentResource {
     this.service = new mid.resource.SystemdService(`${id}-haproxy`, {
       connection: this.vm.connection,
       name: "haproxy.service",
-      enabled: true,
-      ensure: "started",
+      // enabled: true,
+      // ensure: "started",
       triggers: {
         refresh: [
           haproxyConfig.triggers.lastChanged,
@@ -646,15 +667,8 @@ nodes["c1"] = new ControlPlaneNode("c1", {
   privateKey,
   k3sVersion: "v1.32.7+k3s1",
   distro: Distro.UBUNTU_24_04,
-  serverUri: pulumi.interpolate`https://172.24.4.123:6443`,
-  serverArgs: [
-    "--disable-helm-controller",
-    "--disable traefik",
-    "--disable coredns",
-    "--disable local-storage",
-    "--disable metrics-server",
-    "--write-kubeconfig-mode 644",
-  ],
+  serverUri: pulumi.interpolate`https://nekopara-c2-cbnyjq.sapslaj.xyz:6443`,
+  serverArgs: [],
   labels: {
     "k3s.sapslaj.xyz/role": "control-plane",
     "topology.kubernetes.io/region": "homelab",
@@ -681,15 +695,8 @@ nodes["c2"] = new ControlPlaneNode("c2", {
   privateKey,
   k3sVersion: "v1.32.7+k3s1",
   distro: Distro.UBUNTU_24_04,
-  serverUri: pulumi.interpolate`https://172.24.4.136:6443`,
-  serverArgs: [
-    "--disable-helm-controller",
-    "--disable traefik",
-    "--disable coredns",
-    "--disable local-storage",
-    "--disable metrics-server",
-    "--write-kubeconfig-mode 644",
-  ],
+  serverUri: pulumi.interpolate`https://nekopara-c2-cbnyjq.sapslaj.xyz:6443`,
+  serverArgs: [],
   labels: {
     "k3s.sapslaj.xyz/role": "control-plane",
     "topology.kubernetes.io/region": "homelab",
@@ -706,7 +713,7 @@ nodes["c2"] = new ControlPlaneNode("c2", {
     },
   },
 }, {
-  dependsOn: nodes["c1"].service,
+  // dependsOn: nodes["c1"].service,
 });
 
 nodes["c3"] = new ControlPlaneNode("c3", {
@@ -716,15 +723,8 @@ nodes["c3"] = new ControlPlaneNode("c3", {
   privateKey,
   k3sVersion: "v1.32.7+k3s1",
   distro: Distro.UBUNTU_24_04,
-  serverUri: pulumi.interpolate`https://172.24.4.142:6443`,
-  serverArgs: [
-    "--disable-helm-controller",
-    "--disable traefik",
-    "--disable coredns",
-    "--disable local-storage",
-    "--disable metrics-server",
-    "--write-kubeconfig-mode 644",
-  ],
+  serverUri: pulumi.interpolate`https://nekopara-c2-cbnyjq.sapslaj.xyz:6443`,
+  serverArgs: [],
   labels: {
     "k3s.sapslaj.xyz/role": "control-plane",
     "topology.kubernetes.io/region": "homelab",
@@ -746,15 +746,13 @@ nodes["c3"] = new ControlPlaneNode("c3", {
 
 const nlbs: Record<string, NLBNode> = {};
 
-for (let i = 1; i <= 2; i++) {
+for (let i = 1; i <= 1; i++) {
   nlbs[`nlba-${i}`] = new NLBNode(`nlba-${i}`, {
     dnsHostName,
     privateKey,
     distro: Distro.UBUNTU_24_04,
     controlPlaneNodes: nodes,
     ports: {
-      http: 80,
-      https: 443,
       k3s: 6443,
     },
   }, {
@@ -762,11 +760,12 @@ for (let i = 1; i <= 2; i++) {
   });
 }
 
-new DNSRecord("server", {
-  name: dnsHostName,
-  type: "A",
-  records: Object.values(nlbs).map((node) => node.vm.ipv4),
-});
+// FIXME: managing this manually due to some weird shimiko issues
+// new DNSRecord("server", {
+//   name: dnsHostName,
+//   type: "A",
+//   records: Object.values(nlbs).map((node) => node.vm.ipv4),
+// });
 
 export let kubeconfig: pulumi.Output<string> | undefined;
 
