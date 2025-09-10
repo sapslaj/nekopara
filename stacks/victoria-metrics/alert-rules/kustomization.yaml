@@ -12,4 +12,5 @@ resources:
   - ./kubernetes_system_apiserver.yaml
   - ./litter_robot.yaml
   - ./node_exporter.yaml
+  - ./vector.yaml
   - ./zonepop.yaml
