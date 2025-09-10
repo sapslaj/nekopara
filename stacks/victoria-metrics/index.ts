@@ -536,6 +536,13 @@ const victoriaMetrics = new kubernetes.helm.v3.Chart("victoria-metrics", {
               receiver: "blackhole",
               matchers: [
                 `alertname=NodeSystemdServiceFailed`,
+                `name="cloud-init-hotplugd.service"`,
+              ],
+            },
+            {
+              receiver: "blackhole",
+              matchers: [
+                `alertname=NodeSystemdServiceFailed`,
                 `hostname=aqua`,
                 `name="rclone-sync@exos-volumes.service"`,
               ],
@@ -543,14 +550,10 @@ const victoriaMetrics = new kubernetes.helm.v3.Chart("victoria-metrics", {
             {
               receiver: "blackhole",
               matchers: [
-                `alertname=NodeDiskIOSaturation`,
-                `hostname=aqua`,
+                `alertname=NodeSystemdServiceFailed`,
+                `hostname=mitsuru`,
+                `name="rsync-backup.service"`,
               ],
-            },
-            {
-              // FIXME: temp until aqua is healthy again
-              receiver: "blackhole",
-              matchers: [`alertname=~"(KubeAPIDown|KubeletDown|NodeSystemSaturation)"`],
             },
             {
               receiver: "email",
