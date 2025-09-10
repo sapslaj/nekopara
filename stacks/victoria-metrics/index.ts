@@ -548,6 +548,11 @@ const victoriaMetrics = new kubernetes.helm.v3.Chart("victoria-metrics", {
               ],
             },
             {
+              // FIXME: temp until aqua is healthy again
+              receiver: "blackhole",
+              matchers: [`alertname=~"(KubeAPIDown|KubeletDown|NodeSystemSaturation)"`],
+            },
+            {
               receiver: "email",
               matchers: [`alertname="AlertmanagerFailedToSendAlerts"`],
               continue: true,
