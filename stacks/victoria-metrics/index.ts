@@ -796,19 +796,21 @@ new kubernetes.kustomize.v2.Directory("alert-rules", {
   namespace: namespace.metadata.name,
 });
 
-new kubernetes.apiextensions.CustomResource("static-scrape-node-exporter", {
+// not scraping from Vector so that if Uptime Kuma goes down there are more
+// alerts.
+new kubernetes.apiextensions.CustomResource("static-scrape-uptime-kuma", {
   apiVersion: "operator.victoriametrics.com/v1beta1",
   kind: "VMStaticScrape",
   metadata: {
-    name: "node-exporter",
+    name: "uptime-kuma",
     namespace: namespace.metadata.name,
   },
   spec: {
-    jobName: "node_exporter",
+    jobName: "uptime_kuma",
     targetEndpoints: [
       {
         targets: [
-          "playboy.sapslaj.xyz:9100",
+          "https://status.sapslaj.com",
         ],
       },
     ],
