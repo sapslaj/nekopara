@@ -928,6 +928,19 @@ new kubernetes.helm.v3.Chart("blackbox-exporter", {
             preferred_ip_protocol: "ip4",
           },
         },
+        dns_tcp: {
+          prober: "dns",
+          dns: {
+            transport_protocol: "tcp",
+            query_name: "google.com",
+          },
+        },
+        dns_udp: {
+          prober: "dns",
+          dns: {
+            query_name: "google.com",
+          },
+        },
       },
     },
     ingress: {
@@ -951,48 +964,8 @@ new kubernetes.helm.v3.Chart("blackbox-exporter", {
       enabled: true,
       targets: [
         {
-          name: "unifi-webui",
-          url: "https://unifi.sapslaj.com:8443",
-          module: "http_2xx",
-        },
-        {
-          name: "omada-webui",
-          url: "https://omada.direct.sapslaj.cloud:8043",
-          module: "http_2xx_nosslverify",
-        },
-        {
-          name: "yor-ssh",
-          url: "yor.sapslaj.xyz:22",
-          module: "ssh_banner",
-        },
-        {
-          name: "daki-ssh",
-          url: "daki.sapslaj.xyz:22",
-          module: "ssh_banner",
-        },
-        {
-          name: "shiroko-ssh",
-          url: "shiroko.sapslaj.xyz:22",
-          module: "ssh_banner",
-        },
-        {
-          name: "homeassistant-webui",
-          url: "http://homeassistant.sapslaj.xyz:8123",
-          module: "http_2xx",
-        },
-        {
-          name: "plex-tcp",
-          url: "koyuki.sapslaj.xyz:32400",
-          module: "tcp_connect",
-        },
-        {
-          name: "jellyfin-webui",
-          url: "http://koyuki.sapslaj.xyz:8096",
-          module: "http_2xx_nosslverify",
-        },
-        {
-          name: "grafana",
-          url: "https://grafana.sapslaj.cloud",
+          name: "anubis",
+          url: "https://anubis.sapslaj.cloud",
           module: "http_2xx",
         },
         {
@@ -1001,9 +974,209 @@ new kubernetes.helm.v3.Chart("blackbox-exporter", {
           module: "http_2xx",
         },
         {
+          name: "authentik",
+          url: "https://login.sapslaj.cloud",
+          module: "http_2xx",
+        },
+        {
+          name: "daki-ssh",
+          url: "daki.sapslaj.xyz:22",
+          module: "ssh_banner",
+        },
+        {
+          name: "ganyu",
+          url: "https://ganyu.sapslaj.xyz:8007",
+          module: "http_2xx",
+        },
+        {
+          name: "gitea",
+          url: "https://git.sapslaj.cloud",
+          module: "http_2xx",
+        },
+        {
           name: "google-https",
           url: "https://www.google.com",
           module: "http_2xx",
+        },
+        {
+          name: "grafana",
+          url: "https://grafana.sapslaj.cloud",
+          module: "http_2xx",
+        },
+        {
+          name: "homeassistant",
+          url: "https://homeassistant.sapslaj.cloud",
+          module: "http_2xx",
+        },
+        {
+          name: "homeassistant-backend",
+          url: "http://homeassistant.sapslaj.xyz:8123",
+          module: "http_2xx",
+        },
+        {
+          name: "jellyfin",
+          url: "https://jellyfin.sapslaj.cloud",
+          module: "http_2xx",
+        },
+        {
+          name: "jellyfin-backend",
+          url: "http://koyuki.sapslaj.xyz:8096",
+          module: "http_2xx_nosslverify",
+        },
+        {
+          name: "misc",
+          url: "https://misc.sapslaj.xyz",
+          module: "http_2xx",
+        },
+        {
+          name: "mitsuru",
+          url: "https://mitsuru.sapslaj.xyz:8006",
+          module: "http_2xx",
+        },
+        {
+          name: "nekopara-api",
+          url: "https://nekopara.sapslaj.xyz:6443",
+          module: "http_2xx_nosslverify",
+        },
+        {
+          name: "netbox",
+          url: "https://netbox.sapslaj.cloud",
+          module: "http_2xx",
+        },
+        {
+          name: "nextcloud",
+          url: "https://nextcloud.sapslaj.cloud",
+          module: "http_2xx",
+        },
+        {
+          name: "nextcloud-collabora",
+          url: "https://nextcloud-collabora.sapslaj.cloud",
+          module: "http_2xx",
+        },
+        {
+          name: "oci-proxy",
+          url: "https://proxy.oci.sapslaj.xyz/metrics",
+          module: "http_2xx",
+        },
+        {
+          name: "oci-registry",
+          url: "https://oci.sapslaj.xyz",
+          module: "http_2xx",
+        },
+        {
+          name: "omada-webui",
+          url: "https://omada.direct.sapslaj.cloud:8043",
+          module: "http_2xx_nosslverify",
+        },
+        {
+          name: "plex",
+          url: "koyuki.sapslaj.xyz:32400",
+          module: "tcp_connect",
+        },
+        {
+          name: "qbittorrent",
+          url: "https://qbittorrent.sapslaj.cloud",
+          module: "http_2xx",
+        },
+        {
+          name: "qbittorrent-backend",
+          url: "koyuki.sapslaj.xyz:8080",
+          module: "tcp_connect",
+        },
+        {
+          name: "radarr",
+          url: "https://radarr.sapslaj.cloud",
+          module: "http_2xx",
+        },
+        {
+          name: "radarr-backend",
+          url: "http://koyuki.sapslaj.xyz:7878",
+          module: "http_2xx_nosslverify",
+        },
+        {
+          name: "ram-agh-dns-tcp",
+          url: "ram.sapslaj.xyz:53",
+          module: "dns_tcp",
+        },
+        {
+          name: "ram-agh-dns-udp",
+          url: "ram.sapslaj.xyz:53",
+          module: "dns_udp",
+        },
+        {
+          name: "ram-coredns-dns-tcp",
+          url: "ram.sapslaj.xyz:5530",
+          module: "dns_tcp",
+        },
+        {
+          name: "ram-coredns-dns-udp",
+          url: "ram.sapslaj.xyz:5530",
+          module: "dns_udp",
+        },
+        {
+          name: "rem-agh-dns-tcp",
+          url: "rem.sapslaj.xyz:53",
+          module: "dns_tcp",
+        },
+        {
+          name: "rem-agh-dns-udp",
+          url: "rem.sapslaj.xyz:53",
+          module: "dns_udp",
+        },
+        {
+          name: "rem-coredns-dns-tcp",
+          url: "rem.sapslaj.xyz:5530",
+          module: "dns_tcp",
+        },
+        {
+          name: "rem-coredns-dns-udp",
+          url: "rem.sapslaj.xyz:5530",
+          module: "dns_udp",
+        },
+        {
+          name: "seaweedfs-s3-api",
+          url: "http://aqua.sapslaj.xyz:8333",
+          module: "http_2xx_nosslverify",
+        },
+        {
+          name: "shimiko",
+          url: "https://shimiko.sapslaj.xyz",
+          module: "http_2xx",
+        },
+        {
+          name: "sonarr",
+          url: "https://sonarr.sapslaj.cloud",
+          module: "http_2xx",
+        },
+        {
+          name: "sonarr-backend",
+          url: "http://koyuki.sapslaj.xyz:8989",
+          module: "http_2xx_nosslverify",
+        },
+        {
+          name: "shiroko-ssh",
+          url: "shiroko.sapslaj.xyz:22",
+          module: "ssh_banner",
+        },
+        {
+          name: "unifi-webui",
+          url: "https://unifi.sapslaj.com:8443",
+          module: "http_2xx",
+        },
+        {
+          name: "uptime-kuma",
+          url: "https://status.sapslaj.com",
+          module: "http_2xx",
+        },
+        {
+          name: "yor-api",
+          url: "https://yor.sapslaj.xyz:9443",
+          module: "http_2xx_nosslverify",
+        },
+        {
+          name: "yor-ssh",
+          url: "yor.sapslaj.xyz:22",
+          module: "ssh_banner",
         },
       ],
     },
