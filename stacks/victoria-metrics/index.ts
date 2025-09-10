@@ -809,6 +809,32 @@ new kubernetes.kustomize.v2.Directory("alert-rules", {
   namespace: namespace.metadata.name,
 });
 
+const uptimeKumaAPIKey = new kubernetes.apiextensions.CustomResource("uptime-kuma-api-key", {
+  apiVersion: "external-secrets.io/v1",
+  kind: "ExternalSecret",
+  metadata: {
+    name: "uptime-kuma-api-key",
+    namespace: namespace.metadata.name,
+  },
+  spec: {
+    secretStoreRef: {
+      kind: "ClusterSecretStore",
+      name: "infisical-homelab-prod",
+    },
+    target: {
+      name: "uptime-kuma-api-key",
+    },
+    data: [
+      {
+        secretKey: "VICTORIA_METRICS_API_KEY",
+        remoteRef: {
+          key: "/uptime-kuma/VICTORIA_METRICS_API_KEY",
+        },
+      },
+    ],
+  },
+});
+
 // not scraping from Vector so that if Uptime Kuma goes down there are more
 // alerts.
 new kubernetes.apiextensions.CustomResource("static-scrape-uptime-kuma", {
@@ -822,6 +848,12 @@ new kubernetes.apiextensions.CustomResource("static-scrape-uptime-kuma", {
     jobName: "uptime_kuma",
     targetEndpoints: [
       {
+        basicAuth: {
+          password: {
+            name: uptimeKumaAPIKey.metadata.name,
+            key: "VICTORIA_METRICS_API_KEY",
+          },
+        },
         targets: [
           "https://status.sapslaj.com",
         ],
