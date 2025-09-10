@@ -1037,8 +1037,8 @@ new kubernetes.helm.v3.Chart("blackbox-exporter", {
         },
         {
           name: "nekopara-api",
-          url: "https://nekopara.sapslaj.xyz:6443",
-          module: "http_2xx_nosslverify",
+          url: "nekopara.sapslaj.xyz:6443",
+          module: "tcp_connect",
         },
         {
           name: "netbox",
@@ -1095,46 +1095,47 @@ new kubernetes.helm.v3.Chart("blackbox-exporter", {
           url: "http://koyuki.sapslaj.xyz:7878",
           module: "http_2xx_nosslverify",
         },
-        {
-          name: "ram-agh-dns-tcp",
-          url: "ram.sapslaj.xyz:53",
-          module: "dns_tcp",
-        },
-        {
-          name: "ram-agh-dns-udp",
-          url: "ram.sapslaj.xyz:53",
-          module: "dns_udp",
-        },
-        {
-          name: "ram-coredns-dns-tcp",
-          url: "ram.sapslaj.xyz:5530",
-          module: "dns_tcp",
-        },
-        {
-          name: "ram-coredns-dns-udp",
-          url: "ram.sapslaj.xyz:5530",
-          module: "dns_udp",
-        },
-        {
-          name: "rem-agh-dns-tcp",
-          url: "rem.sapslaj.xyz:53",
-          module: "dns_tcp",
-        },
-        {
-          name: "rem-agh-dns-udp",
-          url: "rem.sapslaj.xyz:53",
-          module: "dns_udp",
-        },
-        {
-          name: "rem-coredns-dns-tcp",
-          url: "rem.sapslaj.xyz:5530",
-          module: "dns_tcp",
-        },
-        {
-          name: "rem-coredns-dns-udp",
-          url: "rem.sapslaj.xyz:5530",
-          module: "dns_udp",
-        },
+        // FIXME: these probes are borked
+        // {
+        //   name: "ram-agh-dns-tcp",
+        //   url: "ram.sapslaj.xyz:53",
+        //   module: "dns_tcp",
+        // },
+        // {
+        //   name: "ram-agh-dns-udp",
+        //   url: "ram.sapslaj.xyz:53",
+        //   module: "dns_udp",
+        // },
+        // {
+        //   name: "ram-coredns-dns-tcp",
+        //   url: "ram.sapslaj.xyz:5530",
+        //   module: "dns_tcp",
+        // },
+        // {
+        //   name: "ram-coredns-dns-udp",
+        //   url: "ram.sapslaj.xyz:5530",
+        //   module: "dns_udp",
+        // },
+        // {
+        //   name: "rem-agh-dns-tcp",
+        //   url: "rem.sapslaj.xyz:53",
+        //   module: "dns_tcp",
+        // },
+        // {
+        //   name: "rem-agh-dns-udp",
+        //   url: "rem.sapslaj.xyz:53",
+        //   module: "dns_udp",
+        // },
+        // {
+        //   name: "rem-coredns-dns-tcp",
+        //   url: "rem.sapslaj.xyz:5530",
+        //   module: "dns_tcp",
+        // },
+        // {
+        //   name: "rem-coredns-dns-udp",
+        //   url: "rem.sapslaj.xyz:5530",
+        //   module: "dns_udp",
+        // },
         {
           name: "seaweedfs-s3-api",
           url: "http://aqua.sapslaj.xyz:8333",
@@ -1172,8 +1173,8 @@ new kubernetes.helm.v3.Chart("blackbox-exporter", {
         },
         {
           name: "yor-api",
-          url: "https://yor.sapslaj.xyz:9443",
-          module: "http_2xx_nosslverify",
+          url: "yor.sapslaj.xyz:9443",
+          module: "tcp_connect",
         },
         {
           name: "yor-ssh",
