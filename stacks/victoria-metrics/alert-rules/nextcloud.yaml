@@ -1,0 +1,30 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: nextcloud
+spec:
+  groups:
+    - name: nextcloud
+      rules:
+        - alert: NextcloudNotReachable
+          annotations:
+            summary: Nextcloud in {{ $labels.namespace }} is not reachable by exporter
+          expr: |-
+            avg(nextcloud_up{namespace="nextcloud",job=~"^nextcloud.*" }) without(endpoint,container,pod,instance) < 1
+          for: 5m
+          labels:
+            severity: critical
+        - alert: NextcloudOutdatedVersion
+          annotations:
+            summary: Nextcloud in {{ $labels.namespace }} is outdated
+          expr: |-
+            sum(nextcloud_system_update_available{namespace="nextcloud",job=~"^nextcloud.*"}) without(endpoint,container,pod,instance) > 0
+          labels:
+            severity: info
+        - alert: NextcloudOutdatedApps
+          annotations:
+            summary: Nextcloud in {{ $labels.namespace }} has {{ $value }} outdated Apps
+          expr: |-
+            sum(nextcloud_apps_updates_available_total{namespace="nextcloud",job=~"^nextcloud.*"}) without(endpoint,container,pod,instance) > 0
+          labels:
+            severity: info

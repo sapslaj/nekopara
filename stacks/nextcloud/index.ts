@@ -379,7 +379,7 @@ const chart = new kubernetes.helm.v3.Chart("nextcloud", {
         enabled: true,
       },
       rules: {
-        enabled: true,
+        enabled: false,
       },
     },
     rbac: {

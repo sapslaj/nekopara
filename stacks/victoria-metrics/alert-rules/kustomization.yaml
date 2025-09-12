@@ -11,6 +11,7 @@ resources:
   - ./kube_scheduler_rules.yaml
   - ./kubernetes_system_apiserver.yaml
   - ./litter_robot.yaml
+  - ./nextcloud.yaml
   - ./node_exporter.yaml
   - ./vector.yaml
   - ./zonepop.yaml
