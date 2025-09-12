@@ -20,6 +20,7 @@ interface ExternalServiceProps {
   namespace: pulumi.Input<string>;
   targetHostname: pulumi.Input<string>;
   targetPort: pulumi.Input<number>;
+  targetScheme?: pulumi.Input<"http" | "https" | "h2c">;
   authHeader?: boolean;
   authentikProxy?: boolean;
 }
@@ -110,6 +111,7 @@ class ExternalService extends pulumi.ComponentResource {
                   kind: "Service",
                   name: props.name,
                   port: props.targetPort,
+                  scheme: props.targetScheme,
                 },
               ],
             },
@@ -210,6 +212,22 @@ new ExternalService("homeassistant", {
   hostname: "homeassistant.sapslaj.cloud",
   targetHostname: "homeassistant.sapslaj.xyz",
   targetPort: 8123,
+  authHeader: false,
+  authentikProxy: false,
+}, {
+  providers: {
+    kubernetes: provider,
+  },
+});
+
+new ExternalService("omada", {
+  title: "omada",
+  name: "omada",
+  namespace: namespace.metadata.name,
+  hostname: "omada.sapslaj.cloud",
+  targetHostname: "omada.direct.sapslaj.cloud",
+  targetPort: 8043,
+  targetScheme: "https",
   authHeader: false,
   authentikProxy: false,
 }, {
