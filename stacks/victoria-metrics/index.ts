@@ -566,6 +566,21 @@ const victoriaMetrics = new kubernetes.helm.v3.Chart("victoria-metrics", {
               ],
             },
             {
+              receiver: "blackhole",
+              matchers: [
+                `alertname=NodeSystemdServiceFailed`,
+                `hostname=koyuki`,
+                `name="rsync-backup.service"`,
+              ],
+            },
+            {
+              receiver: "blackhole",
+              matchers: [
+                `alertname=NodeMemoryHighUtilization`,
+                `hostname="omada.direct.sapslaj.cloud"`,
+              ],
+            },
+            {
               receiver: "email",
               matchers: [`alertname="AlertmanagerFailedToSendAlerts"`],
               continue: true,

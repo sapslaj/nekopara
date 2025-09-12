@@ -14,19 +14,19 @@ spec:
           for: 5m
           labels:
             severity: critical
-        - alert: NextcloudOutdatedVersion
-          annotations:
-            summary: Nextcloud in {{ $labels.namespace }} is outdated
-          expr: |-
-            sum(nextcloud_system_update_available{namespace="nextcloud",job=~"^nextcloud.*"}) without(endpoint,container,pod,instance) > 0
-          for: 24h
-          labels:
-            severity: info
-        - alert: NextcloudOutdatedApps
-          annotations:
-            summary: Nextcloud in {{ $labels.namespace }} has {{ $value }} outdated Apps
-          expr: |-
-            sum(nextcloud_apps_updates_available_total{namespace="nextcloud",job=~"^nextcloud.*"}) without(endpoint,container,pod,instance) > 0
-          for: 24h
-          labels:
-            severity: info
+        # - alert: NextcloudOutdatedVersion
+        #   annotations:
+        #     summary: Nextcloud in {{ $labels.namespace }} is outdated
+        #   expr: |-
+        #     sum(nextcloud_system_update_available{namespace="nextcloud",job=~"^nextcloud.*"}) without(endpoint,container,pod,instance) > 0
+        #   for: 24h
+        #   labels:
+        #     severity: info
+        # - alert: NextcloudOutdatedApps
+        #   annotations:
+        #     summary: Nextcloud in {{ $labels.namespace }} has {{ $value }} outdated Apps
+        #   expr: |-
+        #     sum(nextcloud_apps_updates_available_total{namespace="nextcloud",job=~"^nextcloud.*"}) without(endpoint,container,pod,instance) > 0
+        #   for: 24h
+        #   labels:
+        #     severity: info
