@@ -1,1 +1,3 @@
 encryptionsalt: v1:MWhf//R8VCc=:v1:+bSd8k+qK8OQEWaL:XJ5o+SBfiYWQ17ghp55Mgf3YfRCVfg==
+config:
+  aws:region: us-east-1
