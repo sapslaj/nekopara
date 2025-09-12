@@ -60,7 +60,7 @@ jobs:
           EOF
       - uses: pulumi/actions@v6
         with:
-          command: preview
+          command: up
           stack-name: prod
           cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
           work-dir: ./stacks/cluster
@@ -99,7 +99,7 @@ jobs:
           EOF
       - uses: pulumi/actions@v6
         with:
-          command: preview
+          command: up
           stack-name: prod
           cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
           work-dir: ./stacks/external-secrets-operator
@@ -132,7 +132,7 @@ jobs:
           EOF
       - uses: pulumi/actions@v6
         with:
-          command: preview
+          command: up
           stack-name: prod
           cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
           work-dir: ./stacks/crds
@@ -165,7 +165,7 @@ jobs:
           EOF
       - uses: pulumi/actions@v6
         with:
-          command: preview
+          command: up
           stack-name: prod
           cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
           work-dir: ./stacks/nodegroups
@@ -200,7 +200,7 @@ jobs:
           EOF
       - uses: pulumi/actions@v6
         with:
-          command: preview
+          command: up
           stack-name: prod
           cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
           work-dir: ./stacks/core
@@ -236,7 +236,7 @@ jobs:
           EOF
       - uses: pulumi/actions@v6
         with:
-          command: preview
+          command: up
           stack-name: prod
           cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
           work-dir: ./stacks/adguardhome-sync
@@ -272,7 +272,7 @@ jobs:
           EOF
       - uses: pulumi/actions@v6
         with:
-          command: preview
+          command: up
           stack-name: prod
           cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
           work-dir: ./stacks/cloudnative-pg
@@ -308,7 +308,7 @@ jobs:
           EOF
       - uses: pulumi/actions@v6
         with:
-          command: preview
+          command: up
           stack-name: prod
           cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
           work-dir: ./stacks/nfs-provisioner
@@ -344,7 +344,7 @@ jobs:
           EOF
       - uses: pulumi/actions@v6
         with:
-          command: preview
+          command: up
           stack-name: prod
           cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
           work-dir: ./stacks/opensearch-operator
@@ -380,7 +380,7 @@ jobs:
           EOF
       - uses: pulumi/actions@v6
         with:
-          command: preview
+          command: up
           stack-name: prod
           cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
           work-dir: ./stacks/reloader
@@ -416,7 +416,7 @@ jobs:
           EOF
       - uses: pulumi/actions@v6
         with:
-          command: preview
+          command: up
           stack-name: prod
           cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
           work-dir: ./stacks/shortrack
@@ -453,7 +453,7 @@ jobs:
           EOF
       - uses: pulumi/actions@v6
         with:
-          command: preview
+          command: up
           stack-name: prod
           cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
           work-dir: ./stacks/traefik
@@ -490,7 +490,7 @@ jobs:
           EOF
       - uses: pulumi/actions@v6
         with:
-          command: preview
+          command: up
           stack-name: prod
           cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
           work-dir: ./stacks/victoria-metrics
@@ -527,7 +527,7 @@ jobs:
           EOF
       - uses: pulumi/actions@v6
         with:
-          command: preview
+          command: up
           stack-name: prod
           cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
           work-dir: ./stacks/librenms
@@ -565,7 +565,7 @@ jobs:
           EOF
       - uses: pulumi/actions@v6
         with:
-          command: preview
+          command: up
           stack-name: prod
           cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
           work-dir: ./stacks/netbox
@@ -605,7 +605,7 @@ jobs:
           EOF
       - uses: pulumi/actions@v6
         with:
-          command: preview
+          command: up
           stack-name: prod
           cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
           work-dir: ./stacks/authentik
@@ -642,7 +642,7 @@ jobs:
           EOF
       - uses: pulumi/actions@v6
         with:
-          command: preview
+          command: up
           stack-name: prod
           cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
           work-dir: ./stacks/traefik-failover
@@ -679,7 +679,7 @@ jobs:
           EOF
       - uses: pulumi/actions@v6
         with:
-          command: preview
+          command: up
           stack-name: prod
           cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
           work-dir: ./stacks/aws-credentials-secret-injector
@@ -716,7 +716,7 @@ jobs:
           EOF
       - uses: pulumi/actions@v6
         with:
-          command: preview
+          command: up
           stack-name: prod
           cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
           work-dir: ./stacks/external-services
@@ -755,7 +755,7 @@ jobs:
           EOF
       - uses: pulumi/actions@v6
         with:
-          command: preview
+          command: up
           stack-name: prod
           cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
           work-dir: ./stacks/gitea
@@ -794,7 +794,7 @@ jobs:
           EOF
       - uses: pulumi/actions@v6
         with:
-          command: preview
+          command: up
           stack-name: prod
           cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
           work-dir: ./stacks/grafana
@@ -833,7 +833,7 @@ jobs:
           EOF
       - uses: pulumi/actions@v6
         with:
-          command: preview
+          command: up
           stack-name: prod
           cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
           work-dir: ./stacks/immich
@@ -873,7 +873,7 @@ jobs:
           EOF
       - uses: pulumi/actions@v6
         with:
-          command: preview
+          command: up
           stack-name: prod
           cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
           work-dir: ./stacks/infisical
@@ -912,7 +912,7 @@ jobs:
           EOF
       - uses: pulumi/actions@v6
         with:
-          command: preview
+          command: up
           stack-name: prod
           cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
           work-dir: ./stacks/jaeger
@@ -951,7 +951,7 @@ jobs:
           EOF
       - uses: pulumi/actions@v6
         with:
-          command: preview
+          command: up
           stack-name: prod
           cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
           work-dir: ./stacks/nextcloud
@@ -989,7 +989,7 @@ jobs:
           EOF
       - uses: pulumi/actions@v6
         with:
-          command: preview
+          command: up
           stack-name: prod
           cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
           work-dir: ./stacks/oxidized
@@ -1029,7 +1029,7 @@ jobs:
           EOF
       - uses: pulumi/actions@v6
         with:
-          command: preview
+          command: up
           stack-name: prod
           cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
           work-dir: ./stacks/infisical-secrets-operator

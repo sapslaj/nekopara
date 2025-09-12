@@ -2,6 +2,7 @@
 import argparse
 import json
 import os
+import subprocess
 import textwrap
 
 
@@ -79,6 +80,14 @@ def main():
         if not s.endswith("\n"):
             s += "\n"
         f.write(s)
+
+    subprocess.run(
+        args=[
+            "npx",
+            "tsx",
+            "./cli/generate-ci-jobs.ts",
+        ],
+    )
 
 
 if __name__ == "__main__":

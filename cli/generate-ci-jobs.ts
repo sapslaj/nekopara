@@ -57,7 +57,7 @@ EOF
         {
           uses: "pulumi/actions@v6",
           with: {
-            "command": "preview",
+            "command": "up",
             "stack-name": "prod",
             "cloud-url": "s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state",
             "work-dir": `./stacks/${stack}`,
