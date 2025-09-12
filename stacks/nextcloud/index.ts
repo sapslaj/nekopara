@@ -202,14 +202,14 @@ const chart = new kubernetes.helm.v3.Chart("nextcloud", {
   fetchOpts: {
     repo: "https://nextcloud.github.io/helm/",
   },
-  version: "7.0.2",
+  version: "7.0.4",
   namespace: namespace.metadata.name,
   skipCRDRendering: true,
   values: {
     image: {
       repository: "proxy.oci.sapslaj.xyz/docker-hub/nextcloud",
       flavor: "fpm",
-      // flavor: "apache",
+      tag: "31.0.8-fpm"
     },
     replicaCount: 2,
     ingress: {
