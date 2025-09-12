@@ -36,8 +36,32 @@ import { buildStackFromStackConfigs, getStackConfigs } from "./lib/stacks";
           },
         },
         {
-          id: `deploy-${stack}`,
-          run: `echo fake-deploying stack ${stack}...`,
+          run: "npm ci --ignore-scripts",
+        },
+        {
+          name: "Create pulumi-state AWS profile",
+          shell: "bash",
+          run: `mkdir -p ~/.aws
+cat >> ~/.aws/credentials << EOF
+[pulumi-state]
+aws_access_key_id=\${{ secrets.AWS_ACCESS_KEY_ID }}
+aws_secret_access_key=\${{ secrets.AWS_SECRET_ACCESS_KEY }}
+EOF
+cat >> ~/.aws/config << EOF
+[profile pulumi-state]
+region=us-east-1
+output=json
+EOF
+`,
+        },
+        {
+          uses: "pulumi/actions@v6",
+          with: {
+            "command": "preview",
+            "stack-name": "prod",
+            "cloud-url": "s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state",
+            "work-dir": `./stacks/${stack}`,
+          },
         },
       ],
     };

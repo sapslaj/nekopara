@@ -5,15 +5,32 @@ on:
     branches:
       - main
 env:
+  AUTHENTIK_TOKEN: ${{ secrets.AUTHENTIK_TOKEN }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_DEFAULT_REGION: us-east-1
+  AWS_REGION: us-east-1
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+  CLOUDFLARE_API_KEY: ${{ secrets.CLOUDFLARE_API_KEY }}
+  CLOUDFLARE_EMAIL: ${{ secrets.CLOUDFLARE_EMAIL }}
+  GH_ACTIONS_READ_TOKEN: ${{ secrets.GH_ACTIONS_READ_TOKEN }}
+  INFISICAL_API_URL: https://infisical.sapslaj.cloud/api
+  INFISICAL_CLIENT_ID: ${{ secrets.INFISICAL_CLIENT_ID }}
+  INFISICAL_CLIENT_SECRET: ${{ secrets.INFISICAL_CLIENT_SECRET }}
+  INFISICAL_HOST: https://infisical.sapslaj.cloud
+  INFISICAL_UNIVERSAL_AUTH_CLIENT_ID: ${{ secrets.INFISICAL_CLIENT_ID }}
+  INFISICAL_UNIVERSAL_AUTH_CLIENT_SECRET: ${{ secrets.INFISICAL_CLIENT_SECRET }}
   NODE_AUTH_TOKEN: ${{ secrets.GH_ACTIONS_READ_TOKEN }}
-  PULUMI_CONFIG_PASSPHRASE: ""
   PROXMOX_VE_ENDPOINT: ${{ secrets.PROXMOX_VE_ENDPOINT }}
-  PROXMOX_VE_USERNAME: ${{ secrets.PROXMOX_VE_USERNAME }}
-  PROXMOX_VE_PASSWORD: ${{ secrets.PROXMOX_VE_PASSWORD }}
   PROXMOX_VE_INSECURE: "true"
+  PROXMOX_VE_PASSWORD: ${{ secrets.PROXMOX_VE_PASSWORD }}
+  PROXMOX_VE_USERNAME: ${{ secrets.PROXMOX_VE_USERNAME }}
+  PULUMI_CONFIG_PASSPHRASE: ""
+  TAILSCALE_API_KEY: ${{ secrets.TAILSCALE_API_KEY }}
+  VULTR_API_KEY: ${{ secrets.VULTR_API_KEY }}
   VYOS_HOST: ${{ secrets.VYOS_HOST }}
-  VYOS_USERNAME: ${{ secrets.VYOS_USERNAME }}
   VYOS_PASSWORD: ${{ secrets.VYOS_PASSWORD }}
+  VYOS_USERNAME: ${{ secrets.VYOS_USERNAME }}
 jobs:
   deploy-cluster:
     runs-on: ubuntu-latest
@@ -26,8 +43,27 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
           registry-url: https://npm.pkg.github.com
-      - id: deploy-cluster
-        run: echo fake-deploying stack cluster...
+      - run: npm ci --ignore-scripts
+      - name: Create pulumi-state AWS profile
+        shell: bash
+        run: |
+          mkdir -p ~/.aws
+          cat >> ~/.aws/credentials << EOF
+          [pulumi-state]
+          aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          EOF
+          cat >> ~/.aws/config << EOF
+          [profile pulumi-state]
+          region=us-east-1
+          output=json
+          EOF
+      - uses: pulumi/actions@v6
+        with:
+          command: preview
+          stack-name: prod
+          cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
+          work-dir: ./stacks/cluster
   deploy-external-secrets-operator:
     runs-on: ubuntu-latest
     needs:
@@ -46,8 +82,27 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
           registry-url: https://npm.pkg.github.com
-      - id: deploy-external-secrets-operator
-        run: echo fake-deploying stack external-secrets-operator...
+      - run: npm ci --ignore-scripts
+      - name: Create pulumi-state AWS profile
+        shell: bash
+        run: |
+          mkdir -p ~/.aws
+          cat >> ~/.aws/credentials << EOF
+          [pulumi-state]
+          aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          EOF
+          cat >> ~/.aws/config << EOF
+          [profile pulumi-state]
+          region=us-east-1
+          output=json
+          EOF
+      - uses: pulumi/actions@v6
+        with:
+          command: preview
+          stack-name: prod
+          cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
+          work-dir: ./stacks/external-secrets-operator
   deploy-crds:
     runs-on: ubuntu-latest
     needs:
@@ -60,8 +115,27 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
           registry-url: https://npm.pkg.github.com
-      - id: deploy-crds
-        run: echo fake-deploying stack crds...
+      - run: npm ci --ignore-scripts
+      - name: Create pulumi-state AWS profile
+        shell: bash
+        run: |
+          mkdir -p ~/.aws
+          cat >> ~/.aws/credentials << EOF
+          [pulumi-state]
+          aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          EOF
+          cat >> ~/.aws/config << EOF
+          [profile pulumi-state]
+          region=us-east-1
+          output=json
+          EOF
+      - uses: pulumi/actions@v6
+        with:
+          command: preview
+          stack-name: prod
+          cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
+          work-dir: ./stacks/crds
   deploy-nodegroups:
     runs-on: ubuntu-latest
     needs:
@@ -74,8 +148,27 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
           registry-url: https://npm.pkg.github.com
-      - id: deploy-nodegroups
-        run: echo fake-deploying stack nodegroups...
+      - run: npm ci --ignore-scripts
+      - name: Create pulumi-state AWS profile
+        shell: bash
+        run: |
+          mkdir -p ~/.aws
+          cat >> ~/.aws/credentials << EOF
+          [pulumi-state]
+          aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          EOF
+          cat >> ~/.aws/config << EOF
+          [profile pulumi-state]
+          region=us-east-1
+          output=json
+          EOF
+      - uses: pulumi/actions@v6
+        with:
+          command: preview
+          stack-name: prod
+          cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
+          work-dir: ./stacks/nodegroups
   deploy-core:
     runs-on: ubuntu-latest
     needs:
@@ -90,8 +183,27 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
           registry-url: https://npm.pkg.github.com
-      - id: deploy-core
-        run: echo fake-deploying stack core...
+      - run: npm ci --ignore-scripts
+      - name: Create pulumi-state AWS profile
+        shell: bash
+        run: |
+          mkdir -p ~/.aws
+          cat >> ~/.aws/credentials << EOF
+          [pulumi-state]
+          aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          EOF
+          cat >> ~/.aws/config << EOF
+          [profile pulumi-state]
+          region=us-east-1
+          output=json
+          EOF
+      - uses: pulumi/actions@v6
+        with:
+          command: preview
+          stack-name: prod
+          cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
+          work-dir: ./stacks/core
   deploy-adguardhome-sync:
     runs-on: ubuntu-latest
     needs:
@@ -107,8 +219,27 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
           registry-url: https://npm.pkg.github.com
-      - id: deploy-adguardhome-sync
-        run: echo fake-deploying stack adguardhome-sync...
+      - run: npm ci --ignore-scripts
+      - name: Create pulumi-state AWS profile
+        shell: bash
+        run: |
+          mkdir -p ~/.aws
+          cat >> ~/.aws/credentials << EOF
+          [pulumi-state]
+          aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          EOF
+          cat >> ~/.aws/config << EOF
+          [profile pulumi-state]
+          region=us-east-1
+          output=json
+          EOF
+      - uses: pulumi/actions@v6
+        with:
+          command: preview
+          stack-name: prod
+          cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
+          work-dir: ./stacks/adguardhome-sync
   deploy-cloudnative-pg:
     runs-on: ubuntu-latest
     needs:
@@ -124,8 +255,27 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
           registry-url: https://npm.pkg.github.com
-      - id: deploy-cloudnative-pg
-        run: echo fake-deploying stack cloudnative-pg...
+      - run: npm ci --ignore-scripts
+      - name: Create pulumi-state AWS profile
+        shell: bash
+        run: |
+          mkdir -p ~/.aws
+          cat >> ~/.aws/credentials << EOF
+          [pulumi-state]
+          aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          EOF
+          cat >> ~/.aws/config << EOF
+          [profile pulumi-state]
+          region=us-east-1
+          output=json
+          EOF
+      - uses: pulumi/actions@v6
+        with:
+          command: preview
+          stack-name: prod
+          cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
+          work-dir: ./stacks/cloudnative-pg
   deploy-nfs-provisioner:
     runs-on: ubuntu-latest
     needs:
@@ -141,8 +291,27 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
           registry-url: https://npm.pkg.github.com
-      - id: deploy-nfs-provisioner
-        run: echo fake-deploying stack nfs-provisioner...
+      - run: npm ci --ignore-scripts
+      - name: Create pulumi-state AWS profile
+        shell: bash
+        run: |
+          mkdir -p ~/.aws
+          cat >> ~/.aws/credentials << EOF
+          [pulumi-state]
+          aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          EOF
+          cat >> ~/.aws/config << EOF
+          [profile pulumi-state]
+          region=us-east-1
+          output=json
+          EOF
+      - uses: pulumi/actions@v6
+        with:
+          command: preview
+          stack-name: prod
+          cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
+          work-dir: ./stacks/nfs-provisioner
   deploy-opensearch-operator:
     runs-on: ubuntu-latest
     needs:
@@ -158,8 +327,27 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
           registry-url: https://npm.pkg.github.com
-      - id: deploy-opensearch-operator
-        run: echo fake-deploying stack opensearch-operator...
+      - run: npm ci --ignore-scripts
+      - name: Create pulumi-state AWS profile
+        shell: bash
+        run: |
+          mkdir -p ~/.aws
+          cat >> ~/.aws/credentials << EOF
+          [pulumi-state]
+          aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          EOF
+          cat >> ~/.aws/config << EOF
+          [profile pulumi-state]
+          region=us-east-1
+          output=json
+          EOF
+      - uses: pulumi/actions@v6
+        with:
+          command: preview
+          stack-name: prod
+          cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
+          work-dir: ./stacks/opensearch-operator
   deploy-reloader:
     runs-on: ubuntu-latest
     needs:
@@ -175,8 +363,27 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
           registry-url: https://npm.pkg.github.com
-      - id: deploy-reloader
-        run: echo fake-deploying stack reloader...
+      - run: npm ci --ignore-scripts
+      - name: Create pulumi-state AWS profile
+        shell: bash
+        run: |
+          mkdir -p ~/.aws
+          cat >> ~/.aws/credentials << EOF
+          [pulumi-state]
+          aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          EOF
+          cat >> ~/.aws/config << EOF
+          [profile pulumi-state]
+          region=us-east-1
+          output=json
+          EOF
+      - uses: pulumi/actions@v6
+        with:
+          command: preview
+          stack-name: prod
+          cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
+          work-dir: ./stacks/reloader
   deploy-shortrack:
     runs-on: ubuntu-latest
     needs:
@@ -192,8 +399,27 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
           registry-url: https://npm.pkg.github.com
-      - id: deploy-shortrack
-        run: echo fake-deploying stack shortrack...
+      - run: npm ci --ignore-scripts
+      - name: Create pulumi-state AWS profile
+        shell: bash
+        run: |
+          mkdir -p ~/.aws
+          cat >> ~/.aws/credentials << EOF
+          [pulumi-state]
+          aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          EOF
+          cat >> ~/.aws/config << EOF
+          [profile pulumi-state]
+          region=us-east-1
+          output=json
+          EOF
+      - uses: pulumi/actions@v6
+        with:
+          command: preview
+          stack-name: prod
+          cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
+          work-dir: ./stacks/shortrack
   deploy-traefik:
     runs-on: ubuntu-latest
     needs:
@@ -210,8 +436,27 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
           registry-url: https://npm.pkg.github.com
-      - id: deploy-traefik
-        run: echo fake-deploying stack traefik...
+      - run: npm ci --ignore-scripts
+      - name: Create pulumi-state AWS profile
+        shell: bash
+        run: |
+          mkdir -p ~/.aws
+          cat >> ~/.aws/credentials << EOF
+          [pulumi-state]
+          aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          EOF
+          cat >> ~/.aws/config << EOF
+          [profile pulumi-state]
+          region=us-east-1
+          output=json
+          EOF
+      - uses: pulumi/actions@v6
+        with:
+          command: preview
+          stack-name: prod
+          cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
+          work-dir: ./stacks/traefik
   deploy-victoria-metrics:
     runs-on: ubuntu-latest
     needs:
@@ -228,8 +473,27 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
           registry-url: https://npm.pkg.github.com
-      - id: deploy-victoria-metrics
-        run: echo fake-deploying stack victoria-metrics...
+      - run: npm ci --ignore-scripts
+      - name: Create pulumi-state AWS profile
+        shell: bash
+        run: |
+          mkdir -p ~/.aws
+          cat >> ~/.aws/credentials << EOF
+          [pulumi-state]
+          aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          EOF
+          cat >> ~/.aws/config << EOF
+          [profile pulumi-state]
+          region=us-east-1
+          output=json
+          EOF
+      - uses: pulumi/actions@v6
+        with:
+          command: preview
+          stack-name: prod
+          cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
+          work-dir: ./stacks/victoria-metrics
   deploy-librenms:
     runs-on: ubuntu-latest
     needs:
@@ -246,8 +510,27 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
           registry-url: https://npm.pkg.github.com
-      - id: deploy-librenms
-        run: echo fake-deploying stack librenms...
+      - run: npm ci --ignore-scripts
+      - name: Create pulumi-state AWS profile
+        shell: bash
+        run: |
+          mkdir -p ~/.aws
+          cat >> ~/.aws/credentials << EOF
+          [pulumi-state]
+          aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          EOF
+          cat >> ~/.aws/config << EOF
+          [profile pulumi-state]
+          region=us-east-1
+          output=json
+          EOF
+      - uses: pulumi/actions@v6
+        with:
+          command: preview
+          stack-name: prod
+          cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
+          work-dir: ./stacks/librenms
   deploy-netbox:
     runs-on: ubuntu-latest
     needs:
@@ -265,8 +548,27 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
           registry-url: https://npm.pkg.github.com
-      - id: deploy-netbox
-        run: echo fake-deploying stack netbox...
+      - run: npm ci --ignore-scripts
+      - name: Create pulumi-state AWS profile
+        shell: bash
+        run: |
+          mkdir -p ~/.aws
+          cat >> ~/.aws/credentials << EOF
+          [pulumi-state]
+          aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          EOF
+          cat >> ~/.aws/config << EOF
+          [profile pulumi-state]
+          region=us-east-1
+          output=json
+          EOF
+      - uses: pulumi/actions@v6
+        with:
+          command: preview
+          stack-name: prod
+          cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
+          work-dir: ./stacks/netbox
   deploy-authentik:
     runs-on: ubuntu-latest
     needs:
@@ -286,8 +588,64 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
           registry-url: https://npm.pkg.github.com
-      - id: deploy-authentik
-        run: echo fake-deploying stack authentik...
+      - run: npm ci --ignore-scripts
+      - name: Create pulumi-state AWS profile
+        shell: bash
+        run: |
+          mkdir -p ~/.aws
+          cat >> ~/.aws/credentials << EOF
+          [pulumi-state]
+          aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          EOF
+          cat >> ~/.aws/config << EOF
+          [profile pulumi-state]
+          region=us-east-1
+          output=json
+          EOF
+      - uses: pulumi/actions@v6
+        with:
+          command: preview
+          stack-name: prod
+          cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
+          work-dir: ./stacks/authentik
+  deploy-traefik-failover:
+    runs-on: ubuntu-latest
+    needs:
+      - deploy-cluster
+      - deploy-core
+      - deploy-crds
+      - deploy-nodegroups
+      - deploy-traefik
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+          cache-dependency-path: package-lock.json
+          registry-url: https://npm.pkg.github.com
+      - run: npm ci --ignore-scripts
+      - name: Create pulumi-state AWS profile
+        shell: bash
+        run: |
+          mkdir -p ~/.aws
+          cat >> ~/.aws/credentials << EOF
+          [pulumi-state]
+          aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          EOF
+          cat >> ~/.aws/config << EOF
+          [profile pulumi-state]
+          region=us-east-1
+          output=json
+          EOF
+      - uses: pulumi/actions@v6
+        with:
+          command: preview
+          stack-name: prod
+          cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
+          work-dir: ./stacks/traefik-failover
   deploy-aws-credentials-secret-injector:
     runs-on: ubuntu-latest
     needs:
@@ -304,8 +662,27 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
           registry-url: https://npm.pkg.github.com
-      - id: deploy-aws-credentials-secret-injector
-        run: echo fake-deploying stack aws-credentials-secret-injector...
+      - run: npm ci --ignore-scripts
+      - name: Create pulumi-state AWS profile
+        shell: bash
+        run: |
+          mkdir -p ~/.aws
+          cat >> ~/.aws/credentials << EOF
+          [pulumi-state]
+          aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          EOF
+          cat >> ~/.aws/config << EOF
+          [profile pulumi-state]
+          region=us-east-1
+          output=json
+          EOF
+      - uses: pulumi/actions@v6
+        with:
+          command: preview
+          stack-name: prod
+          cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
+          work-dir: ./stacks/aws-credentials-secret-injector
   deploy-external-services:
     runs-on: ubuntu-latest
     needs:
@@ -322,8 +699,27 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
           registry-url: https://npm.pkg.github.com
-      - id: deploy-external-services
-        run: echo fake-deploying stack external-services...
+      - run: npm ci --ignore-scripts
+      - name: Create pulumi-state AWS profile
+        shell: bash
+        run: |
+          mkdir -p ~/.aws
+          cat >> ~/.aws/credentials << EOF
+          [pulumi-state]
+          aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          EOF
+          cat >> ~/.aws/config << EOF
+          [profile pulumi-state]
+          region=us-east-1
+          output=json
+          EOF
+      - uses: pulumi/actions@v6
+        with:
+          command: preview
+          stack-name: prod
+          cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
+          work-dir: ./stacks/external-services
   deploy-gitea:
     runs-on: ubuntu-latest
     needs:
@@ -342,8 +738,27 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
           registry-url: https://npm.pkg.github.com
-      - id: deploy-gitea
-        run: echo fake-deploying stack gitea...
+      - run: npm ci --ignore-scripts
+      - name: Create pulumi-state AWS profile
+        shell: bash
+        run: |
+          mkdir -p ~/.aws
+          cat >> ~/.aws/credentials << EOF
+          [pulumi-state]
+          aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          EOF
+          cat >> ~/.aws/config << EOF
+          [profile pulumi-state]
+          region=us-east-1
+          output=json
+          EOF
+      - uses: pulumi/actions@v6
+        with:
+          command: preview
+          stack-name: prod
+          cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
+          work-dir: ./stacks/gitea
   deploy-grafana:
     runs-on: ubuntu-latest
     needs:
@@ -362,8 +777,27 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
           registry-url: https://npm.pkg.github.com
-      - id: deploy-grafana
-        run: echo fake-deploying stack grafana...
+      - run: npm ci --ignore-scripts
+      - name: Create pulumi-state AWS profile
+        shell: bash
+        run: |
+          mkdir -p ~/.aws
+          cat >> ~/.aws/credentials << EOF
+          [pulumi-state]
+          aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          EOF
+          cat >> ~/.aws/config << EOF
+          [profile pulumi-state]
+          region=us-east-1
+          output=json
+          EOF
+      - uses: pulumi/actions@v6
+        with:
+          command: preview
+          stack-name: prod
+          cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
+          work-dir: ./stacks/grafana
   deploy-immich:
     runs-on: ubuntu-latest
     needs:
@@ -382,8 +816,27 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
           registry-url: https://npm.pkg.github.com
-      - id: deploy-immich
-        run: echo fake-deploying stack immich...
+      - run: npm ci --ignore-scripts
+      - name: Create pulumi-state AWS profile
+        shell: bash
+        run: |
+          mkdir -p ~/.aws
+          cat >> ~/.aws/credentials << EOF
+          [pulumi-state]
+          aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          EOF
+          cat >> ~/.aws/config << EOF
+          [profile pulumi-state]
+          region=us-east-1
+          output=json
+          EOF
+      - uses: pulumi/actions@v6
+        with:
+          command: preview
+          stack-name: prod
+          cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
+          work-dir: ./stacks/immich
   deploy-infisical:
     runs-on: ubuntu-latest
     needs:
@@ -403,8 +856,27 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
           registry-url: https://npm.pkg.github.com
-      - id: deploy-infisical
-        run: echo fake-deploying stack infisical...
+      - run: npm ci --ignore-scripts
+      - name: Create pulumi-state AWS profile
+        shell: bash
+        run: |
+          mkdir -p ~/.aws
+          cat >> ~/.aws/credentials << EOF
+          [pulumi-state]
+          aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          EOF
+          cat >> ~/.aws/config << EOF
+          [profile pulumi-state]
+          region=us-east-1
+          output=json
+          EOF
+      - uses: pulumi/actions@v6
+        with:
+          command: preview
+          stack-name: prod
+          cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
+          work-dir: ./stacks/infisical
   deploy-jaeger:
     runs-on: ubuntu-latest
     needs:
@@ -423,8 +895,27 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
           registry-url: https://npm.pkg.github.com
-      - id: deploy-jaeger
-        run: echo fake-deploying stack jaeger...
+      - run: npm ci --ignore-scripts
+      - name: Create pulumi-state AWS profile
+        shell: bash
+        run: |
+          mkdir -p ~/.aws
+          cat >> ~/.aws/credentials << EOF
+          [pulumi-state]
+          aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          EOF
+          cat >> ~/.aws/config << EOF
+          [profile pulumi-state]
+          region=us-east-1
+          output=json
+          EOF
+      - uses: pulumi/actions@v6
+        with:
+          command: preview
+          stack-name: prod
+          cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
+          work-dir: ./stacks/jaeger
   deploy-nextcloud:
     runs-on: ubuntu-latest
     needs:
@@ -443,8 +934,27 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
           registry-url: https://npm.pkg.github.com
-      - id: deploy-nextcloud
-        run: echo fake-deploying stack nextcloud...
+      - run: npm ci --ignore-scripts
+      - name: Create pulumi-state AWS profile
+        shell: bash
+        run: |
+          mkdir -p ~/.aws
+          cat >> ~/.aws/credentials << EOF
+          [pulumi-state]
+          aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          EOF
+          cat >> ~/.aws/config << EOF
+          [profile pulumi-state]
+          region=us-east-1
+          output=json
+          EOF
+      - uses: pulumi/actions@v6
+        with:
+          command: preview
+          stack-name: prod
+          cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
+          work-dir: ./stacks/nextcloud
   deploy-oxidized:
     runs-on: ubuntu-latest
     needs:
@@ -462,8 +972,27 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
           registry-url: https://npm.pkg.github.com
-      - id: deploy-oxidized
-        run: echo fake-deploying stack oxidized...
+      - run: npm ci --ignore-scripts
+      - name: Create pulumi-state AWS profile
+        shell: bash
+        run: |
+          mkdir -p ~/.aws
+          cat >> ~/.aws/credentials << EOF
+          [pulumi-state]
+          aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          EOF
+          cat >> ~/.aws/config << EOF
+          [profile pulumi-state]
+          region=us-east-1
+          output=json
+          EOF
+      - uses: pulumi/actions@v6
+        with:
+          command: preview
+          stack-name: prod
+          cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
+          work-dir: ./stacks/oxidized
   deploy-infisical-secrets-operator:
     runs-on: ubuntu-latest
     needs:
@@ -483,5 +1012,24 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
           registry-url: https://npm.pkg.github.com
-      - id: deploy-infisical-secrets-operator
-        run: echo fake-deploying stack infisical-secrets-operator...
+      - run: npm ci --ignore-scripts
+      - name: Create pulumi-state AWS profile
+        shell: bash
+        run: |
+          mkdir -p ~/.aws
+          cat >> ~/.aws/credentials << EOF
+          [pulumi-state]
+          aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          EOF
+          cat >> ~/.aws/config << EOF
+          [profile pulumi-state]
+          region=us-east-1
+          output=json
+          EOF
+      - uses: pulumi/actions@v6
+        with:
+          command: preview
+          stack-name: prod
+          cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
+          work-dir: ./stacks/infisical-secrets-operator
