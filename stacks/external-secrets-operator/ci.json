@@ -1,12 +1,9 @@
 {
   "skip": true,
   "dependencies": [
-    "authentik",
-    "cloudnative-pg",
     "cluster",
     "core",
     "crds",
-    "nodegroups",
-    "shortrack"
+    "nodegroups"
   ]
 }

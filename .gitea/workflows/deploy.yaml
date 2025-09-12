@@ -5,7 +5,9 @@ on:
     branches:
       - main
 env:
+  AUTHENTIK_INSECURE: "false"
   AUTHENTIK_TOKEN: ${{ secrets.AUTHENTIK_TOKEN }}
+  AUTHENTIK_URL: https://login.sapslaj.cloud
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_DEFAULT_REGION: us-east-1
   AWS_REGION: us-east-1
@@ -67,13 +69,10 @@ jobs:
   deploy-external-secrets-operator:
     runs-on: ubuntu-latest
     needs:
-      - deploy-authentik
-      - deploy-cloudnative-pg
       - deploy-cluster
       - deploy-core
       - deploy-crds
       - deploy-nodegroups
-      - deploy-shortrack
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -240,6 +239,42 @@ jobs:
           stack-name: prod
           cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
           work-dir: ./stacks/adguardhome-sync
+  deploy-aws-credentials-secret-injector:
+    runs-on: ubuntu-latest
+    needs:
+      - deploy-cluster
+      - deploy-core
+      - deploy-crds
+      - deploy-nodegroups
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+          cache-dependency-path: package-lock.json
+          registry-url: https://npm.pkg.github.com
+      - run: npm ci --ignore-scripts
+      - name: Create pulumi-state AWS profile
+        shell: bash
+        run: |
+          mkdir -p ~/.aws
+          cat >> ~/.aws/credentials << EOF
+          [pulumi-state]
+          aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          EOF
+          cat >> ~/.aws/config << EOF
+          [profile pulumi-state]
+          region=us-east-1
+          output=json
+          EOF
+      - uses: pulumi/actions@v6
+        with:
+          command: up
+          stack-name: prod
+          cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
+          work-dir: ./stacks/aws-credentials-secret-injector
   deploy-cloudnative-pg:
     runs-on: ubuntu-latest
     needs:
@@ -646,43 +681,6 @@ jobs:
           stack-name: prod
           cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
           work-dir: ./stacks/traefik-failover
-  deploy-aws-credentials-secret-injector:
-    runs-on: ubuntu-latest
-    needs:
-      - deploy-authentik
-      - deploy-cluster
-      - deploy-core
-      - deploy-crds
-      - deploy-nodegroups
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22.x
-          cache: npm
-          cache-dependency-path: package-lock.json
-          registry-url: https://npm.pkg.github.com
-      - run: npm ci --ignore-scripts
-      - name: Create pulumi-state AWS profile
-        shell: bash
-        run: |
-          mkdir -p ~/.aws
-          cat >> ~/.aws/credentials << EOF
-          [pulumi-state]
-          aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          EOF
-          cat >> ~/.aws/config << EOF
-          [profile pulumi-state]
-          region=us-east-1
-          output=json
-          EOF
-      - uses: pulumi/actions@v6
-        with:
-          command: up
-          stack-name: prod
-          cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
-          work-dir: ./stacks/aws-credentials-secret-injector
   deploy-external-services:
     runs-on: ubuntu-latest
     needs:
@@ -728,6 +726,7 @@ jobs:
       - deploy-cluster
       - deploy-core
       - deploy-crds
+      - deploy-nfs-provisioner
       - deploy-nodegroups
       - deploy-shortrack
     steps:
@@ -806,6 +805,7 @@ jobs:
       - deploy-cluster
       - deploy-core
       - deploy-crds
+      - deploy-nfs-provisioner
       - deploy-nodegroups
       - deploy-shortrack
     steps:
@@ -924,6 +924,7 @@ jobs:
       - deploy-cluster
       - deploy-core
       - deploy-crds
+      - deploy-nfs-provisioner
       - deploy-nodegroups
       - deploy-shortrack
     steps:

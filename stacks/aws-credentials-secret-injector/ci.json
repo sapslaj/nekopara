@@ -1,6 +1,5 @@
 {
   "dependencies": [
-    "authentik",
     "cluster",
     "core",
     "crds",

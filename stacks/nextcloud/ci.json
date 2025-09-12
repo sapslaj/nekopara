@@ -5,6 +5,7 @@
     "cluster",
     "core",
     "crds",
+    "nfs-provisioner",
     "nodegroups",
     "shortrack"
   ]
