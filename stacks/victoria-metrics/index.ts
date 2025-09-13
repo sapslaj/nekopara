@@ -1116,6 +1116,11 @@ new kubernetes.helm.v3.Chart("blackbox-exporter", {
           module: "http_2xx",
         },
         {
+          name: "planka",
+          url: "https://planka.sapslaj.cloud",
+          module: "http_2xx",
+        },
+        {
           name: "oci-proxy",
           url: "https://proxy.oci.sapslaj.xyz/metrics",
           module: "http_2xx",
