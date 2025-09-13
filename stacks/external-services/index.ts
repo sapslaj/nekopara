@@ -206,7 +206,7 @@ new ExternalService("jellyfin", {
 });
 
 new ExternalService("homeassistant", {
-  title: "homeassistant",
+  title: "Home Assistant",
   name: "homeassistant",
   namespace: namespace.metadata.name,
   hostname: "homeassistant.sapslaj.cloud",
@@ -221,7 +221,7 @@ new ExternalService("homeassistant", {
 });
 
 new ExternalService("omada", {
-  title: "omada",
+  title: "Omada",
   name: "omada",
   namespace: namespace.metadata.name,
   hostname: "omada.sapslaj.cloud",
@@ -230,6 +230,21 @@ new ExternalService("omada", {
   targetScheme: "https",
   authHeader: false,
   authentikProxy: false,
+}, {
+  providers: {
+    kubernetes: provider,
+  },
+});
+
+new ExternalService("zigbee2mqtt", {
+  title: "Zigbee2MQTT",
+  name: "zigbee2mqtt",
+  namespace: namespace.metadata.name,
+  hostname: "zigbee2mqtt.sapslaj.xyz",
+  targetHostname: "playboy.sapslaj.xyz",
+  targetPort: 8080,
+  authHeader: false,
+  authentikProxy: true,
 }, {
   providers: {
     kubernetes: provider,
