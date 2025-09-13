@@ -66,7 +66,7 @@ const sesIdentity = new aws.sesv2.EmailIdentity("victoriametrics", {
   new DNSRecord(name, {
     name,
     type: "CNAME",
-    records: ["homelab.sapslaj.com."],
+    records: ["sapslaj.xyz."],
   });
 });
 
