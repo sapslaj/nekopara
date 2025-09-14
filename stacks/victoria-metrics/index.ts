@@ -581,6 +581,13 @@ const victoriaMetrics = new kubernetes.helm.v3.Chart("victoria-metrics", {
               ],
             },
             {
+              matchers: [
+                `alertname=NodeSystemdServiceFailed`,
+                `instance=mitsuru`,
+                `name=~"rclone-sync@.+.service"`,
+              ],
+            },
+            {
               receiver: "email",
               matchers: [`alertname="AlertmanagerFailedToSendAlerts"`],
               continue: true,
