@@ -581,6 +581,7 @@ const victoriaMetrics = new kubernetes.helm.v3.Chart("victoria-metrics", {
               ],
             },
             {
+              receiver: "blackhole",
               matchers: [
                 `alertname=NodeSystemdServiceFailed`,
                 `instance=mitsuru`,
