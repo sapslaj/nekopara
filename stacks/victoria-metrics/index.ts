@@ -414,11 +414,11 @@ const victoriaMetrics = new kubernetes.helm.v3.Chart("victoria-metrics", {
           },
           resources: {
             limits: {
-              cpu: "1",
+              cpu: "2",
               memory: "4Gi",
             },
             requests: {
-              cpu: "200m",
+              cpu: "1",
               memory: "2Gi",
             },
           },
