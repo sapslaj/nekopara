@@ -1,0 +1,5 @@
+name: nekopara.cnpg-pgdump
+runtime:
+  name: nodejs
+  options:
+    packagemanager: npm
