@@ -62,6 +62,8 @@ github.com/rogpeppe/go-internal v1.13.1 h1:KvO1DLK/DRN07sQ1LQKScxyZJuNnedQ5/wKSR
 github.com/rogpeppe/go-internal v1.13.1/go.mod h1:uMEvuHeurkdAXX61udpOXGD/AzZDWNMNyH2VO9fmH0o=
 github.com/sapslaj/gstb v0.0.0-20250909131109-16b21b8e1719 h1:QGMegtsMqUcXjVAFKtF3HLMV7684QLLNdGEBHCtaj+s=
 github.com/sapslaj/gstb v0.0.0-20250909131109-16b21b8e1719/go.mod h1:Z5ugjIrlcMEwW1k8amRDHjoXBsfPIEh4DOxrx7QBSog=
+github.com/sapslaj/kooperslog v0.0.0-20250918112436-e93407f48c50 h1:zp1s+b3GGD5ZO7ykI9vDwdsj4UIvT/gXLEx7NX4qREA=
+github.com/sapslaj/kooperslog v0.0.0-20250918112436-e93407f48c50/go.mod h1:L4qs3TjcBNBEek4NyrPxyJycleqAmEQ/59vKV7bAPDE=
 github.com/spf13/pflag v1.0.6 h1:jFzHGLGAlb3ruxLB8MhbI6A8+AQX/2eW4qeyNZXNp2o=
 github.com/spf13/pflag v1.0.6/go.mod h1:McXfInJRrz4CZXVZOBLb0bTZqETkiAhM9Iw0y3An2Bg=
 github.com/spotahome/kooper/v2 v2.9.0 h1:Iwk2eAZbp0M0Z4OZYkt12c7ENhyYe8byB0mtDvVYjq4=

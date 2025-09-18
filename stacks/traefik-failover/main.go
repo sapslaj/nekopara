@@ -14,8 +14,8 @@ import (
 
 	"github.com/ganawaj/go-vyos/vyos"
 	"github.com/sapslaj/gstb/loglevel"
+	"github.com/sapslaj/kooperslog"
 	"github.com/spotahome/kooper/v2/controller"
-	kooperlog "github.com/spotahome/kooper/v2/log"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -26,38 +26,6 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/util/homedir"
 )
-
-type KooperLogger struct {
-	Logger *slog.Logger
-}
-
-func (l KooperLogger) Infof(format string, args ...any) {
-	l.Logger.Info(fmt.Sprintf(format, args...))
-}
-
-func (l KooperLogger) Warningf(format string, args ...any) {
-	l.Logger.Warn(fmt.Sprintf(format, args...))
-}
-
-func (l KooperLogger) Errorf(format string, args ...any) {
-	l.Logger.Error(fmt.Sprintf(format, args...))
-}
-
-func (l KooperLogger) Debugf(format string, args ...any) {
-	l.Logger.Debug(fmt.Sprintf(format, args...))
-}
-
-func (l KooperLogger) WithKV(kv kooperlog.KV) kooperlog.Logger {
-	args := []any{}
-	for k, v := range kv {
-		args = append(args, k, v)
-	}
-	return KooperLogger{
-		Logger: l.Logger.With(args...),
-	}
-}
-
-var _ kooperlog.Logger = KooperLogger{}
 
 var DefaultLogger = slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
 	AddSource: true,
@@ -300,7 +268,7 @@ func main() {
 
 	cfg := &controller.Config{
 		Name:           "traefik-failover/pods",
-		Logger:         KooperLogger{logger},
+		Logger:         kooperslog.New(logger),
 		ResyncInterval: time.Minute,
 		Retriever: controller.MustRetrieverFromListerWatcher(&cache.ListWatch{
 			ListWithContextFunc: func(ctx context.Context, options metav1.ListOptions) (runtime.Object, error) {

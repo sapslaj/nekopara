@@ -1,11 +1,11 @@
 module git.sapslaj.cloud/sapslaj/nekopara/stacks/aws-credentials-secret-injector
 
-go 1.24.6
+go 1.25.1
 
 require (
 	github.com/aws/aws-sdk-go-v2/config v1.31.6
-	github.com/aws/aws-sdk-go-v2/credentials v1.18.10
 	github.com/aws/aws-sdk-go-v2/service/iam v1.47.3
+	github.com/sapslaj/kooperslog v0.0.0-20250918112436-e93407f48c50
 	github.com/spotahome/kooper/v2 v2.9.0
 	k8s.io/api v0.33.0
 	k8s.io/apimachinery v0.33.0
@@ -14,6 +14,7 @@ require (
 
 require (
 	github.com/aws/aws-sdk-go-v2 v1.38.3 // indirect
+	github.com/aws/aws-sdk-go-v2/credentials v1.18.10 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.18.6 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.4.6 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.7.6 // indirect
