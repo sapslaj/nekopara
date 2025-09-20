@@ -81,7 +81,7 @@ const postgresql = new kubernetes.apiextensions.CustomResource("planka-postgresq
     },
   },
   spec: {
-    instances: 2,
+    instances: 3,
     enableSuperuserAccess: true,
     storage: {
       size: "10Gi",

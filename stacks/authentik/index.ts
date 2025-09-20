@@ -59,7 +59,7 @@ const postgresql = new kubernetes.apiextensions.CustomResource("authentik-postgr
     },
   },
   spec: {
-    instances: 2,
+    instances: 3,
     enableSuperuserAccess: true,
     storage: {
       size: "10Gi",

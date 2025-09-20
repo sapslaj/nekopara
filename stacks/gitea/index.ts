@@ -150,7 +150,7 @@ const postgresql = new kubernetes.apiextensions.CustomResource("gitea-postgresql
     },
   },
   spec: {
-    instances: 2,
+    instances: 3,
     enableSuperuserAccess: true,
     bootstrap: {
       initdb: {

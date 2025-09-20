@@ -103,7 +103,7 @@ const postgresql = new kubernetes.apiextensions.CustomResource("netbox-postgresq
     },
   },
   spec: {
-    instances: 2,
+    instances: 3,
     enableSuperuserAccess: true,
     storage: {
       size: "10Gi",
@@ -112,32 +112,6 @@ const postgresql = new kubernetes.apiextensions.CustomResource("netbox-postgresq
     monitoring: {
       enablePodMonitor: true,
     },
-    bootstrap: {
-      initdb: {
-        database: "netbox",
-        import: {
-          type: "microservice",
-          databases: [
-            "netbox",
-          ],
-          source: {
-            externalCluster: "netbox-homelab-cloud-k8s",
-          },
-        },
-      },
-    },
-    externalClusters: [
-      {
-        name: "netbox-homelab-cloud-k8s",
-        connectionParameters: {
-          host: "k8s.direct.sapslaj.cloud",
-          user: "postgres",
-          dbname: "netbox",
-          password: "dhpz3kauhi",
-          port: "30100",
-        },
-      },
-    ],
   },
 }, { provider });
 

@@ -112,7 +112,7 @@ const postgresql = new kubernetes.apiextensions.CustomResource("nextcloud-postgr
     },
   },
   spec: {
-    instances: 2,
+    instances: 3,
     enableSuperuserAccess: true,
     bootstrap: {
       initdb: {
