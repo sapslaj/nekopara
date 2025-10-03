@@ -209,7 +209,7 @@ const chart = new kubernetes.helm.v3.Chart("nextcloud", {
     image: {
       repository: "proxy.oci.sapslaj.xyz/docker-hub/nextcloud",
       flavor: "fpm",
-      tag: "31.0.8-fpm"
+      tag: "31.0.8-fpm",
     },
     replicaCount: 2,
     ingress: {
@@ -258,6 +258,23 @@ const chart = new kubernetes.helm.v3.Chart("nextcloud", {
         {
           name: "REDIS_HOST_PORT",
           value: "6379",
+        },
+      ],
+      extraSidecarContainers: [
+        {
+          name: "nextcloud-logger",
+          image: "proxy.oci.sapslaj.xyz/docker-hub/busybox",
+          command: [
+            "/bin/sh",
+            "-c",
+            `while ! test -f "/run/nextcloud/data/nextcloud.log"; do sleep 1; done; tail -n+1 -f /run/nextcloud/data/nextcloud.log`,
+          ],
+          volumeMounts: [
+            {
+              name: "nextcloud-main",
+              mountPath: "/run/nextcloud/data",
+            },
+          ],
         },
       ],
       extraVolumes: [
