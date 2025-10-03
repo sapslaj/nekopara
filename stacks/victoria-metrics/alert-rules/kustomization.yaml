@@ -13,5 +13,6 @@ resources:
   - ./litter_robot.yaml
   - ./nextcloud.yaml
   - ./node_exporter.yaml
+  - ./postgresql.yaml
   - ./vector.yaml
   - ./zonepop.yaml

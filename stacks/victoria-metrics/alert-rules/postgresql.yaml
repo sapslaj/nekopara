@@ -1,0 +1,34 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: postgresql
+spec:
+  groups:
+    - name: cnpg
+      rules:
+        - alert: PostgreSQLReplicationDegraded
+          expr: |
+            max by(job) (cnpg_pg_replication_streaming_replicas - cnpg_pg_replication_is_wal_receiver_up) < 2
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: PostgreSQL database replication in degraded state.
+            description: |
+              PostgreSQL cluster {{ $labels.job }} is running with degraded replication.
+        # - alert: PostgreSQLWALUnsynced
+        #   expr: |
+        #     max by (namespace, pod) ((1 - cnpg_pg_replication_in_recovery) * (time() - timestamp(cnpg_pg_stat_archiver_seconds_since_last_archival) + cnpg_pg_stat_archiver_seconds_since_last_archival)) > 900
+        #   for: 5m
+        #   labels:
+        #     severity: warning
+        #   annotations:
+        #     summary: PostgreSQL instance WAL is unsynced
+        #     description: |
+        #       PostgreSQL instance {{ $labels.namespace }}/{{ $labels.pod }} has unsynced WAL
+        # TODO: alert for replication lag
+        # TODO: alert for storage
+        # TODO: alert for connections
+        # TODO: alert for WAL
+        # TODO: alert if there's a down instance
+        # TODO: alert if there's a degraded replica
