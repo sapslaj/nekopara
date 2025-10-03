@@ -17,6 +17,16 @@ const coredns = new kubernetes.helm.v3.Chart("coredns", {
       tag: "v1.12.2",
     },
     replicaCount: 3,
+    resources: {
+      limits: {
+        cpu: "1",
+        memory: "128Mi",
+      },
+      requests: {
+        cpu: "1",
+        memory: "128Mi",
+      },
+    },
     prometheus: {
       service: {
         service: {
@@ -37,6 +47,34 @@ const coredns = new kubernetes.helm.v3.Chart("coredns", {
     rbac: {
       create: true,
     },
+    affinity: {
+      podAntiAffinity: {
+        requiredDuringSchedulingIgnoredDuringExecution: [
+          {
+            labelSelector: {
+              matchLabels: {
+                "app.kubernetes.io/name": "coredns",
+                "app.kubernetes.io/instance": "coredns",
+              },
+            },
+            topologyKey: "kubernetes.io/hostname",
+          },
+        ],
+      },
+    },
+    topologySpreadConstraints: [
+      {
+        maxSkew: 1,
+        whenUnsatisfiable: "ScheduleAnyway",
+        topologyKey: "kubernetes.io/hostname",
+        labelSelector: {
+          matchLabels: {
+            "app.kubernetes.io/name": "coredns",
+            "app.kubernetes.io/instance": "coredns",
+          },
+        },
+      },
+    ],
     tolerations: [
       {
         key: "k3s.sapslaj.xyz/role",
@@ -45,6 +83,9 @@ const coredns = new kubernetes.helm.v3.Chart("coredns", {
         effect: "NoSchedule",
       },
     ],
+    podDisruptionBudget: {
+      minAvailable: 2,
+    },
     k8sAppLabelOverride: "kube-dns",
   },
 }, {
