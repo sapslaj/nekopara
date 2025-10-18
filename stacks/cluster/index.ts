@@ -6,11 +6,11 @@ import * as mid from "@sapslaj/pulumi-mid";
 import { Distro, IDistro } from "../../components/homelab-config";
 import { BaselineUsers } from "../../components/mid/BaselineUsers";
 import { MidTarget } from "../../components/mid/MidTarget";
+import { SystemdUnit } from "../../components/mid/SystemdUnit";
 import { CloudImageTrait } from "../../components/proxmox-vm/CloudImageTrait";
 import { DNSRecordTrait } from "../../components/proxmox-vm/DNSRecordTrait";
 import { PrivateKeyTrait } from "../../components/proxmox-vm/PrivateKeyTrait";
 import { ProxmoxVM, ProxmoxVMDiskConfig, ProxmoxVMProps } from "../../components/proxmox-vm/ProxmoxVM";
-import { DNSRecord } from "../../components/shimiko";
 
 interface ControlPlaneNodeProps {
   k3sVersion: pulumi.Input<string>;
@@ -452,7 +452,6 @@ interface NLBNodeProps {
 class NLBNode extends pulumi.ComponentResource {
   vm: ProxmoxVM;
   randomId: random.RandomId;
-  service: mid.resource.SystemdService;
 
   constructor(id: string, props: NLBNodeProps, opts: pulumi.ComponentResourceOptions = {}) {
     super("sapslaj:k3s:NLBNode", id, {}, opts);
@@ -545,17 +544,13 @@ class NLBNode extends pulumi.ComponentResource {
       retainOnDelete: true,
     });
 
-    const haproxyPackage = new mid.resource.Apt(`${id}-haproxy`, {
+    const etcBell = new mid.resource.File(`${id}-/etc/bell`, {
       connection: this.vm.connection,
       config: {
         check: false,
       },
-      triggers: {
-        replace: [
-          this.randomId.id,
-        ],
-      },
-      name: "haproxy",
+      path: "/etc/bell",
+      ensure: "directory",
     }, {
       parent: this,
       deletedWith: this.vm,
@@ -564,81 +559,79 @@ class NLBNode extends pulumi.ComponentResource {
       ],
     });
 
-    const configFragments: pulumi.Input<string>[] = [
-      `global\n`,
-      `  log /dev/log local0\n`,
-      `  log /dev/log local1 notice\n`,
-      `  chroot /var/lib/haproxy\n`,
-      `  stats socket /run/haproxy/admin.sock mode 660 level admin\n`,
-      `  stats timeout 30s\n`,
-      `  user haproxy\n`,
-      `  group haproxy\n`,
-      `  daemon\n`,
-      `\n`,
-      `defaults\n`,
-      `  log global\n`,
-      `  mode tcp\n`,
-      `  timeout connect 5000\n`,
-      `  timeout client 50000\n`,
-      `  timeout server 50000\n`,
-      `\n`,
-    ];
+    const bellBinary = new mid.resource.File("/usr/local/bin/bell", {
+      connection: this.vm.connection,
+      config: {
+        check: false,
+      },
+      path: "/usr/local/bin/bell",
+      remoteSource: "https://git.sapslaj.cloud/sapslaj/bell/releases/download/v1.0.0/bell_Linux_x86_64",
+      mode: "a+x",
+    }, {
+      parent: this,
+      deletedWith: this.vm,
+      dependsOn: [
+        midTarget,
+      ],
+    });
 
     for (const [portName, port] of Object.entries(props.ports)) {
-      configFragments.push(`frontend ${portName}_frontend\n`);
-      configFragments.push(`  mode tcp\n`);
-      configFragments.push(`  bind :${port}\n`);
-      configFragments.push(`  default_backend ${portName}_backend\n`);
-      configFragments.push(`\n`);
-      configFragments.push(`backend ${portName}_backend\n`);
-      configFragments.push(`  mode tcp\n`);
-      configFragments.push(`  balance leastconn\n`);
+      const portConfig = new mid.resource.File(`${id}-/etc/bell/${portName}.cfg`, {
+        connection: this.vm.connection,
+        config: {
+          check: false,
+        },
+        path: `/etc/bell/${portName}.cfg`,
+        content: pulumi.concat(
+          ...Object.values(props.controlPlaneNodes).map((node) => {
+            return pulumi.interpolate`${node.vm.name}.sapslaj.xyz:${port}\n`;
+          }),
+        ),
+      }, {
+        parent: this,
+        deletedWith: this.vm,
+        dependsOn: [
+          etcBell,
+        ],
+      });
 
-      for (const [nodeID, node] of Object.entries(props.controlPlaneNodes)) {
-        configFragments.push(pulumi.interpolate`  server ${nodeID} ${node.vm.name}.sapslaj.xyz:${port} check\n`);
-      }
-
-      configFragments.push(`\n`);
+      new SystemdUnit(`${id}-bell-${portName}.service`, {
+        connection: this.vm.connection,
+        config: {
+          check: false,
+        },
+        triggers: {
+          refresh: [
+            portConfig.triggers.lastChanged,
+            bellBinary.triggers.lastChanged,
+          ],
+        },
+        name: `bell-${portName}.service`,
+        ensure: "started",
+        enabled: true,
+        unit: {
+          Description: "bell",
+          After: "network-online.target",
+        },
+        service: {
+          Type: "simple",
+          Environment: pulumi.interpolate`NET_HOST=:${port}`,
+          ExecStart: `/usr/local/bin/bell /etc/bell/${portName}.cfg`,
+          Restart: "always",
+          RestartSec: "1",
+        },
+        install: {
+          WantedBy: "multi-user.target",
+        },
+      }, {
+        parent: this,
+        deletedWith: this.vm,
+        dependsOn: [
+          portConfig,
+          bellBinary,
+        ],
+      });
     }
-
-    const haproxyConfig = new mid.resource.File(`${id}-haproxy-config`, {
-      connection: this.vm.connection,
-      triggers: {
-        replace: [
-          this.randomId.id,
-        ],
-      },
-      path: "/etc/haproxy/haproxy.cfg",
-      content: pulumi.concat(...configFragments),
-    }, {
-      parent: this,
-      deletedWith: this.vm,
-      dependsOn: [
-        haproxyPackage,
-      ],
-    });
-
-    this.service = new mid.resource.SystemdService(`${id}-haproxy`, {
-      connection: this.vm.connection,
-      name: "haproxy.service",
-      // enabled: true,
-      // ensure: "started",
-      triggers: {
-        refresh: [
-          haproxyConfig.triggers.lastChanged,
-        ],
-        replace: [
-          this.randomId.id,
-        ],
-      },
-    }, {
-      parent: this,
-      deletedWith: this.vm,
-      dependsOn: [
-        haproxyConfig,
-        haproxyPackage,
-      ],
-    });
   }
 }
 
