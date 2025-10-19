@@ -106,6 +106,10 @@ const secret = new kubernetes.core.v1.Secret("traefik-failover", {
     VYOS_API_TOKEN: getSecretValueOutput({
       key: "vyos-api-token",
     }),
+    INGRESS_HOST_SSH_PRIVATE_KEY: getSecretValueOutput({
+      key: "SSH_PRIVATE_KEY",
+      folder: "/ci",
+    }),
   },
 });
 
@@ -154,6 +158,18 @@ new kubernetes.apps.v1.Deployment("traefik-failover", {
           {
             name: "traefik-failover",
             image: image.ref,
+            env: [
+              {
+                // FIXME: use hostname instead of hardcoded IPv4 address
+                name: "INGRESS_HOST",
+                value: "100.125.74.42",
+              },
+              {
+                // FIXME: set up dedicated user
+                name: "INGRESS_HOST_SSH_USERNAME",
+                value: "ci",
+              },
+            ],
             envFrom: [
               {
                 secretRef: {

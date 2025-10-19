@@ -3,10 +3,12 @@ module git.sapslaj.cloud/sapslaj/nekopara/stacks/traefik-tailover
 go 1.25.1
 
 require (
+	github.com/bramvdbogaerde/go-scp v1.5.0
 	github.com/ganawaj/go-vyos v0.1.0
 	github.com/sapslaj/gstb v0.0.0-20250909131109-16b21b8e1719
 	github.com/sapslaj/kooperslog v0.0.0-20250918112436-e93407f48c50
 	github.com/spotahome/kooper/v2 v2.9.0
+	golang.org/x/crypto v0.37.0
 	k8s.io/api v0.33.0
 	k8s.io/apimachinery v0.33.0
 	k8s.io/client-go v0.33.0

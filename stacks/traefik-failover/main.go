@@ -12,10 +12,13 @@ import (
 	"sync"
 	"time"
 
+	scp "github.com/bramvdbogaerde/go-scp"
 	"github.com/ganawaj/go-vyos/vyos"
+	"github.com/sapslaj/gstb/env"
 	"github.com/sapslaj/gstb/loglevel"
 	"github.com/sapslaj/kooperslog"
 	"github.com/spotahome/kooper/v2/controller"
+	"golang.org/x/crypto/ssh"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -266,7 +269,110 @@ func main() {
 
 	ctx = context.WithValue(ctx, "k8sClient", k8sClient)
 
-	cfg := &controller.Config{
+	nodesCfg := &controller.Config{
+		Name:           "traefik-failover/nodes",
+		Logger:         kooperslog.New(logger),
+		ResyncInterval: 5 * time.Minute,
+		Retriever: controller.MustRetrieverFromListerWatcher(&cache.ListWatch{
+			ListWithContextFunc: func(ctx context.Context, options metav1.ListOptions) (runtime.Object, error) {
+				options.LabelSelector = "k3s.sapslaj.xyz/role=ingress"
+				return k8sClient.CoreV1().Nodes().List(ctx, options)
+			},
+			WatchFuncWithContext: func(ctx context.Context, options metav1.ListOptions) (watch.Interface, error) {
+				options.LabelSelector = "k3s.sapslaj.xyz/role=ingress"
+				return k8sClient.CoreV1().Nodes().Watch(ctx, options)
+			},
+		}),
+		Handler: controller.HandlerFunc(func(ctx context.Context, obj runtime.Object) error {
+			nodeList, err := k8sClient.CoreV1().Nodes().List(ctx, metav1.ListOptions{
+				LabelSelector: "k3s.sapslaj.xyz/role=ingress",
+			})
+			if err != nil {
+				return err
+			}
+
+			makeConfig := func(port int) string {
+				var sb strings.Builder
+				for _, node := range nodeList.Items {
+					for _, nodeAddress := range node.Status.Addresses {
+						if nodeAddress.Type != "InternalIP" {
+							continue
+						}
+						if !strings.HasPrefix(nodeAddress.Address, "172.24.") {
+							continue
+						}
+						sb.WriteString(nodeAddress.Address)
+						sb.WriteString(":")
+						sb.WriteString(fmt.Sprint(port))
+						sb.WriteString("\n")
+					}
+				}
+				return sb.String()
+			}
+
+			ingressHost, err := env.Get[string]("INGRESS_HOST")
+			if err != nil {
+				return fmt.Errorf("error getting AWS_INGRESS_HOST: %w", err)
+			}
+			username, err := env.Get[string]("INGRESS_HOST_SSH_USERNAME")
+			if err != nil {
+				return fmt.Errorf("error getting INGRESS_HOST_SSH_USERNAME: %w", err)
+			}
+			privateKey, err := env.Get[string]("INGRESS_HOST_SSH_PRIVATE_KEY")
+			if err != nil {
+				return fmt.Errorf("error getting INGRESS_HOST_SSH_PRIVATE_KEY: %w", err)
+			}
+
+			signer, err := ssh.ParsePrivateKey([]byte(privateKey))
+			if err != nil {
+				return fmt.Errorf("error parsing private key: %w", err)
+			}
+
+			client := scp.NewClient(fmt.Sprintf("%s:22", ingressHost), &ssh.ClientConfig{
+				User: username,
+				Auth: []ssh.AuthMethod{
+					ssh.PublicKeys(signer),
+				},
+				HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+			})
+
+			err = client.Connect()
+			if err != nil {
+				return fmt.Errorf("error connecting to %s@%s: %w", username, ingressHost, err)
+			}
+
+			err = client.CopyFile(ctx, strings.NewReader(makeConfig(80)), "/etc/bell/http.cfg", "0666")
+			if err != nil {
+				return fmt.Errorf("error uploading /etc/bell/http.cfg to %s@%s: %w", username, ingressHost, err)
+			}
+
+			client.Close()
+
+			client = scp.NewClient(fmt.Sprintf("%s:22", ingressHost), &ssh.ClientConfig{
+				User: username,
+				Auth: []ssh.AuthMethod{
+					ssh.PublicKeys(signer),
+				},
+				HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+			})
+
+			err = client.Connect()
+			if err != nil {
+				return fmt.Errorf("error connecting to %s@%s: %w", username, ingressHost, err)
+			}
+
+			err = client.CopyFile(ctx, strings.NewReader(makeConfig(443)), "/etc/bell/https.cfg", "0666")
+			if err != nil {
+				return fmt.Errorf("error uploading /etc/bell/https.cfg to %s@%s: %w", username, ingressHost, err)
+			}
+
+			client.Close()
+
+			return nil
+		}),
+	}
+
+	podsCfg := &controller.Config{
 		Name:           "traefik-failover/pods",
 		Logger:         kooperslog.New(logger),
 		ResyncInterval: time.Minute,
@@ -345,17 +451,36 @@ func main() {
 		}
 	}(ctx)
 
-	ctrl, err := controller.New(cfg)
+	nodesCtrl, err := controller.New(nodesCfg)
 	if err != nil {
-		logger.Error("could not create controller", slog.Any("error", err))
+		logger.Error("could not create nodes controller", slog.Any("error", err))
+		os.Exit(1)
+	}
+
+	podsCtrl, err := controller.New(podsCfg)
+	if err != nil {
+		logger.Error("could not create pods controller", slog.Any("error", err))
 		os.Exit(1)
 	}
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	err = ctrl.Run(ctx)
-	if err != nil {
-		logger.Error("error running controller", slog.Any("error", err))
-		os.Exit(1)
-	}
+
+	go func() {
+		err = nodesCtrl.Run(ctx)
+		if err != nil {
+			logger.Error("error running nodes controller", slog.Any("error", err))
+			os.Exit(1)
+		}
+	}()
+
+	go func() {
+		err = podsCtrl.Run(ctx)
+		if err != nil {
+			logger.Error("error running pods controller", slog.Any("error", err))
+			os.Exit(1)
+		}
+	}()
+
+	<-make(chan struct{})
 }
