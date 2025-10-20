@@ -66,6 +66,8 @@ github.com/sapslaj/gstb v0.0.0-20250909131109-16b21b8e1719 h1:QGMegtsMqUcXjVAFKt
 github.com/sapslaj/gstb v0.0.0-20250909131109-16b21b8e1719/go.mod h1:Z5ugjIrlcMEwW1k8amRDHjoXBsfPIEh4DOxrx7QBSog=
 github.com/sapslaj/gstb v0.0.0-20250909134521-dbc9fcd3f936 h1:tQJSs/6eWAUmwa2NjvWwjPmpTR+09dReWGX+amOMx4o=
 github.com/sapslaj/gstb v0.0.0-20250909134521-dbc9fcd3f936/go.mod h1:Z5ugjIrlcMEwW1k8amRDHjoXBsfPIEh4DOxrx7QBSog=
+github.com/sapslaj/gstb v0.0.0-20251020165636-bf0e3580f67a h1:p7TghQWe3fWDE0aCx6jBjUDY+bW2M3AjLDnNyVewIow=
+github.com/sapslaj/gstb v0.0.0-20251020165636-bf0e3580f67a/go.mod h1:Z5ugjIrlcMEwW1k8amRDHjoXBsfPIEh4DOxrx7QBSog=
 github.com/sapslaj/kooperslog v0.0.0-20250918112436-e93407f48c50 h1:zp1s+b3GGD5ZO7ykI9vDwdsj4UIvT/gXLEx7NX4qREA=
 github.com/sapslaj/kooperslog v0.0.0-20250918112436-e93407f48c50/go.mod h1:L4qs3TjcBNBEek4NyrPxyJycleqAmEQ/59vKV7bAPDE=
 github.com/spf13/pflag v1.0.6 h1:jFzHGLGAlb3ruxLB8MhbI6A8+AQX/2eW4qeyNZXNp2o=

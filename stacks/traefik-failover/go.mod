@@ -5,7 +5,7 @@ go 1.25.1
 require (
 	github.com/bramvdbogaerde/go-scp v1.5.0
 	github.com/ganawaj/go-vyos v0.1.0
-	github.com/sapslaj/gstb v0.0.0-20250909134521-dbc9fcd3f936
+	github.com/sapslaj/gstb v0.0.0-20251020165636-bf0e3580f67a
 	github.com/sapslaj/kooperslog v0.0.0-20250918112436-e93407f48c50
 	github.com/spotahome/kooper/v2 v2.9.0
 	golang.org/x/crypto v0.43.0
