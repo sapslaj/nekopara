@@ -288,18 +288,6 @@ func main() {
 				return err
 			}
 
-			if oldAccessKeyID != "" {
-				handlerLogger.InfoContext(ctx, "deleting old access key")
-				_, err := iamClient.DeleteAccessKey(ctx, &iam.DeleteAccessKeyInput{
-					AccessKeyId: &oldAccessKeyID,
-					UserName:    &userName,
-				})
-				if err != nil {
-					handlerLogger.ErrorContext(ctx, "error deleting old access key", slog.Any("error", err))
-					return err
-				}
-			}
-
 			return nil
 		}),
 	}
