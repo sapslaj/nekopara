@@ -1,0 +1,10 @@
+{
+  "dependencies": [
+    "cluster",
+    "core",
+    "crds",
+    "gitea",
+    "nodegroups",
+    "shortrack"
+  ]
+}
