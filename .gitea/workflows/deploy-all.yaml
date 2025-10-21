@@ -1,0 +1,286 @@
+name: deploy-all
+on:
+  push:
+    paths:
+      - .gitea/workflows/**
+      - components/**
+      - package.json
+      - package-lock.json
+  workflow_dispatch: null
+env:
+  AUTHENTIK_INSECURE: "false"
+  AUTHENTIK_TOKEN: ${{ secrets.AUTHENTIK_TOKEN }}
+  AUTHENTIK_URL: https://login.sapslaj.cloud
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_DEFAULT_REGION: us-east-1
+  AWS_REGION: us-east-1
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+  CLOUDFLARE_API_KEY: ${{ secrets.CLOUDFLARE_API_KEY }}
+  CLOUDFLARE_EMAIL: ${{ secrets.CLOUDFLARE_EMAIL }}
+  GH_ACTIONS_READ_TOKEN: ${{ secrets.GH_ACTIONS_READ_TOKEN }}
+  INFISICAL_API_URL: https://infisical.sapslaj.cloud/api
+  INFISICAL_CLIENT_ID: ${{ secrets.INFISICAL_CLIENT_ID }}
+  INFISICAL_CLIENT_SECRET: ${{ secrets.INFISICAL_CLIENT_SECRET }}
+  INFISICAL_HOST: https://infisical.sapslaj.cloud
+  INFISICAL_UNIVERSAL_AUTH_CLIENT_ID: ${{ secrets.INFISICAL_CLIENT_ID }}
+  INFISICAL_UNIVERSAL_AUTH_CLIENT_SECRET: ${{ secrets.INFISICAL_CLIENT_SECRET }}
+  NODE_AUTH_TOKEN: ${{ secrets.GH_ACTIONS_READ_TOKEN }}
+  PROXMOX_VE_ENDPOINT: ${{ secrets.PROXMOX_VE_ENDPOINT }}
+  PROXMOX_VE_INSECURE: "true"
+  PROXMOX_VE_PASSWORD: ${{ secrets.PROXMOX_VE_PASSWORD }}
+  PROXMOX_VE_USERNAME: ${{ secrets.PROXMOX_VE_USERNAME }}
+  PULUMI_CONFIG_PASSPHRASE: ""
+  TAILSCALE_API_KEY: ${{ secrets.TAILSCALE_API_KEY }}
+  VULTR_API_KEY: ${{ secrets.VULTR_API_KEY }}
+  VYOS_HOST: ${{ secrets.VYOS_HOST }}
+  VYOS_PASSWORD: ${{ secrets.VYOS_PASSWORD }}
+  VYOS_USERNAME: ${{ secrets.VYOS_USERNAME }}
+jobs:
+  deploy-stack-cluster:
+    uses: ./gitea/workflows/deploy-stack-cluster.yaml
+    needs: []
+  deploy-stack-external-secrets-operator:
+    uses: ./gitea/workflows/deploy-stack-external-secrets-operator.yaml
+    needs:
+      - deploy-stack-cluster
+      - deploy-stack-core
+      - deploy-stack-crds
+      - deploy-stack-nodegroups
+  deploy-stack-crds:
+    uses: ./gitea/workflows/deploy-stack-crds.yaml
+    needs:
+      - deploy-stack-cluster
+  deploy-stack-nodegroups:
+    uses: ./gitea/workflows/deploy-stack-nodegroups.yaml
+    needs:
+      - deploy-stack-cluster
+  deploy-stack-core:
+    uses: ./gitea/workflows/deploy-stack-core.yaml
+    needs:
+      - deploy-stack-cluster
+      - deploy-stack-crds
+      - deploy-stack-nodegroups
+  deploy-stack-adguardhome-sync:
+    uses: ./gitea/workflows/deploy-stack-adguardhome-sync.yaml
+    needs:
+      - deploy-stack-cluster
+      - deploy-stack-core
+      - deploy-stack-crds
+      - deploy-stack-nodegroups
+  deploy-stack-aws-credentials-secret-injector:
+    uses: ./gitea/workflows/deploy-stack-aws-credentials-secret-injector.yaml
+    needs:
+      - deploy-stack-cluster
+      - deploy-stack-core
+      - deploy-stack-crds
+      - deploy-stack-nodegroups
+  deploy-stack-cloudnative-pg:
+    uses: ./gitea/workflows/deploy-stack-cloudnative-pg.yaml
+    needs:
+      - deploy-stack-cluster
+      - deploy-stack-core
+      - deploy-stack-crds
+      - deploy-stack-nodegroups
+  deploy-stack-nfs-provisioner:
+    uses: ./gitea/workflows/deploy-stack-nfs-provisioner.yaml
+    needs:
+      - deploy-stack-cluster
+      - deploy-stack-core
+      - deploy-stack-crds
+      - deploy-stack-nodegroups
+  deploy-stack-opensearch-operator:
+    uses: ./gitea/workflows/deploy-stack-opensearch-operator.yaml
+    needs:
+      - deploy-stack-cluster
+      - deploy-stack-core
+      - deploy-stack-crds
+      - deploy-stack-nodegroups
+  deploy-stack-reloader:
+    uses: ./gitea/workflows/deploy-stack-reloader.yaml
+    needs:
+      - deploy-stack-cluster
+      - deploy-stack-core
+      - deploy-stack-crds
+      - deploy-stack-nodegroups
+  deploy-stack-shortrack:
+    uses: ./gitea/workflows/deploy-stack-shortrack.yaml
+    needs:
+      - deploy-stack-cluster
+      - deploy-stack-core
+      - deploy-stack-crds
+      - deploy-stack-nodegroups
+  deploy-stack-traefik:
+    uses: ./gitea/workflows/deploy-stack-traefik.yaml
+    needs:
+      - deploy-stack-cluster
+      - deploy-stack-core
+      - deploy-stack-crds
+      - deploy-stack-nfs-provisioner
+      - deploy-stack-nodegroups
+  deploy-stack-victoria-metrics:
+    uses: ./gitea/workflows/deploy-stack-victoria-metrics.yaml
+    needs:
+      - deploy-stack-cluster
+      - deploy-stack-core
+      - deploy-stack-crds
+      - deploy-stack-nfs-provisioner
+      - deploy-stack-nodegroups
+  deploy-stack-librenms:
+    uses: ./gitea/workflows/deploy-stack-librenms.yaml
+    needs:
+      - deploy-stack-cluster
+      - deploy-stack-core
+      - deploy-stack-crds
+      - deploy-stack-nodegroups
+      - deploy-stack-shortrack
+  deploy-stack-netbox:
+    uses: ./gitea/workflows/deploy-stack-netbox.yaml
+    needs:
+      - deploy-stack-cloudnative-pg
+      - deploy-stack-cluster
+      - deploy-stack-core
+      - deploy-stack-crds
+      - deploy-stack-nodegroups
+      - deploy-stack-shortrack
+  deploy-stack-authentik:
+    uses: ./gitea/workflows/deploy-stack-authentik.yaml
+    needs:
+      - deploy-stack-cloudnative-pg
+      - deploy-stack-cluster
+      - deploy-stack-core
+      - deploy-stack-crds
+      - deploy-stack-nfs-provisioner
+      - deploy-stack-nodegroups
+      - deploy-stack-shortrack
+      - deploy-stack-traefik
+  deploy-stack-traefik-failover:
+    uses: ./gitea/workflows/deploy-stack-traefik-failover.yaml
+    needs:
+      - deploy-stack-cluster
+      - deploy-stack-core
+      - deploy-stack-crds
+      - deploy-stack-nodegroups
+      - deploy-stack-traefik
+  deploy-stack-cnpg-pgdump:
+    uses: ./gitea/workflows/deploy-stack-cnpg-pgdump.yaml
+    needs:
+      - deploy-stack-authentik
+      - deploy-stack-cloudnative-pg
+      - deploy-stack-cluster
+      - deploy-stack-core
+      - deploy-stack-crds
+      - deploy-stack-nodegroups
+      - deploy-stack-shortrack
+  deploy-stack-external-services:
+    uses: ./gitea/workflows/deploy-stack-external-services.yaml
+    needs:
+      - deploy-stack-authentik
+      - deploy-stack-cluster
+      - deploy-stack-core
+      - deploy-stack-crds
+      - deploy-stack-traefik
+  deploy-stack-gitea:
+    uses: ./gitea/workflows/deploy-stack-gitea.yaml
+    needs:
+      - deploy-stack-authentik
+      - deploy-stack-cloudnative-pg
+      - deploy-stack-cluster
+      - deploy-stack-core
+      - deploy-stack-crds
+      - deploy-stack-nfs-provisioner
+      - deploy-stack-nodegroups
+      - deploy-stack-shortrack
+  deploy-stack-grafana:
+    uses: ./gitea/workflows/deploy-stack-grafana.yaml
+    needs:
+      - deploy-stack-authentik
+      - deploy-stack-cluster
+      - deploy-stack-core
+      - deploy-stack-crds
+      - deploy-stack-nodegroups
+      - deploy-stack-shortrack
+      - deploy-stack-traefik
+  deploy-stack-immich:
+    uses: ./gitea/workflows/deploy-stack-immich.yaml
+    needs:
+      - deploy-stack-authentik
+      - deploy-stack-cloudnative-pg
+      - deploy-stack-cluster
+      - deploy-stack-core
+      - deploy-stack-crds
+      - deploy-stack-nfs-provisioner
+      - deploy-stack-nodegroups
+      - deploy-stack-shortrack
+  deploy-stack-infisical:
+    uses: ./gitea/workflows/deploy-stack-infisical.yaml
+    needs:
+      - deploy-stack-authentik
+      - deploy-stack-cloudnative-pg
+      - deploy-stack-cluster
+      - deploy-stack-core
+      - deploy-stack-crds
+      - deploy-stack-external-secrets-operator
+      - deploy-stack-nodegroups
+      - deploy-stack-shortrack
+  deploy-stack-jaeger:
+    uses: ./gitea/workflows/deploy-stack-jaeger.yaml
+    needs:
+      - deploy-stack-authentik
+      - deploy-stack-cluster
+      - deploy-stack-core
+      - deploy-stack-crds
+      - deploy-stack-nodegroups
+      - deploy-stack-opensearch-operator
+      - deploy-stack-shortrack
+  deploy-stack-nextcloud:
+    uses: ./gitea/workflows/deploy-stack-nextcloud.yaml
+    needs:
+      - deploy-stack-authentik
+      - deploy-stack-cloudnative-pg
+      - deploy-stack-cluster
+      - deploy-stack-core
+      - deploy-stack-crds
+      - deploy-stack-nfs-provisioner
+      - deploy-stack-nodegroups
+      - deploy-stack-shortrack
+  deploy-stack-oxidized:
+    uses: ./gitea/workflows/deploy-stack-oxidized.yaml
+    needs:
+      - deploy-stack-authentik
+      - deploy-stack-cluster
+      - deploy-stack-core
+      - deploy-stack-crds
+      - deploy-stack-nfs-provisioner
+      - deploy-stack-nodegroups
+  deploy-stack-planka:
+    uses: ./gitea/workflows/deploy-stack-planka.yaml
+    needs:
+      - deploy-stack-authentik
+      - deploy-stack-cloudnative-pg
+      - deploy-stack-cluster
+      - deploy-stack-core
+      - deploy-stack-crds
+      - deploy-stack-nfs-provisioner
+      - deploy-stack-nodegroups
+      - deploy-stack-shortrack
+  deploy-stack-renovate:
+    uses: ./gitea/workflows/deploy-stack-renovate.yaml
+    needs:
+      - deploy-stack-cluster
+      - deploy-stack-core
+      - deploy-stack-crds
+      - deploy-stack-gitea
+      - deploy-stack-nodegroups
+      - deploy-stack-shortrack
+  deploy-stack-infisical-secrets-operator:
+    uses: ./gitea/workflows/deploy-stack-infisical-secrets-operator.yaml
+    needs:
+      - deploy-stack-authentik
+      - deploy-stack-cloudnative-pg
+      - deploy-stack-cluster
+      - deploy-stack-core
+      - deploy-stack-crds
+      - deploy-stack-infisical
+      - deploy-stack-nodegroups
+      - deploy-stack-shortrack
