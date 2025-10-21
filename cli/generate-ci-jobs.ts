@@ -30,6 +30,7 @@ const env = {
   PROXMOX_VE_PASSWORD: "${{ secrets.PROXMOX_VE_PASSWORD }}",
   PROXMOX_VE_USERNAME: "${{ secrets.PROXMOX_VE_USERNAME }}",
   PULUMI_CONFIG_PASSPHRASE: "",
+  RUNNER_TOOL_CACHE: "/toolcache",
   TAILSCALE_API_KEY: "${{ secrets.TAILSCALE_API_KEY }}",
   VULTR_API_KEY: "${{ secrets.VULTR_API_KEY }}",
   VYOS_HOST: "${{ secrets.VYOS_HOST }}",
@@ -74,7 +75,7 @@ const env = {
                 uses: "actions/checkout@v5",
               },
               {
-                uses: "actions/setup-node@v4",
+                uses: "actions/setup-node@v6",
                 with: {
                   "node-version": "22.x",
                   "cache": "npm",
