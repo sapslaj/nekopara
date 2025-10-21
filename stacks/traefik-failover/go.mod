@@ -9,9 +9,9 @@ require (
 	github.com/sapslaj/kooperslog v0.0.0-20250918112436-e93407f48c50
 	github.com/spotahome/kooper/v2 v2.9.0
 	golang.org/x/crypto v0.43.0
-	k8s.io/api v0.33.0
+	k8s.io/api v0.34.1
 	k8s.io/apimachinery v0.34.1
-	k8s.io/client-go v0.33.0
+	k8s.io/client-go v0.34.1
 )
 
 require (
