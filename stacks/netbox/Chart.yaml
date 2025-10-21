@@ -1,0 +1,4 @@
+dependencies:
+  - name: netbox
+    version: 6.1.12
+    repository: oci://ghcr.io/netbox-community/netbox-chart/netbox

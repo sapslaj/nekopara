@@ -1,13 +1,13 @@
 import * as kubernetes from "@pulumi/kubernetes";
 
-import { newK3sProvider } from "../../components/k3s-shared";
+import { chartVersion, newK3sProvider } from "../../components/k3s-shared";
 
 const provider = newK3sProvider();
 
 const coredns = new kubernetes.helm.v3.Chart("coredns", {
   chart: "coredns",
   namespace: "kube-system",
-  version: "1.43.0",
+  version: chartVersion({ name: "coredns" }),
   fetchOpts: {
     repo: "https://coredns.github.io/helm",
   },
@@ -95,7 +95,7 @@ const coredns = new kubernetes.helm.v3.Chart("coredns", {
 const metricsServer = new kubernetes.helm.v3.Chart("metrics-server", {
   chart: "metrics-server",
   namespace: "kube-system",
-  version: "3.12.2",
+  version: chartVersion({ name: "metrics-server" }),
   fetchOpts: {
     repo: "https://kubernetes-sigs.github.io/metrics-server/",
   },

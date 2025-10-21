@@ -1,0 +1,4 @@
+dependencies:
+  - name: authentik
+    version: 2025.8.3
+    repository: https://charts.goauthentik.io

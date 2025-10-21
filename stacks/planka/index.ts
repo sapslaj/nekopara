@@ -3,7 +3,7 @@ import * as pulumi from "@pulumi/pulumi";
 import * as random from "@pulumi/random";
 import * as authentik from "@sapslaj/pulumi-authentik";
 
-import { newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";
+import { chartVersion, newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";
 import { IngressDNS } from "../../components/k8s/IngressDNS";
 
 const provider = newK3sProvider();
@@ -132,7 +132,7 @@ const chart = new kubernetes.helm.v3.Chart("planka", {
   fetchOpts: {
     repo: "http://plankanban.github.io/planka",
   },
-  version: "1.0.3",
+  version: chartVersion({ name: "planka" }),
   namespace: namespace.metadata.name,
   skipCRDRendering: true,
   values: {

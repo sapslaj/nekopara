@@ -1,0 +1,4 @@
+dependencies:
+  - name: reloader
+    version: 2.2.2
+    repository: https://stakater.github.io/stakater-charts

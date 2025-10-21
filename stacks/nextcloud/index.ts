@@ -7,7 +7,7 @@ import * as authentik from "@sapslaj/pulumi-authentik";
 
 import { iamPolicyDocument } from "../../components/aws-utils";
 import { getSecretValueOutput } from "../../components/infisical";
-import { newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";
+import { chartVersion, newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";
 import { IngressDNS } from "../../components/k8s/IngressDNS";
 import { Valkey } from "../../components/k8s/Valkey";
 
@@ -202,7 +202,7 @@ const chart = new kubernetes.helm.v3.Chart("nextcloud", {
   fetchOpts: {
     repo: "https://nextcloud.github.io/helm/",
   },
-  version: "7.0.4",
+  version: chartVersion({ name: "nextcloud" }),
   namespace: namespace.metadata.name,
   skipCRDRendering: true,
   values: {

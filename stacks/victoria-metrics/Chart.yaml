@@ -1,0 +1,13 @@
+dependencies:
+  - name: victoria-metrics-operator
+    version: 0.51.3
+    repository: https://victoriametrics.github.io/helm-charts/
+  - name: victoria-metrics-k8s-stack
+    version: 0.59.5
+    repository: https://victoriametrics.github.io/helm-charts/
+  - name: victoria-logs-cluster
+    version: 0.0.8
+    repository: https://victoriametrics.github.io/helm-charts/
+  - name: prometheus-blackbox-exporter
+    version: 11.2.2
+    repository: https://prometheus-community.github.io/helm-charts

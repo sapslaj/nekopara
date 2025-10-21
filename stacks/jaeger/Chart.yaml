@@ -1,0 +1,4 @@
+dependencies:
+  - name: jaeger
+    version: 3.4.1
+    repository: https://jaegertracing.github.io/helm-charts

@@ -7,7 +7,7 @@ import * as YAML from "yaml";
 import { iamPolicyDocument } from "../../components/aws-utils";
 import { RotatingAccessKey } from "../../components/aws/RotatingAccessKey";
 import { getSecretValueOutput, Secret, SecretFolder } from "../../components/infisical";
-import { newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";
+import { chartVersion, newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";
 import { AuthentikProxyIngress } from "../../components/k8s/AuthentikProxyIngress";
 import { DNSRecord } from "../../components/shimiko";
 
@@ -149,7 +149,7 @@ const victoriaMetricsOperator = new kubernetes.helm.v3.Chart("victoria-metrics-o
   fetchOpts: {
     repo: "https://victoriametrics.github.io/helm-charts/",
   },
-  version: "0.51.3",
+  version: chartVersion({ name: "victoria-metrics-operator" }),
   skipCRDRendering: true,
   namespace: namespace.metadata.name,
   values: {
@@ -366,7 +366,7 @@ const victoriaMetrics = new kubernetes.helm.v3.Chart("victoria-metrics", {
   fetchOpts: {
     repo: "https://victoriametrics.github.io/helm-charts/",
   },
-  version: "0.59.5",
+  version: chartVersion({ name: "victoria-metrics-k8s-stack" }),
   skipCRDRendering: true,
   namespace: namespace.metadata.name,
   values: {
@@ -699,7 +699,7 @@ const victoriaLogs = new kubernetes.helm.v3.Chart("victoria-logs", {
   fetchOpts: {
     repo: "https://victoriametrics.github.io/helm-charts/",
   },
-  version: "0.0.8",
+  version: chartVersion({ name: "victoria-logs-cluster" }),
   namespace: namespace.metadata.name,
   skipCRDRendering: true,
   values: {
@@ -944,7 +944,7 @@ new kubernetes.helm.v3.Chart("blackbox-exporter", {
   fetchOpts: {
     repo: "https://prometheus-community.github.io/helm-charts",
   },
-  version: "11.2.2",
+  version: chartVersion({ name: "prometheus-blackbox-exporter" }),
   skipCRDRendering: true,
   namespace: namespace.metadata.name,
   values: {

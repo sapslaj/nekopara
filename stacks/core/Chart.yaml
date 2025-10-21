@@ -1,0 +1,7 @@
+dependencies:
+  - name: coredns
+    version: 1.43.0
+    repository: https://coredns.github.io/helm
+  - name: metrics-server
+    version: 3.12.2
+    repository: https://kubernetes-sigs.github.io/metrics-server/

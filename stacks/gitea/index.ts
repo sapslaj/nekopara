@@ -3,7 +3,7 @@ import * as pulumi from "@pulumi/pulumi";
 import * as random from "@pulumi/random";
 import * as authentik from "@sapslaj/pulumi-authentik";
 
-import { newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";
+import { chartVersion, newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";
 import { IngressDNS } from "../../components/k8s/IngressDNS";
 import { Valkey } from "../../components/k8s/Valkey";
 
@@ -186,7 +186,7 @@ const chart = new kubernetes.helm.v3.Chart("gitea", {
   fetchOpts: {
     repo: "https://dl.gitea.com/charts/",
   },
-  version: "12.2.0",
+  version: chartVersion({ name: "gitea" }),
   namespace: namespace.metadata.name,
   skipCRDRendering: true,
   values: {

@@ -3,7 +3,7 @@ import * as pulumi from "@pulumi/pulumi";
 import * as random from "@pulumi/random";
 import * as authentik from "@sapslaj/pulumi-authentik";
 
-import { newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";
+import { chartVersion, newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";
 import { IngressDNS } from "../../components/k8s/IngressDNS";
 import { Valkey } from "../../components/k8s/Valkey";
 import { sha256, yamlencode } from "../../components/std";
@@ -174,7 +174,7 @@ const superuserSecret = new kubernetes.core.v1.Secret("netbox-superuser", {
 
 const chart = new kubernetes.helm.v4.Chart("netbox", {
   chart: "oci://ghcr.io/netbox-community/netbox-chart/netbox",
-  version: "6.1.12",
+  version: chartVersion({ name: "netbox" }),
   namespace: namespace.metadata.name,
   skipCrds: true,
   values: {

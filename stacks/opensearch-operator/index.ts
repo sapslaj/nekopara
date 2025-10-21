@@ -1,6 +1,6 @@
 import * as kubernetes from "@pulumi/kubernetes";
 
-import { newK3sProvider, transformPatchForce } from "../../components/k3s-shared";
+import { chartVersion, newK3sProvider, transformPatchForce } from "../../components/k3s-shared";
 
 const provider = newK3sProvider();
 
@@ -15,7 +15,7 @@ const chart = new kubernetes.helm.v3.Chart("opensearch-operator", {
   fetchOpts: {
     repo: "https://opensearch-project.github.io/opensearch-k8s-operator/",
   },
-  version: "2.8.0",
+  version: chartVersion({ name: "opensearch-operator" }),
   namespace: namespace.metadata.name,
   skipCRDRendering: true,
   values: {

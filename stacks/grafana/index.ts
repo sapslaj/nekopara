@@ -3,7 +3,7 @@ import * as pulumi from "@pulumi/pulumi";
 import * as random from "@pulumi/random";
 import * as authentik from "@sapslaj/pulumi-authentik";
 
-import { newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";
+import { chartVersion, newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";
 import { IngressDNS } from "../../components/k8s/IngressDNS";
 
 const provider = newK3sProvider();
@@ -90,7 +90,7 @@ const grafana = new kubernetes.helm.v3.Chart("grafana", {
   fetchOpts: {
     repo: "https://grafana.github.io/helm-charts",
   },
-  version: "9.2.10",
+  version: chartVersion({ name: "grafana" }),
   namespace: namespace.metadata.name,
   skipCRDRendering: true,
   values: {

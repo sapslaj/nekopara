@@ -1,7 +1,7 @@
 import * as kubernetes from "@pulumi/kubernetes";
 import * as pulumi from "@pulumi/pulumi";
 
-import { newK3sProvider } from "../../components/k3s-shared";
+import { chartVersion, newK3sProvider } from "../../components/k3s-shared";
 
 const provider = newK3sProvider();
 
@@ -10,7 +10,7 @@ const prometheusOperatorCrds = new kubernetes.helm.v3.Chart("prometheus-operator
   fetchOpts: {
     repo: "https://prometheus-community.github.io/helm-charts",
   },
-  version: "22.0.2",
+  version: chartVersion({ name: "prometheus-operator-crds" }),
 }, {
   provider,
 });
@@ -20,7 +20,7 @@ const victoriaMetricsOperatorCRDs = new kubernetes.helm.v3.Chart("victoria-metri
   fetchOpts: {
     repo: "https://victoriametrics.github.io/helm-charts/",
   },
-  version: "0.4.0",
+  version: chartVersion({ name: "victoria-metrics-operator-crds" }),
   namespace: "kube-system",
   values: {},
 }, {
@@ -35,7 +35,7 @@ const traefikCRDs = new kubernetes.helm.v3.Chart("traefik-crds", {
   fetchOpts: {
     repo: "https://traefik.github.io/charts",
   },
-  version: "1.10.0",
+  version: chartVersion({ name: "traefik-crds" }),
   namespace: "kube-system",
   values: {},
 }, {
@@ -47,7 +47,7 @@ const cloudnativePGCRDs = new kubernetes.helm.v3.Chart("cloudnative-pg-crds", {
   fetchOpts: {
     repo: "https://cloudnative-pg.github.io/charts",
   },
-  version: "0.25.0",
+  version: chartVersion({ name: "cloudnative-pg" }),
   namespace: "kube-system",
   values: {},
   transformations: [
@@ -74,7 +74,7 @@ const infisicalSecretsOperatorCRDs = new kubernetes.helm.v3.Chart("infisical-sec
   fetchOpts: {
     repo: "https://dl.cloudsmith.io/public/infisical/helm-charts/helm/charts/",
   },
-  version: "0.10.3",
+  version: chartVersion({ name: "secrets-operator" }),
   namespace: "kube-system",
   skipCRDRendering: false,
   values: {

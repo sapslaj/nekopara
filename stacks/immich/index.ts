@@ -4,7 +4,7 @@ import * as pulumi from "@pulumi/pulumi";
 import * as random from "@pulumi/random";
 import * as authentik from "@sapslaj/pulumi-authentik";
 
-import { newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";
+import { chartVersion, newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";
 import { IngressDNS } from "../../components/k8s/IngressDNS";
 import { Valkey } from "../../components/k8s/Valkey";
 
@@ -223,7 +223,7 @@ const pvc = new kubernetes.core.v1.PersistentVolumeClaim("immich", {
 
 const chart = new kubernetes.helm.v4.Chart("immich", {
   chart: "oci://ghcr.io/immich-app/immich-charts/immich",
-  version: "0.9.3",
+  version: chartVersion({ name: "immich" }),
   namespace: namespace.metadata.name,
   skipCrds: true,
   values: {

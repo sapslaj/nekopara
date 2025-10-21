@@ -6,7 +6,7 @@ import * as std from "@pulumi/std";
 import * as time from "@pulumiverse/time";
 
 import { iamPolicyDocument } from "../../components/aws-utils";
-import { newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";
+import { chartVersion, newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";
 import { IngressDNS } from "../../components/k8s/IngressDNS";
 import { Valkey } from "../../components/k8s/Valkey";
 
@@ -250,7 +250,7 @@ new kubernetes.batch.v1.CronJob("authentik-geoip-update", {
 
 const authentik = new kubernetes.helm.v3.Chart("authentik", {
   chart: "authentik",
-  version: "2025.8.3",
+  version: chartVersion({ name: "authentik" }),
   fetchOpts: {
     repo: "https://charts.goauthentik.io",
   },

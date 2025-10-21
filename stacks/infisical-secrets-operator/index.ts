@@ -1,7 +1,7 @@
 import * as kubernetes from "@pulumi/kubernetes";
 
 import { getSecretValueOutput, projectSlugs } from "../../components/infisical";
-import { newK3sProvider } from "../../components/k3s-shared";
+import { chartVersion, newK3sProvider } from "../../components/k3s-shared";
 
 // NOTE: using internal cluster endpoint instead of public one for funsies
 // const hostAPI = "https://infisical.sapslaj.cloud";
@@ -20,7 +20,7 @@ new kubernetes.helm.v3.Chart("infisical-secrets-operator", {
   fetchOpts: {
     repo: "https://dl.cloudsmith.io/public/infisical/helm-charts/helm/charts/",
   },
-  version: "0.10.3",
+  version: chartVersion({ name: "secrets-operator" }),
   namespace: namespace.metadata.name,
   skipCRDRendering: true,
   values: {

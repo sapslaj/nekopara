@@ -1,7 +1,7 @@
 import * as kubernetes from "@pulumi/kubernetes";
 import * as YAML from "yaml";
 
-import { newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";
+import { chartVersion, newK3sProvider, transformSkipIngressAwait } from "../../components/k3s-shared";
 import { AuthentikProxyIngress } from "../../components/k8s/AuthentikProxyIngress";
 import { IngressDNS } from "../../components/k8s/IngressDNS";
 
@@ -83,7 +83,7 @@ const chart = new kubernetes.helm.v3.Chart("jaeger", {
   fetchOpts: {
     repo: "https://jaegertracing.github.io/helm-charts",
   },
-  version: "3.4.1",
+  version: chartVersion({ name: "jaeger" }),
   namespace: namespace.metadata.name,
   skipCRDRendering: true,
   values: {

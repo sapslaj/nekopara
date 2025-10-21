@@ -1,0 +1,4 @@
+dependencies:
+  - name: immich
+    version: 0.9.3
+    repository: oci://ghcr.io/immich-app/immich-charts/immich

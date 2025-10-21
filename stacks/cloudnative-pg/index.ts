@@ -1,6 +1,6 @@
 import * as kubernetes from "@pulumi/kubernetes";
 
-import { newK3sProvider } from "../../components/k3s-shared";
+import { chartVersion, newK3sProvider } from "../../components/k3s-shared";
 
 const provider = newK3sProvider();
 
@@ -15,7 +15,7 @@ new kubernetes.helm.v3.Chart("cloudnative-pg", {
   fetchOpts: {
     repo: "https://cloudnative-pg.github.io/charts",
   },
-  version: "0.25.0",
+  version: chartVersion({ name: "cloudnative-pg" }),
   namespace: namespace.metadata.name,
   skipCRDRendering: true,
   values: {

@@ -8,7 +8,7 @@ import * as random from "@pulumi/random";
 import * as YAML from "yaml";
 
 import { getSecretValueOutput } from "../../components/infisical";
-import { newK3sProvider } from "../../components/k3s-shared";
+import { chartVersion, newK3sProvider } from "../../components/k3s-shared";
 import { IngressDNS } from "../../components/k8s/IngressDNS";
 import { Valkey } from "../../components/k8s/Valkey";
 import { base64encode, jsonencode } from "../../components/std";
@@ -52,7 +52,7 @@ const awsSecret = new kubernetes.core.v1.Secret("traefik-aws", {
 
 const traefik = new kubernetes.helm.v3.Chart("traefik", {
   chart: "traefik",
-  version: "36.3.0",
+  version: chartVersion({ name: "traefik" }),
   fetchOpts: {
     repo: "https://traefik.github.io/charts",
   },

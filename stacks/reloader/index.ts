@@ -1,6 +1,6 @@
 import * as kubernetes from "@pulumi/kubernetes";
 
-import { newK3sProvider } from "../../components/k3s-shared";
+import { chartVersion, newK3sProvider } from "../../components/k3s-shared";
 
 const provider = newK3sProvider();
 
@@ -15,7 +15,7 @@ const chart = new kubernetes.helm.v3.Chart("reloader", {
   fetchOpts: {
     repo: "https://stakater.github.io/stakater-charts",
   },
-  version: "2.2.2",
+  version: chartVersion({ name: "reloader" }),
   namespace: namespace.metadata.name,
   skipCRDRendering: true,
   values: {

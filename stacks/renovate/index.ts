@@ -4,7 +4,7 @@ import * as random from "@pulumi/random";
 import * as gitea from "@sapslaj/pulumi-gitea";
 
 import { getSecretValueOutput, Secret, SecretFolder } from "../../components/infisical";
-import { newK3sProvider } from "../../components/k3s-shared";
+import { chartVersion, newK3sProvider } from "../../components/k3s-shared";
 import { IngressDNS } from "../../components/k8s/IngressDNS";
 import { jsonencode } from "../../components/std";
 
@@ -61,7 +61,7 @@ const namespace = new kubernetes.core.v1.Namespace("renovate", {
 
 const chart = new kubernetes.helm.v4.Chart("renovate", {
   chart: "oci://ghcr.io/renovatebot/charts/renovate",
-  version: "44.15.1",
+  version: chartVersion({ name: "renovate" }),
   namespace: namespace.metadata.name,
   skipCrds: true,
   values: {

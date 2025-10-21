@@ -1,7 +1,7 @@
 import * as kubernetes from "@pulumi/kubernetes";
 import * as pulumi from "@pulumi/pulumi";
 
-import { newK3sProvider } from "../../components/k3s-shared";
+import { chartVersion, newK3sProvider } from "../../components/k3s-shared";
 
 const provider = newK3sProvider();
 
@@ -13,7 +13,7 @@ const namespace = new kubernetes.core.v1.Namespace("nfs-provisioner", {
 
 const nfsProvisioner = new kubernetes.helm.v3.Chart("nfs-subdir-external-provisioner", {
   chart: "nfs-subdir-external-provisioner",
-  version: "4.0.18",
+  version: chartVersion({ name: "nfs-subdir-external-provisioner" }),
   fetchOpts: {
     repo: "https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner",
   },
@@ -35,7 +35,7 @@ const nfsProvisioner = new kubernetes.helm.v3.Chart("nfs-subdir-external-provisi
 
 const nfsProvisionerAqua = new kubernetes.helm.v3.Chart("nfs-subdir-external-provisioner-aqua", {
   chart: "nfs-subdir-external-provisioner",
-  version: "4.0.18",
+  version: chartVersion({ name: "nfs-subdir-external-provisioner" }),
   fetchOpts: {
     repo: "https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner",
   },
@@ -57,7 +57,7 @@ const nfsProvisionerAqua = new kubernetes.helm.v3.Chart("nfs-subdir-external-pro
 
 const nfsProvisionerMitsuru = new kubernetes.helm.v3.Chart("nfs-subdir-external-provisioner-mitsuru", {
   chart: "nfs-subdir-external-provisioner",
-  version: "4.0.18",
+  version: chartVersion({ name: "nfs-subdir-external-provisioner" }),
   fetchOpts: {
     repo: "https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner",
   },

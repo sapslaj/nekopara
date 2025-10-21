@@ -1,5 +1,8 @@
+import * as fs from "fs";
+
 import * as kubernetes from "@pulumi/kubernetes";
 import * as pulumi from "@pulumi/pulumi";
+import * as YAML from "yaml";
 
 export function getClusterStack(
   name?: string,
@@ -104,4 +107,23 @@ export function transformPatchForce(): pulumi.ResourceTransform {
       };
     }
   };
+}
+
+export interface ChartVersionInput {
+  name: string;
+  chartYamlPath?: string;
+}
+
+export function chartVersion(input: ChartVersionInput): string {
+  const name = input.name;
+  const chartYamlPath = input.chartYamlPath ?? "./Chart.yaml";
+
+  const chart = YAML.parse(fs.readFileSync(chartYamlPath, { encoding: "utf8" }));
+  for (const dep of chart.dependencies) {
+    if (dep.name === name) {
+      return dep.version;
+    }
+  }
+
+  throw new Error(`could not find chart ${name}`);
 }
