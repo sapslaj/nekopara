@@ -2,7 +2,7 @@ name: deploy-stack-shortrack.yaml
 on:
   push:
     paths:
-      - stacks/shortrack
+      - stacks/shortrack/**
   workflow_call: null
   workflow_dispatch: null
 env:

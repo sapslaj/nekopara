@@ -2,7 +2,7 @@ name: deploy-stack-renovate.yaml
 on:
   push:
     paths:
-      - stacks/renovate
+      - stacks/renovate/**
   workflow_call: null
   workflow_dispatch: null
 env:

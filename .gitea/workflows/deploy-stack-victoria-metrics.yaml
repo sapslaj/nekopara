@@ -2,7 +2,7 @@ name: deploy-stack-victoria-metrics.yaml
 on:
   push:
     paths:
-      - stacks/victoria-metrics
+      - stacks/victoria-metrics/**
   workflow_call: null
   workflow_dispatch: null
 env:

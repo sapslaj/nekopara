@@ -2,7 +2,7 @@ name: deploy-stack-traefik-failover.yaml
 on:
   push:
     paths:
-      - stacks/traefik-failover
+      - stacks/traefik-failover/**
   workflow_call: null
   workflow_dispatch: null
 env:

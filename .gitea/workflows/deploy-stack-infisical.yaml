@@ -2,7 +2,7 @@ name: deploy-stack-infisical.yaml
 on:
   push:
     paths:
-      - stacks/infisical
+      - stacks/infisical/**
   workflow_call: null
   workflow_dispatch: null
 env:

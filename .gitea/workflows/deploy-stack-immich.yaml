@@ -2,7 +2,7 @@ name: deploy-stack-immich.yaml
 on:
   push:
     paths:
-      - stacks/immich
+      - stacks/immich/**
   workflow_call: null
   workflow_dispatch: null
 env:

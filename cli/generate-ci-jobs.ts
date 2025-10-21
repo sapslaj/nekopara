@@ -60,7 +60,7 @@ const env = {
         on: {
           push: {
             paths: [
-              `stacks/${stack}`,
+              `stacks/${stack}/**`,
             ],
           },
           workflow_call: null,

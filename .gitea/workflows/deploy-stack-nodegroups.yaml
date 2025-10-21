@@ -2,7 +2,7 @@ name: deploy-stack-nodegroups.yaml
 on:
   push:
     paths:
-      - stacks/nodegroups
+      - stacks/nodegroups/**
   workflow_call: null
   workflow_dispatch: null
 env:

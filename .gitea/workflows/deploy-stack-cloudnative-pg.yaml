@@ -2,7 +2,7 @@ name: deploy-stack-cloudnative-pg.yaml
 on:
   push:
     paths:
-      - stacks/cloudnative-pg
+      - stacks/cloudnative-pg/**
   workflow_call: null
   workflow_dispatch: null
 env:

@@ -2,7 +2,7 @@ name: deploy-stack-external-services.yaml
 on:
   push:
     paths:
-      - stacks/external-services
+      - stacks/external-services/**
   workflow_call: null
   workflow_dispatch: null
 env:

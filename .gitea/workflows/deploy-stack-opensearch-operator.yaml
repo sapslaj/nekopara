@@ -2,7 +2,7 @@ name: deploy-stack-opensearch-operator.yaml
 on:
   push:
     paths:
-      - stacks/opensearch-operator
+      - stacks/opensearch-operator/**
   workflow_call: null
   workflow_dispatch: null
 env:

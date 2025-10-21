@@ -2,7 +2,7 @@ name: deploy-stack-oxidized.yaml
 on:
   push:
     paths:
-      - stacks/oxidized
+      - stacks/oxidized/**
   workflow_call: null
   workflow_dispatch: null
 env:

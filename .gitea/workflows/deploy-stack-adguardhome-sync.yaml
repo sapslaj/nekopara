@@ -2,7 +2,7 @@ name: deploy-stack-adguardhome-sync.yaml
 on:
   push:
     paths:
-      - stacks/adguardhome-sync
+      - stacks/adguardhome-sync/**
   workflow_call: null
   workflow_dispatch: null
 env:

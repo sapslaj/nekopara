@@ -2,7 +2,7 @@ name: deploy-stack-reloader.yaml
 on:
   push:
     paths:
-      - stacks/reloader
+      - stacks/reloader/**
   workflow_call: null
   workflow_dispatch: null
 env:

@@ -2,7 +2,7 @@ name: deploy-stack-gitea.yaml
 on:
   push:
     paths:
-      - stacks/gitea
+      - stacks/gitea/**
   workflow_call: null
   workflow_dispatch: null
 env:

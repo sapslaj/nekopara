@@ -2,7 +2,7 @@ name: deploy-stack-traefik.yaml
 on:
   push:
     paths:
-      - stacks/traefik
+      - stacks/traefik/**
   workflow_call: null
   workflow_dispatch: null
 env:

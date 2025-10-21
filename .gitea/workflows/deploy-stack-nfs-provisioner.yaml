@@ -2,7 +2,7 @@ name: deploy-stack-nfs-provisioner.yaml
 on:
   push:
     paths:
-      - stacks/nfs-provisioner
+      - stacks/nfs-provisioner/**
   workflow_call: null
   workflow_dispatch: null
 env:

@@ -2,7 +2,7 @@ name: deploy-stack-cnpg-pgdump.yaml
 on:
   push:
     paths:
-      - stacks/cnpg-pgdump
+      - stacks/cnpg-pgdump/**
   workflow_call: null
   workflow_dispatch: null
 env:

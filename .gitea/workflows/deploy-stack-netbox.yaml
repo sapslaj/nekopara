@@ -2,7 +2,7 @@ name: deploy-stack-netbox.yaml
 on:
   push:
     paths:
-      - stacks/netbox
+      - stacks/netbox/**
   workflow_call: null
   workflow_dispatch: null
 env:

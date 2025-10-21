@@ -2,7 +2,7 @@ name: deploy-stack-grafana.yaml
 on:
   push:
     paths:
-      - stacks/grafana
+      - stacks/grafana/**
   workflow_call: null
   workflow_dispatch: null
 env:

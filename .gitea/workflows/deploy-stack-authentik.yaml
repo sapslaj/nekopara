@@ -2,7 +2,7 @@ name: deploy-stack-authentik.yaml
 on:
   push:
     paths:
-      - stacks/authentik
+      - stacks/authentik/**
   workflow_call: null
   workflow_dispatch: null
 env:

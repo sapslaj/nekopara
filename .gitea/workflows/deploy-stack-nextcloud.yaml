@@ -2,7 +2,7 @@ name: deploy-stack-nextcloud.yaml
 on:
   push:
     paths:
-      - stacks/nextcloud
+      - stacks/nextcloud/**
   workflow_call: null
   workflow_dispatch: null
 env:
