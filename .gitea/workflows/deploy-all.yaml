@@ -40,6 +40,7 @@ jobs:
   deploy-stack-cluster:
     uses: ./.gitea/workflows/deploy-stack-cluster.yaml
     needs: []
+    secrets: inherit
   deploy-stack-external-secrets-operator:
     uses: ./.gitea/workflows/deploy-stack-external-secrets-operator.yaml
     needs:
@@ -47,20 +48,24 @@ jobs:
       - deploy-stack-core
       - deploy-stack-crds
       - deploy-stack-nodegroups
+    secrets: inherit
   deploy-stack-crds:
     uses: ./.gitea/workflows/deploy-stack-crds.yaml
     needs:
       - deploy-stack-cluster
+    secrets: inherit
   deploy-stack-nodegroups:
     uses: ./.gitea/workflows/deploy-stack-nodegroups.yaml
     needs:
       - deploy-stack-cluster
+    secrets: inherit
   deploy-stack-core:
     uses: ./.gitea/workflows/deploy-stack-core.yaml
     needs:
       - deploy-stack-cluster
       - deploy-stack-crds
       - deploy-stack-nodegroups
+    secrets: inherit
   deploy-stack-adguardhome-sync:
     uses: ./.gitea/workflows/deploy-stack-adguardhome-sync.yaml
     needs:
@@ -68,6 +73,7 @@ jobs:
       - deploy-stack-core
       - deploy-stack-crds
       - deploy-stack-nodegroups
+    secrets: inherit
   deploy-stack-aws-credentials-secret-injector:
     uses: ./.gitea/workflows/deploy-stack-aws-credentials-secret-injector.yaml
     needs:
@@ -75,6 +81,7 @@ jobs:
       - deploy-stack-core
       - deploy-stack-crds
       - deploy-stack-nodegroups
+    secrets: inherit
   deploy-stack-cloudnative-pg:
     uses: ./.gitea/workflows/deploy-stack-cloudnative-pg.yaml
     needs:
@@ -82,6 +89,7 @@ jobs:
       - deploy-stack-core
       - deploy-stack-crds
       - deploy-stack-nodegroups
+    secrets: inherit
   deploy-stack-nfs-provisioner:
     uses: ./.gitea/workflows/deploy-stack-nfs-provisioner.yaml
     needs:
@@ -89,6 +97,7 @@ jobs:
       - deploy-stack-core
       - deploy-stack-crds
       - deploy-stack-nodegroups
+    secrets: inherit
   deploy-stack-opensearch-operator:
     uses: ./.gitea/workflows/deploy-stack-opensearch-operator.yaml
     needs:
@@ -96,6 +105,7 @@ jobs:
       - deploy-stack-core
       - deploy-stack-crds
       - deploy-stack-nodegroups
+    secrets: inherit
   deploy-stack-reloader:
     uses: ./.gitea/workflows/deploy-stack-reloader.yaml
     needs:
@@ -103,6 +113,7 @@ jobs:
       - deploy-stack-core
       - deploy-stack-crds
       - deploy-stack-nodegroups
+    secrets: inherit
   deploy-stack-shortrack:
     uses: ./.gitea/workflows/deploy-stack-shortrack.yaml
     needs:
@@ -110,6 +121,7 @@ jobs:
       - deploy-stack-core
       - deploy-stack-crds
       - deploy-stack-nodegroups
+    secrets: inherit
   deploy-stack-traefik:
     uses: ./.gitea/workflows/deploy-stack-traefik.yaml
     needs:
@@ -118,6 +130,7 @@ jobs:
       - deploy-stack-crds
       - deploy-stack-nfs-provisioner
       - deploy-stack-nodegroups
+    secrets: inherit
   deploy-stack-victoria-metrics:
     uses: ./.gitea/workflows/deploy-stack-victoria-metrics.yaml
     needs:
@@ -126,6 +139,7 @@ jobs:
       - deploy-stack-crds
       - deploy-stack-nfs-provisioner
       - deploy-stack-nodegroups
+    secrets: inherit
   deploy-stack-librenms:
     uses: ./.gitea/workflows/deploy-stack-librenms.yaml
     needs:
@@ -134,6 +148,7 @@ jobs:
       - deploy-stack-crds
       - deploy-stack-nodegroups
       - deploy-stack-shortrack
+    secrets: inherit
   deploy-stack-netbox:
     uses: ./.gitea/workflows/deploy-stack-netbox.yaml
     needs:
@@ -143,6 +158,7 @@ jobs:
       - deploy-stack-crds
       - deploy-stack-nodegroups
       - deploy-stack-shortrack
+    secrets: inherit
   deploy-stack-authentik:
     uses: ./.gitea/workflows/deploy-stack-authentik.yaml
     needs:
@@ -154,6 +170,7 @@ jobs:
       - deploy-stack-nodegroups
       - deploy-stack-shortrack
       - deploy-stack-traefik
+    secrets: inherit
   deploy-stack-traefik-failover:
     uses: ./.gitea/workflows/deploy-stack-traefik-failover.yaml
     needs:
@@ -162,6 +179,7 @@ jobs:
       - deploy-stack-crds
       - deploy-stack-nodegroups
       - deploy-stack-traefik
+    secrets: inherit
   deploy-stack-cnpg-pgdump:
     uses: ./.gitea/workflows/deploy-stack-cnpg-pgdump.yaml
     needs:
@@ -172,6 +190,7 @@ jobs:
       - deploy-stack-crds
       - deploy-stack-nodegroups
       - deploy-stack-shortrack
+    secrets: inherit
   deploy-stack-external-services:
     uses: ./.gitea/workflows/deploy-stack-external-services.yaml
     needs:
@@ -180,6 +199,7 @@ jobs:
       - deploy-stack-core
       - deploy-stack-crds
       - deploy-stack-traefik
+    secrets: inherit
   deploy-stack-gitea:
     uses: ./.gitea/workflows/deploy-stack-gitea.yaml
     needs:
@@ -191,6 +211,7 @@ jobs:
       - deploy-stack-nfs-provisioner
       - deploy-stack-nodegroups
       - deploy-stack-shortrack
+    secrets: inherit
   deploy-stack-grafana:
     uses: ./.gitea/workflows/deploy-stack-grafana.yaml
     needs:
@@ -201,6 +222,7 @@ jobs:
       - deploy-stack-nodegroups
       - deploy-stack-shortrack
       - deploy-stack-traefik
+    secrets: inherit
   deploy-stack-immich:
     uses: ./.gitea/workflows/deploy-stack-immich.yaml
     needs:
@@ -212,6 +234,7 @@ jobs:
       - deploy-stack-nfs-provisioner
       - deploy-stack-nodegroups
       - deploy-stack-shortrack
+    secrets: inherit
   deploy-stack-infisical:
     uses: ./.gitea/workflows/deploy-stack-infisical.yaml
     needs:
@@ -223,6 +246,7 @@ jobs:
       - deploy-stack-external-secrets-operator
       - deploy-stack-nodegroups
       - deploy-stack-shortrack
+    secrets: inherit
   deploy-stack-jaeger:
     uses: ./.gitea/workflows/deploy-stack-jaeger.yaml
     needs:
@@ -233,6 +257,7 @@ jobs:
       - deploy-stack-nodegroups
       - deploy-stack-opensearch-operator
       - deploy-stack-shortrack
+    secrets: inherit
   deploy-stack-nextcloud:
     uses: ./.gitea/workflows/deploy-stack-nextcloud.yaml
     needs:
@@ -244,6 +269,7 @@ jobs:
       - deploy-stack-nfs-provisioner
       - deploy-stack-nodegroups
       - deploy-stack-shortrack
+    secrets: inherit
   deploy-stack-oxidized:
     uses: ./.gitea/workflows/deploy-stack-oxidized.yaml
     needs:
@@ -253,6 +279,7 @@ jobs:
       - deploy-stack-crds
       - deploy-stack-nfs-provisioner
       - deploy-stack-nodegroups
+    secrets: inherit
   deploy-stack-planka:
     uses: ./.gitea/workflows/deploy-stack-planka.yaml
     needs:
@@ -264,6 +291,7 @@ jobs:
       - deploy-stack-nfs-provisioner
       - deploy-stack-nodegroups
       - deploy-stack-shortrack
+    secrets: inherit
   deploy-stack-renovate:
     uses: ./.gitea/workflows/deploy-stack-renovate.yaml
     needs:
@@ -273,6 +301,7 @@ jobs:
       - deploy-stack-gitea
       - deploy-stack-nodegroups
       - deploy-stack-shortrack
+    secrets: inherit
   deploy-stack-infisical-secrets-operator:
     uses: ./.gitea/workflows/deploy-stack-infisical-secrets-operator.yaml
     needs:
@@ -284,3 +313,4 @@ jobs:
       - deploy-stack-infisical
       - deploy-stack-nodegroups
       - deploy-stack-shortrack
+    secrets: inherit

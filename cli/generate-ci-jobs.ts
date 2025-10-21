@@ -119,6 +119,7 @@ EOF
     jobs[`deploy-stack-${stack}`] = {
       uses: `./.gitea/workflows/deploy-stack-${stack}.yaml`,
       needs: stackConfigs[stack].dependencies.map((dep) => `deploy-stack-${dep}`),
+      secrets: "inherit",
     };
   }
 
