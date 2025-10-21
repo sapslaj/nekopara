@@ -45,6 +45,7 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
           registry-url: https://npm.pkg.github.com
+          token: ${{ env.GH_ACTIONS_READ_TOKEN }}
       - run: npm ci --ignore-scripts
       - name: Create pulumi-state AWS profile
         shell: bash
@@ -66,3 +67,4 @@ jobs:
           stack-name: prod
           cloud-url: s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state
           work-dir: ./stacks/infisical
+          github-token: ${{ env.GH_ACTIONS_READ_TOKEN }}

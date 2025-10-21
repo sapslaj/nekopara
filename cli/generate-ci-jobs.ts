@@ -80,6 +80,7 @@ const env = {
                   "cache": "npm",
                   "cache-dependency-path": "package-lock.json",
                   "registry-url": "https://npm.pkg.github.com",
+                  "token": "${{ env.GH_ACTIONS_READ_TOKEN }}",
                 },
               },
               {
@@ -108,6 +109,7 @@ EOF
                   "stack-name": "prod",
                   "cloud-url": "s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state",
                   "work-dir": `./stacks/${stack}`,
+                  "github-token": "${{ env.GH_ACTIONS_READ_TOKEN }}",
                 },
               },
             ],
