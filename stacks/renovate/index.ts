@@ -39,7 +39,7 @@ const giteaUser = new gitea.User("renovate", {
   loginName: "renovate",
   active: true,
   fullName: "Renovate",
-  admin: true,
+  admin: false,
   prohibitLogin: false,
   forcePasswordChange: true,
   mustChangePassword: false,
@@ -72,12 +72,15 @@ const chart = new kubernetes.helm.v4.Chart("renovate", {
       config: jsonencode({
         autodiscover: true,
         endpoint: "https://git.sapslaj.cloud/api/v1",
-        optimizeForDisabled: true,
         platform: "gitea",
       }),
     },
     secrets: {
       RENOVATE_TOKEN: giteaToken,
+      RENOVATE_GITHUB_COM_TOKEN: getSecretValueOutput({
+        folder: secretFolder.path,
+        key: "RENOVATE_GITHUB_COM_TOKEN",
+      }),
     },
     env: {
       LOG_LEVEL: "debug",
