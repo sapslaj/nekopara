@@ -4,12 +4,13 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: external-secrets-cert-controller
-  namespace: default
+  namespace: external-secrets-operator
   labels:
-    helm.sh/chart: external-secrets-0.19.2
+
+    helm.sh/chart: external-secrets-0.20.3
     app.kubernetes.io/name: external-secrets-cert-controller
     app.kubernetes.io/instance: external-secrets-operator
-    app.kubernetes.io/version: "v0.19.2"
+    app.kubernetes.io/version: "v0.20.3"
     app.kubernetes.io/managed-by: Helm
 ---
 # Source: external-secrets/charts/external-secrets/templates/serviceaccount.yaml
@@ -17,12 +18,12 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: external-secrets-operator
-  namespace: default
+  namespace: external-secrets-operator
   labels:
-    helm.sh/chart: external-secrets-0.19.2
+    helm.sh/chart: external-secrets-0.20.3
     app.kubernetes.io/name: external-secrets
     app.kubernetes.io/instance: external-secrets-operator
-    app.kubernetes.io/version: "v0.19.2"
+    app.kubernetes.io/version: "v0.20.3"
     app.kubernetes.io/managed-by: Helm
 ---
 # Source: external-secrets/charts/external-secrets/templates/webhook-serviceaccount.yaml
@@ -30,12 +31,13 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: external-secrets-webhook
-  namespace: default
+  namespace: external-secrets-operator
   labels:
-    helm.sh/chart: external-secrets-0.19.2
+
+    helm.sh/chart: external-secrets-0.20.3
     app.kubernetes.io/name: external-secrets-webhook
     app.kubernetes.io/instance: external-secrets-operator
-    app.kubernetes.io/version: "v0.19.2"
+    app.kubernetes.io/version: "v0.20.3"
     app.kubernetes.io/managed-by: Helm
 ---
 # Source: external-secrets/charts/external-secrets/templates/webhook-secret.yaml
@@ -43,12 +45,13 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: external-secrets-operator-webhook
-  namespace: default
+  namespace: external-secrets-operator
   labels:
-    helm.sh/chart: external-secrets-0.19.2
+
+    helm.sh/chart: external-secrets-0.20.3
     app.kubernetes.io/name: external-secrets-webhook
     app.kubernetes.io/instance: external-secrets-operator
-    app.kubernetes.io/version: "v0.19.2"
+    app.kubernetes.io/version: "v0.20.3"
     app.kubernetes.io/managed-by: Helm
     external-secrets.io/component: webhook
 ---
@@ -57,13 +60,13 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: external-secrets-operator-dashboard
-  namespace: default
+  namespace: external-secrets-operator
   labels:
     grafana_dashboard: "1"
-    helm.sh/chart: external-secrets-0.19.2
+    helm.sh/chart: external-secrets-0.20.3
     app.kubernetes.io/name: external-secrets
     app.kubernetes.io/instance: external-secrets-operator
-    app.kubernetes.io/version: "v0.19.2"
+    app.kubernetes.io/version: "v0.20.3"
     app.kubernetes.io/managed-by: Helm
 data:
   external-secrets.json: "{\n  \"annotations\": {\n    \"list\": [\n      {\n        \"builtIn\": 1,\n        \"datasource\": {\n          \"type\": \"grafana\",\n          \"uid\": \"-- Grafana --\"\n        },\n        \"enable\": true,\n        \"hide\": true,\n        \"iconColor\": \"rgba(0, 211, 255, 1)\",\n        \"name\": \"Annotations \u0026 Alerts\",\n        \"target\": {\n          \"limit\": 100,\n          \"matchAny\": false,\n          \"tags\": [],\n          \"type\": \"dashboard\"\n        },\n        \"type\": \"dashboard\"\n      }\n    ]\n  },\n  \"editable\": true,\n  \"fiscalYearStartMonth\": 0,\n  \"graphTooltip\": 0,\n  \"id\": null,\n  \"links\": [],\n  \"panels\": [\n    {\n      \"collapsed\": false,\n      \"gridPos\": {\n        \"h\": 1,\n        \"w\": 24,\n        \"x\": 0,\n        \"y\": 0\n      },\n      \"id\": 99,\n      \"panels\": [],\n      \"title\": \"SLIs\",\n      \"type\": \"row\"\n    },\n    {\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"$datasource\"\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"color\": {\n            \"mode\": \"thresholds\"\n          },\n          \"mappings\": [],\n          \"min\": 0,\n          \"thresholds\": {\n            \"mode\": \"percentage\",\n            \"steps\": [\n              {\n                \"color\": \"green\"\n              },\n              {\n                \"color\": \"#EAB839\",\n                \"value\": 1\n              }\n            ]\n          },\n          \"unit\": \"percentunit\"\n        },\n        \"overrides\": []\n      },\n      \"gridPos\": {\n        \"h\": 7,\n        \"w\": 4,\n        \"x\": 0,\n        \"y\": 1\n      },\n      \"id\": 118,\n      \"options\": {\n        \"minVizHeight\": 75,\n        \"minVizWidth\": 75,\n        \"orientation\": \"auto\",\n        \"reduceOptions\": {\n          \"calcs\": [\n            \"lastNotNull\"\n          ],\n          \"fields\": \"\",\n          \"values\": false\n        },\n        \"showThresholdLabels\": false,\n        \"showThresholdMarkers\": true,\n        \"sizing\": \"auto\"\n      },\n      \"pluginVersion\": \"12.0.2\",\n      \"targets\": [\n        {\n          \"datasource\": {\n            \"type\": \"prometheus\",\n            \"uid\": \"$datasource\"\n          },\n          \"editorMode\": \"code\",\n          \"expr\": \"(sum(increase(controller_runtime_reconcile_total{service=~\\\".*external-secrets.*\\\",controller=~\\\"secretstore\\\", result=\\\"error\\\"}[15m])))\\n/\\n(sum(increase(controller_runtime_reconcile_total{service=~\\\".*external-secrets.*\\\",controller=~\\\"secretstore\\\"}[15m])))\\n\u003e 0\",\n          \"legendFormat\": \"__auto\",\n          \"range\": true,\n          \"refId\": \"A\"\n        }\n      ],\n      \"title\": \"SecretStore error rate [15m]\",\n      \"type\": \"gauge\"\n    },\n    {\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"$datasource\"\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"color\": {\n            \"mode\": \"thresholds\"\n          },\n          \"mappings\": [],\n          \"min\": 0,\n          \"thresholds\": {\n            \"mode\": \"percentage\",\n            \"steps\": [\n              {\n                \"color\": \"green\"\n              },\n              {\n                \"color\": \"#EAB839\",\n                \"value\": 1\n              }\n            ]\n          },\n          \"unit\": \"percentunit\"\n        },\n        \"overrides\": []\n      },\n      \"gridPos\": {\n        \"h\": 7,\n        \"w\": 4,\n        \"x\": 4,\n        \"y\": 1\n      },\n      \"id\": 121,\n      \"options\": {\n        \"minVizHeight\": 75,\n        \"minVizWidth\": 75,\n        \"orientation\": \"auto\",\n        \"reduceOptions\": {\n          \"calcs\": [\n            \"lastNotNull\"\n          ],\n          \"fields\": \"\",\n          \"values\": false\n        },\n        \"showThresholdLabels\": false,\n        \"showThresholdMarkers\": true,\n        \"sizing\": \"auto\"\n      },\n      \"pluginVersion\": \"12.0.2\",\n      \"targets\": [\n        {\n          \"datasource\": {\n            \"type\": \"prometheus\",\n            \"uid\": \"$datasource\"\n          },\n          \"editorMode\": \"code\",\n          \"expr\": \"(sum(increase(controller_runtime_reconcile_total{service=~\\\".*external-secrets.*\\\",controller=~\\\"clustersecretstore\\\", result=\\\"error\\\"}[15m])))\\n/\\n(sum(increase(controller_runtime_reconcile_total{service=~\\\".*external-secrets.*\\\",controller=~\\\"clustersecretstore\\\"}[15m])))\\n\u003e 0\",\n          \"legendFormat\": \"__auto\",\n          \"range\": true,\n          \"refId\": \"A\"\n        }\n      ],\n      \"title\": \"ClusterSecretStore error rate [15m]\",\n      \"type\": \"gauge\"\n    },\n    {\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"$datasource\"\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"color\": {\n            \"mode\": \"thresholds\"\n          },\n          \"mappings\": [],\n          \"min\": 0,\n          \"thresholds\": {\n            \"mode\": \"percentage\",\n            \"steps\": [\n              {\n                \"color\": \"green\"\n              },\n              {\n                \"color\": \"#EAB839\",\n                \"value\": 1\n              }\n            ]\n          },\n          \"unit\": \"percentunit\"\n        },\n        \"overrides\": []\n      },\n      \"gridPos\": {\n        \"h\": 6,\n        \"w\": 4,\n        \"x\": 8,\n        \"y\": 1\n      },\n      \"id\": 119,\n      \"options\": {\n        \"minVizHeight\": 75,\n        \"minVizWidth\": 75,\n        \"orientation\": \"auto\",\n        \"reduceOptions\": {\n          \"calcs\": [\n            \"lastNotNull\"\n          ],\n          \"fields\": \"\",\n          \"values\": false\n        },\n        \"showThresholdLabels\": false,\n        \"showThresholdMarkers\": true,\n        \"sizing\": \"auto\"\n      },\n      \"pluginVersion\": \"12.0.2\",\n      \"targets\": [\n        {\n          \"datasource\": {\n            \"type\": \"prometheus\",\n            \"uid\": \"$datasource\"\n          },\n          \"editorMode\": \"code\",\n          \"expr\": \"(sum(increase(controller_runtime_reconcile_total{service=~\\\".*external-secrets.*\\\",controller=~\\\"externalsecret\\\", result=\\\"error\\\"}[15m])))\\n/\\n(sum(increase(controller_runtime_reconcile_total{service=~\\\".*external-secrets.*\\\",controller=~\\\"externalsecret\\\"}[15m])))\\n\u003e 0\",\n          \"legendFormat\": \"__auto\",\n          \"range\": true,\n          \"refId\": \"A\"\n        }\n      ],\n      \"title\": \"ExternalSecret error rate [15m]\",\n      \"type\": \"gauge\"\n    },\n    {\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"$datasource\"\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"color\": {\n            \"mode\": \"thresholds\"\n          },\n          \"mappings\": [],\n          \"min\": 0,\n          \"thresholds\": {\n            \"mode\": \"percentage\",\n            \"steps\": [\n              {\n                \"color\": \"green\"\n              },\n              {\n                \"color\": \"#EAB839\",\n                \"value\": 1\n              }\n            ]\n          },\n          \"unit\": \"percentunit\"\n        },\n        \"overrides\": []\n      },\n      \"gridPos\": {\n        \"h\": 6,\n        \"w\": 4,\n        \"x\": 12,\n        \"y\": 1\n      },\n      \"id\": 120,\n      \"options\": {\n        \"minVizHeight\": 75,\n        \"minVizWidth\": 75,\n        \"orientation\": \"auto\",\n        \"reduceOptions\": {\n          \"calcs\": [\n            \"lastNotNull\"\n          ],\n          \"fields\": \"\",\n          \"values\": false\n        },\n        \"showThresholdLabels\": false,\n        \"showThresholdMarkers\": true,\n        \"sizing\": \"auto\"\n      },\n      \"pluginVersion\": \"12.0.2\",\n      \"targets\": [\n        {\n          \"datasource\": {\n            \"type\": \"prometheus\",\n            \"uid\": \"$datasource\"\n          },\n          \"editorMode\": \"code\",\n          \"expr\": \"(sum(irate(controller_runtime_reconcile_total{service=~\\\".*external-secrets.*\\\",controller=~\\\"clusterexternalsecret\\\", result=\\\"error\\\"}[15m])))\\n/\\n(sum(irate(controller_runtime_reconcile_total{service=~\\\".*external-secrets.*\\\",controller=~\\\"clusterexternalsecret\\\"}[15m])))\\n\u003e 0\",\n          \"legendFormat\": \"__auto\",\n          \"range\": true,\n          \"refId\": \"A\"\n        }\n      ],\n      \"title\": \"ClusterExternalSecret error rate [15m]\",\n      \"type\": \"gauge\"\n    },\n    {\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"$datasource\"\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"color\": {\n            \"mode\": \"thresholds\"\n          },\n          \"mappings\": [],\n          \"min\": 0,\n          \"thresholds\": {\n            \"mode\": \"percentage\",\n            \"steps\": [\n              {\n                \"color\": \"green\"\n              },\n              {\n                \"color\": \"#EAB839\",\n                \"value\": 1\n              }\n            ]\n          },\n          \"unit\": \"percentunit\"\n        },\n        \"overrides\": []\n      },\n      \"gridPos\": {\n        \"h\": 7,\n        \"w\": 4,\n        \"x\": 16,\n        \"y\": 1\n      },\n      \"id\": 122,\n      \"options\": {\n        \"minVizHeight\": 75,\n        \"minVizWidth\": 75,\n        \"orientation\": \"auto\",\n        \"reduceOptions\": {\n          \"calcs\": [\n            \"lastNotNull\"\n          ],\n          \"fields\": \"\",\n          \"values\": false\n        },\n        \"showThresholdLabels\": false,\n        \"showThresholdMarkers\": true,\n        \"sizing\": \"auto\"\n      },\n      \"pluginVersion\": \"12.0.2\",\n      \"targets\": [\n        {\n          \"datasource\": {\n            \"type\": \"prometheus\",\n            \"uid\": \"$datasource\"\n          },\n          \"editorMode\": \"code\",\n          \"expr\": \"(sum(increase(controller_runtime_reconcile_total{service=~\\\".*external-secrets.*\\\",controller=~\\\"pushsecret\\\", result=\\\"error\\\"}[15m])))\\n/\\n(sum(increase(controller_runtime_reconcile_total{service=~\\\".*external-secrets.*\\\",controller=~\\\"pushsecret\\\"}[15m])))\\n\u003e 0\",\n          \"legendFormat\": \"__auto\",\n          \"range\": true,\n          \"refId\": \"A\"\n        }\n      ],\n      \"title\": \"PushSecret error rate [15m]\",\n      \"type\": \"gauge\"\n    },\n    {\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"$datasource\"\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"color\": {\n            \"mode\": \"thresholds\"\n          },\n          \"mappings\": [],\n          \"min\": 0,\n          \"thresholds\": {\n            \"mode\": \"percentage\",\n            \"steps\": [\n              {\n                \"color\": \"green\"\n              },\n              {\n                \"color\": \"#EAB839\",\n                \"value\": 1\n              }\n            ]\n          },\n          \"unit\": \"percentunit\"\n        },\n        \"overrides\": []\n      },\n      \"gridPos\": {\n        \"h\": 7,\n        \"w\": 4,\n        \"x\": 20,\n        \"y\": 1\n      },\n      \"id\": 123,\n      \"options\": {\n        \"minVizHeight\": 75,\n        \"minVizWidth\": 75,\n        \"orientation\": \"auto\",\n        \"reduceOptions\": {\n          \"calcs\": [\n            \"lastNotNull\"\n          ],\n          \"fields\": \"\",\n          \"values\": false\n        },\n        \"showThresholdLabels\": false,\n        \"showThresholdMarkers\": true,\n        \"sizing\": \"auto\"\n      },\n      \"pluginVersion\": \"12.0.2\",\n      \"targets\": [\n        {\n          \"datasource\": {\n            \"type\": \"prometheus\",\n            \"uid\": \"$datasource\"\n          },\n          \"editorMode\": \"code\",\n          \"expr\": \"sum(increase(externalsecret_provider_api_calls_count{service=~\\\".*external-secrets.*\\\", status=\\\"error\\\"}[15m]))\\n/\\nsum(increase(externalsecret_provider_api_calls_count{service=~\\\".*external-secrets.*\\\"}[15m]))\\n\u003e 0\",\n          \"legendFormat\": \"__auto\",\n          \"range\": true,\n          \"refId\": \"A\"\n        }\n      ],\n      \"title\": \"Provider error rate [15m]\",\n      \"type\": \"gauge\"\n    },\n    {\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"$datasource\"\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"color\": {\n            \"mode\": \"thresholds\"\n          },\n          \"mappings\": [],\n          \"min\": 0,\n          \"thresholds\": {\n            \"mode\": \"absolute\",\n            \"steps\": [\n              {\n                \"color\": \"green\"\n              },\n              {\n                \"color\": \"#EAB839\",\n                \"value\": 10\n              }\n            ]\n          },\n          \"unit\": \"none\"\n        },\n        \"overrides\": []\n      },\n      \"gridPos\": {\n        \"h\": 7,\n        \"w\": 8,\n        \"x\": 8,\n        \"y\": 7\n      },\n      \"id\": 147,\n      \"options\": {\n        \"minVizHeight\": 75,\n        \"minVizWidth\": 75,\n        \"orientation\": \"auto\",\n        \"reduceOptions\": {\n          \"calcs\": [\n            \"lastNotNull\"\n          ],\n          \"fields\": \"\",\n          \"values\": false\n        },\n        \"showThresholdLabels\": false,\n        \"showThresholdMarkers\": true,\n        \"sizing\": \"auto\"\n      },\n      \"pluginVersion\": \"12.0.2\",\n      \"targets\": [\n        {\n          \"datasource\": {\n            \"type\": \"prometheus\",\n            \"uid\": \"$datasource\"\n          },\n          \"editorMode\": \"code\",\n          \"expr\": \"sum(\\n  workqueue_depth{service=~\\\"external-secrets.*\\\"}\\n) by (name)\",\n          \"legendFormat\": \"__auto\",\n          \"range\": true,\n          \"refId\": \"A\"\n        }\n      ],\n      \"title\": \"Workqueue depth\",\n      \"type\": \"gauge\"\n    },\n    {\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"$datasource\"\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"color\": {\n            \"mode\": \"thresholds\"\n          },\n          \"mappings\": [],\n          \"min\": 0,\n          \"thresholds\": {\n            \"mode\": \"percentage\",\n            \"steps\": [\n              {\n                \"color\": \"green\"\n              },\n              {\n                \"color\": \"#EAB839\",\n                \"value\": 1\n              }\n            ]\n          },\n          \"unit\": \"percentunit\"\n        },\n        \"overrides\": []\n      },\n      \"gridPos\": {\n        \"h\": 6,\n        \"w\": 4,\n        \"x\": 0,\n        \"y\": 8\n      },\n      \"id\": 145,\n      \"options\": {\n        \"minVizHeight\": 75,\n        \"minVizWidth\": 75,\n        \"orientation\": \"auto\",\n        \"reduceOptions\": {\n          \"calcs\": [\n            \"lastNotNull\"\n          ],\n          \"fields\": \"\",\n          \"values\": false\n        },\n        \"showThresholdLabels\": false,\n        \"showThresholdMarkers\": true,\n        \"sizing\": \"auto\"\n      },\n      \"pluginVersion\": \"12.0.2\",\n      \"targets\": [\n        {\n          \"datasource\": {\n            \"type\": \"prometheus\",\n            \"uid\": \"$datasource\"\n          },\n          \"editorMode\": \"code\",\n          \"expr\": \"sum(increase(controller_runtime_webhook_requests_total{service=~\\\"external-secrets.*\\\",code=\\\"500\\\"}[15m]))\\n/\\nsum(increase(controller_runtime_webhook_requests_total{service=~\\\"external-secrets.*\\\"}[15m]))\",\n          \"legendFormat\": \"__auto\",\n          \"range\": true,\n          \"refId\": \"A\"\n        }\n      ],\n      \"title\": \"Webhook error rate [15m]\",\n      \"type\": \"gauge\"\n    },\n    {\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"$datasource\"\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"color\": {\n            \"mode\": \"thresholds\"\n          },\n          \"mappings\": [],\n          \"min\": 0,\n          \"thresholds\": {\n            \"mode\": \"absolute\",\n            \"steps\": [\n              {\n                \"color\": \"green\"\n              },\n              {\n                \"color\": \"#EAB839\",\n                \"value\": 100\n              }\n            ]\n          },\n          \"unit\": \"s\"\n        },\n        \"overrides\": []\n      },\n      \"gridPos\": {\n        \"h\": 6,\n        \"w\": 4,\n        \"x\": 4,\n        \"y\": 8\n      },\n      \"id\": 146,\n      \"options\": {\n        \"minVizHeight\": 75,\n        \"minVizWidth\": 75,\n        \"orientation\": \"auto\",\n        \"reduceOptions\": {\n          \"calcs\": [\n            \"lastNotNull\"\n          ],\n          \"fields\": \"\",\n          \"values\": false\n        },\n        \"showThresholdLabels\": false,\n        \"showThresholdMarkers\": true,\n        \"sizing\": \"auto\"\n      },\n      \"pluginVersion\": \"12.0.2\",\n      \"targets\": [\n        {\n          \"datasource\": {\n            \"type\": \"prometheus\",\n            \"uid\": \"$datasource\"\n          },\n          \"editorMode\": \"code\",\n          \"expr\": \"histogram_quantile(0.99,\\n  sum(rate(controller_runtime_webhook_latency_seconds_bucket{service=~\\\"external-secrets.*\\\"}[5m])) by (le)\\n)\",\n          \"legendFormat\": \"__auto\",\n          \"range\": true,\n          \"refId\": \"A\"\n        }\n      ],\n      \"title\": \"Webhook latency [5m]\",\n      \"type\": \"gauge\"\n    },\n    {\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"$datasource\"\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"color\": {\n            \"mode\": \"thresholds\"\n          },\n          \"mappings\": [],\n          \"min\": 0,\n          \"thresholds\": {\n            \"mode\": \"absolute\",\n            \"steps\": [\n              {\n                \"color\": \"green\"\n              },\n              {\n                \"color\": \"#EAB839\",\n                \"value\": 10\n              }\n            ]\n          },\n          \"unit\": \"s\"\n        },\n        \"overrides\": []\n      },\n      \"gridPos\": {\n        \"h\": 6,\n        \"w\": 4,\n        \"x\": 16,\n        \"y\": 8\n      },\n      \"id\": 148,\n      \"options\": {\n        \"minVizHeight\": 75,\n        \"minVizWidth\": 75,\n        \"orientation\": \"auto\",\n        \"reduceOptions\": {\n          \"calcs\": [\n            \"lastNotNull\"\n          ],\n          \"fields\": \"\",\n          \"values\": false\n        },\n        \"showThresholdLabels\": false,\n        \"showThresholdMarkers\": true,\n        \"sizing\": \"auto\"\n      },\n      \"pluginVersion\": \"12.0.2\",\n      \"targets\": [\n        {\n          \"datasource\": {\n            \"type\": \"prometheus\",\n            \"uid\": \"$datasource\"\n          },\n          \"editorMode\": \"code\",\n          \"expr\": \"histogram_quantile(0.99,\\n  sum(rate(controller_runtime_reconcile_time_seconds_bucket{service=~\\\"external-secrets.*\\\"}[5m])) by (le)\\n)\",\n          \"legendFormat\": \"__auto\",\n          \"range\": true,\n          \"refId\": \"A\"\n        }\n      ],\n      \"title\": \"Reconcile latency [p99]\",\n      \"type\": \"gauge\"\n    },\n    {\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"$datasource\"\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"color\": {\n            \"mode\": \"thresholds\"\n          },\n          \"mappings\": [],\n          \"min\": 0,\n          \"thresholds\": {\n            \"mode\": \"percentage\",\n            \"steps\": [\n              {\n                \"color\": \"green\"\n              },\n              {\n                \"color\": \"#EAB839\",\n                \"value\": 1\n              }\n            ]\n          },\n          \"unit\": \"percentunit\"\n        },\n        \"overrides\": []\n      },\n      \"gridPos\": {\n        \"h\": 6,\n        \"w\": 4,\n        \"x\": 20,\n        \"y\": 8\n      },\n      \"id\": 149,\n      \"options\": {\n        \"minVizHeight\": 75,\n        \"minVizWidth\": 75,\n        \"orientation\": \"auto\",\n        \"reduceOptions\": {\n          \"calcs\": [\n            \"lastNotNull\"\n          ],\n          \"fields\": \"\",\n          \"values\": false\n        },\n        \"showThresholdLabels\": false,\n        \"showThresholdMarkers\": true,\n        \"sizing\": \"auto\"\n      },\n      \"pluginVersion\": \"12.0.2\",\n      \"targets\": [\n        {\n          \"datasource\": {\n            \"type\": \"prometheus\",\n            \"uid\": \"$datasource\"\n          },\n          \"editorMode\": \"code\",\n          \"expr\": \"sum(increase(controller_runtime_reconcile_total{service=~\\\"external-secrets.*\\\",controller=~\\\"$controller\\\",result=\\\"error\\\"}[1m]))\\n/\\nsum(increase(controller_runtime_reconcile_total{service=~\\\"external-secrets.*\\\",controller=~\\\"$controller\\\"}[1m]))\\n\u003e 0\",\n          \"legendFormat\": \"__auto\",\n          \"range\": true,\n          \"refId\": \"A\"\n        }\n      ],\n      \"title\": \"reconcile error rate [p99]\",\n      \"type\": \"gauge\"\n    },\n    {\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"$datasource\"\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"color\": {\n            \"mode\": \"palette-classic\"\n          },\n          \"custom\": {\n            \"axisBorderShow\": false,\n            \"axisCenteredZero\": false,\n            \"axisColorMode\": \"text\",\n            \"axisLabel\": \"\",\n            \"axisPlacement\": \"auto\",\n            \"barAlignment\": 0,\n            \"barWidthFactor\": 0.6,\n            \"drawStyle\": \"line\",\n            \"fillOpacity\": 0,\n            \"gradientMode\": \"none\",\n            \"hideFrom\": {\n              \"legend\": false,\n              \"tooltip\": false,\n              \"viz\": false\n            },\n            \"insertNulls\": false,\n            \"lineInterpolation\": \"linear\",\n            \"lineWidth\": 1,\n            \"pointSize\": 5,\n            \"scaleDistribution\": {\n              \"type\": \"linear\"\n            },\n            \"showPoints\": \"auto\",\n            \"spanNulls\": false,\n            \"stacking\": {\n              \"group\": \"A\",\n              \"mode\": \"none\"\n            },\n            \"thresholdsStyle\": {\n              \"mode\": \"off\"\n            }\n          },\n          \"mappings\": [],\n          \"min\": 0,\n          \"thresholds\": {\n            \"mode\": \"percentage\",\n            \"steps\": [\n              {\n                \"color\": \"green\"\n              },\n              {\n                \"color\": \"#EAB839\",\n                \"value\": 1\n              }\n            ]\n          },\n          \"unit\": \"none\"\n        },\n        \"overrides\": []\n      },\n      \"gridPos\": {\n        \"h\": 8,\n        \"w\": 8,\n        \"x\": 0,\n        \"y\": 14\n      },\n      \"id\": 124,\n      \"options\": {\n        \"legend\": {\n          \"calcs\": [],\n          \"displayMode\": \"list\",\n          \"placement\": \"bottom\",\n          \"showLegend\": true\n        },\n        \"tooltip\": {\n          \"hideZeros\": false,\n          \"mode\": \"single\",\n          \"sort\": \"none\"\n        }\n      },\n      \"pluginVersion\": \"12.0.2\",\n      \"targets\": [\n        {\n          \"datasource\": {\n            \"type\": \"prometheus\",\n            \"uid\": \"$datasource\"\n          },\n          \"editorMode\": \"code\",\n          \"expr\": \"increase(externalsecret_provider_api_calls_count{service=~\\\".*external-secrets.*\\\", status=\\\"error\\\"}[15m])\",\n          \"legendFormat\": \"{{provider}}/{{call}}\",\n          \"range\": true,\n          \"refId\": \"A\"\n        }\n      ],\n      \"title\": \"Provider errors [15m]\",\n      \"type\": \"timeseries\"\n    },\n    {\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"$datasource\"\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"color\": {\n            \"mode\": \"thresholds\"\n          },\n          \"custom\": {\n            \"align\": \"auto\",\n            \"cellOptions\": {\n              \"type\": \"auto\"\n            },\n            \"filterable\": false,\n            \"inspect\": false\n          },\n          \"mappings\": [],\n          \"thresholds\": {\n            \"mode\": \"absolute\",\n            \"steps\": [\n              {\n                \"color\": \"green\"\n              },\n              {\n                \"color\": \"red\",\n                \"value\": 80\n              }\n            ]\n          }\n        },\n        \"overrides\": [\n          {\n            \"matcher\": {\n              \"id\": \"byName\",\n              \"options\": \"Value\"\n            },\n            \"properties\": [\n              {\n                \"id\": \"custom.hidden\",\n                \"value\": true\n              }\n            ]\n          },\n          {\n            \"matcher\": {\n              \"id\": \"byName\",\n              \"options\": \"Time\"\n            },\n            \"properties\": [\n              {\n                \"id\": \"custom.hidden\",\n                \"value\": true\n              }\n            ]\n          }\n        ]\n      },\n      \"gridPos\": {\n        \"h\": 8,\n        \"w\": 7,\n        \"x\": 8,\n        \"y\": 14\n      },\n      \"id\": 125,\n      \"options\": {\n        \"cellHeight\": \"sm\",\n        \"footer\": {\n          \"countRows\": false,\n          \"fields\": [],\n          \"reducer\": [\n            \"sum\"\n          ],\n          \"show\": false\n        },\n        \"showHeader\": true\n      },\n      \"pluginVersion\": \"12.0.2\",\n      \"targets\": [\n        {\n          \"datasource\": {\n            \"type\": \"prometheus\",\n            \"uid\": \"$datasource\"\n          },\n          \"editorMode\": \"code\",\n          \"exemplar\": false,\n          \"expr\": \"sum(externalsecret_status_condition{condition=\\\"Ready\\\",status=\\\"False\\\"}) by (namespace, name) == 1\",\n          \"format\": \"table\",\n          \"instant\": true,\n          \"legendFormat\": \"{{provider}}/{{call}}\",\n          \"range\": false,\n          \"refId\": \"A\"\n        }\n      ],\n      \"title\": \"Not Ready ExternalSecrets  [15m]\",\n      \"type\": \"table\"\n    },\n    {\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"$datasource\"\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"color\": {\n            \"mode\": \"palette-classic\"\n          },\n          \"custom\": {\n            \"axisBorderShow\": false,\n            \"axisCenteredZero\": false,\n            \"axisColorMode\": \"text\",\n            \"axisLabel\": \"\",\n            \"axisPlacement\": \"auto\",\n            \"barAlignment\": 0,\n            \"barWidthFactor\": 0.6,\n            \"drawStyle\": \"line\",\n            \"fillOpacity\": 0,\n            \"gradientMode\": \"none\",\n            \"hideFrom\": {\n              \"legend\": false,\n              \"tooltip\": false,\n              \"viz\": false\n            },\n            \"insertNulls\": false,\n            \"lineInterpolation\": \"linear\",\n            \"lineWidth\": 1,\n            \"pointSize\": 5,\n            \"scaleDistribution\": {\n              \"type\": \"linear\"\n            },\n            \"showPoints\": \"auto\",\n            \"spanNulls\": false,\n            \"stacking\": {\n              \"group\": \"A\",\n              \"mode\": \"none\"\n            },\n            \"thresholdsStyle\": {\n              \"mode\": \"off\"\n            }\n          },\n          \"mappings\": [],\n          \"thresholds\": {\n            \"mode\": \"absolute\",\n            \"steps\": [\n              {\n                \"color\": \"green\"\n              },\n              {\n                \"color\": \"red\",\n                \"value\": 80\n              }\n            ]\n          }\n        },\n        \"overrides\": []\n      },\n      \"gridPos\": {\n        \"h\": 8,\n        \"w\": 9,\n        \"x\": 15,\n        \"y\": 14\n      },\n      \"id\": 126,\n      \"options\": {\n        \"legend\": {\n          \"calcs\": [],\n          \"displayMode\": \"list\",\n          \"placement\": \"bottom\",\n          \"showLegend\": true\n        },\n        \"tooltip\": {\n          \"hideZeros\": false,\n          \"mode\": \"single\",\n          \"sort\": \"none\"\n        }\n      },\n      \"pluginVersion\": \"12.0.2\",\n      \"targets\": [\n        {\n          \"datasource\": {\n            \"type\": \"prometheus\",\n            \"uid\": \"$datasource\"\n          },\n          \"editorMode\": \"code\",\n          \"expr\": \"sum(increase(externalsecret_sync_calls_error[15m])) by (name, namespace)\",\n          \"legendFormat\": \"{{namespace}}/{{name}}\",\n          \"range\": true,\n          \"refId\": \"A\"\n        }\n      ],\n      \"title\": \"ExternalSecret sync call errors [15m]\",\n      \"type\": \"timeseries\"\n    },\n    {\n      \"collapsed\": true,\n      \"gridPos\": {\n        \"h\": 1,\n        \"w\": 24,\n        \"x\": 0,\n        \"y\": 22\n      },\n      \"id\": 27,\n      \"panels\": [\n        {\n          \"datasource\": {\n            \"type\": \"prometheus\",\n            \"uid\": \"$datasource\"\n          },\n          \"fieldConfig\": {\n            \"defaults\": {\n              \"color\": {\n                \"mode\": \"palette-classic\"\n              },\n              \"custom\": {\n                \"axisBorderShow\": false,\n                \"axisCenteredZero\": false,\n                \"axisColorMode\": \"text\",\n                \"axisLabel\": \"\",\n                \"axisPlacement\": \"auto\",\n                \"barAlignment\": 0,\n                \"barWidthFactor\": 0.6,\n                \"drawStyle\": \"line\",\n                \"fillOpacity\": 0,\n                \"gradientMode\": \"none\",\n                \"hideFrom\": {\n                  \"legend\": false,\n                  \"tooltip\": false,\n                  \"viz\": false\n                },\n                \"insertNulls\": false,\n                \"lineInterpolation\": \"linear\",\n                \"lineWidth\": 1,\n                \"pointSize\": 5,\n                \"scaleDistribution\": {\n                  \"type\": \"linear\"\n                },\n                \"showPoints\": \"auto\",\n                \"spanNulls\": false,\n                \"stacking\": {\n                  \"group\": \"A\",\n                  \"mode\": \"none\"\n                },\n                \"thresholdsStyle\": {\n                  \"mode\": \"off\"\n                }\n              },\n              \"mappings\": [],\n              \"thresholds\": {\n                \"mode\": \"absolute\",\n                \"steps\": [\n                  {\n                    \"color\": \"green\"\n                  },\n                  {\n                    \"color\": \"red\",\n                    \"value\": 80\n                  }\n                ]\n              }\n            },\n            \"overrides\": []\n          },\n          \"gridPos\": {\n            \"h\": 8,\n            \"w\": 12,\n            \"x\": 0,\n            \"y\": 23\n          },\n          \"id\": 53,\n          \"options\": {\n            \"legend\": {\n              \"calcs\": [],\n              \"displayMode\": \"list\",\n              \"placement\": \"bottom\",\n              \"showLegend\": true\n            },\n            \"tooltip\": {\n              \"hideZeros\": false,\n              \"mode\": \"single\",\n              \"sort\": \"none\"\n            }\n          },\n          \"pluginVersion\": \"12.0.2\",\n          \"targets\": [\n            {\n              \"datasource\": {\n                \"type\": \"prometheus\",\n                \"uid\": \"$datasource\"\n              },\n              \"editorMode\": \"code\",\n              \"expr\": \"sum(increase(controller_runtime_webhook_requests_total{service=~\\\".*external-secrets.*\\\"}[1m])) by (webhook)\",\n              \"legendFormat\": \"__auto\",\n              \"range\": true,\n              \"refId\": \"A\"\n            }\n          ],\n          \"title\": \"requests by path per minute\",\n          \"type\": \"timeseries\"\n        },\n        {\n          \"datasource\": {\n            \"type\": \"prometheus\",\n            \"uid\": \"$datasource\"\n          },\n          \"fieldConfig\": {\n            \"defaults\": {\n              \"color\": {\n                \"mode\": \"palette-classic\"\n              },\n              \"custom\": {\n                \"axisBorderShow\": false,\n                \"axisCenteredZero\": false,\n                \"axisColorMode\": \"text\",\n                \"axisLabel\": \"\",\n                \"axisPlacement\": \"auto\",\n                \"barAlignment\": 0,\n                \"barWidthFactor\": 0.6,\n                \"drawStyle\": \"line\",\n                \"fillOpacity\": 0,\n                \"gradientMode\": \"none\",\n                \"hideFrom\": {\n                  \"legend\": false,\n                  \"tooltip\": false,\n                  \"viz\": false\n                },\n                \"insertNulls\": false,\n                \"lineInterpolation\": \"linear\",\n                \"lineWidth\": 1,\n                \"pointSize\": 5,\n                \"scaleDistribution\": {\n                  \"type\": \"linear\"\n                },\n                \"showPoints\": \"auto\",\n                \"spanNulls\": false,\n                \"stacking\": {\n                  \"group\": \"A\",\n                  \"mode\": \"none\"\n                },\n                \"thresholdsStyle\": {\n                  \"mode\": \"off\"\n                }\n              },\n              \"mappings\": [],\n              \"thresholds\": {\n                \"mode\": \"absolute\",\n                \"steps\": [\n                  {\n                    \"color\": \"green\"\n                  },\n                  {\n                    \"color\": \"red\",\n                    \"value\": 80\n                  }\n                ]\n              }\n            },\n            \"overrides\": []\n          },\n          \"gridPos\": {\n            \"h\": 8,\n            \"w\": 12,\n            \"x\": 12,\n            \"y\": 23\n          },\n          \"id\": 67,\n          \"options\": {\n            \"legend\": {\n              \"calcs\": [],\n              \"displayMode\": \"list\",\n              \"placement\": \"bottom\",\n              \"showLegend\": true\n            },\n            \"tooltip\": {\n              \"hideZeros\": false,\n              \"mode\": \"single\",\n              \"sort\": \"none\"\n            }\n          },\n          \"pluginVersion\": \"12.0.2\",\n          \"targets\": [\n            {\n              \"datasource\": {\n                \"type\": \"prometheus\",\n                \"uid\": \"$datasource\"\n              },\n              \"editorMode\": \"code\",\n              \"expr\": \"sum(controller_runtime_webhook_requests_in_flight{service=~\\\".*external-secrets.*\\\"}) by (webhook)\",\n              \"legendFormat\": \"__auto\",\n              \"range\": true,\n              \"refId\": \"A\"\n            }\n          ],\n          \"title\": \"requests in flight\",\n          \"type\": \"timeseries\"\n        },\n        {\n          \"datasource\": {\n            \"type\": \"prometheus\",\n            \"uid\": \"$datasource\"\n          },\n          \"fieldConfig\": {\n            \"defaults\": {\n              \"color\": {\n                \"mode\": \"palette-classic\"\n              },\n              \"custom\": {\n                \"axisBorderShow\": false,\n                \"axisCenteredZero\": false,\n                \"axisColorMode\": \"text\",\n                \"axisLabel\": \"\",\n                \"axisPlacement\": \"auto\",\n                \"barAlignment\": 0,\n                \"barWidthFactor\": 0.6,\n                \"drawStyle\": \"line\",\n                \"fillOpacity\": 0,\n                \"gradientMode\": \"none\",\n                \"hideFrom\": {\n                  \"legend\": false,\n                  \"tooltip\": false,\n                  \"viz\": false\n                },\n                \"insertNulls\": false,\n                \"lineInterpolation\": \"linear\",\n                \"lineWidth\": 1,\n                \"pointSize\": 5,\n                \"scaleDistribution\": {\n                  \"type\": \"linear\"\n                },\n                \"showPoints\": \"auto\",\n                \"spanNulls\": false,\n                \"stacking\": {\n                  \"group\": \"A\",\n                  \"mode\": \"none\"\n                },\n                \"thresholdsStyle\": {\n                  \"mode\": \"off\"\n                }\n              },\n              \"mappings\": [],\n              \"thresholds\": {\n                \"mode\": \"absolute\",\n                \"steps\": [\n                  {\n                    \"color\": \"green\"\n                  },\n                  {\n                    \"color\": \"red\",\n                    \"value\": 80\n                  }\n                ]\n              }\n            },\n            \"overrides\": []\n          },\n          \"gridPos\": {\n            \"h\": 8,\n            \"w\": 12,\n            \"x\": 0,\n            \"y\": 31\n          },\n          \"id\": 80,\n          \"options\": {\n            \"legend\": {\n              \"calcs\": [],\n              \"displayMode\": \"list\",\n              \"placement\": \"bottom\",\n              \"showLegend\": true\n            },\n            \"tooltip\": {\n              \"hideZeros\": false,\n              \"mode\": \"single\",\n              \"sort\": \"none\"\n            }\n          },\n          \"pluginVersion\": \"12.0.2\",\n          \"targets\": [\n            {\n              \"datasource\": {\n                \"type\": \"prometheus\",\n                \"uid\": \"$datasource\"\n              },\n              \"editorMode\": \"code\",\n              \"expr\": \"sum(increase(controller_runtime_webhook_requests_total{service=~\\\".*external-secrets.*\\\"}[1m])) by (code)\",\n              \"legendFormat\": \"__auto\",\n              \"range\": true,\n              \"refId\": \"A\"\n            }\n          ],\n          \"title\": \"requests by code per minute\",\n          \"type\": \"timeseries\"\n        },\n        {\n          \"datasource\": {\n            \"type\": \"prometheus\",\n            \"uid\": \"$datasource\"\n          },\n          \"fieldConfig\": {\n            \"defaults\": {\n              \"custom\": {\n                \"hideFrom\": {\n                  \"legend\": false,\n                  \"tooltip\": false,\n                  \"viz\": false\n                },\n                \"scaleDistribution\": {\n                  \"type\": \"linear\"\n                }\n              }\n            },\n            \"overrides\": []\n          },\n          \"gridPos\": {\n            \"h\": 8,\n            \"w\": 12,\n            \"x\": 12,\n            \"y\": 31\n          },\n          \"id\": 54,\n          \"maxDataPoints\": 25,\n          \"options\": {\n            \"calculate\": false,\n            \"cellGap\": 1,\n            \"cellValues\": {\n              \"unit\": \"short\"\n            },\n            \"color\": {\n              \"exponent\": 0.5,\n              \"fill\": \"dark-orange\",\n              \"mode\": \"scheme\",\n              \"reverse\": false,\n              \"scale\": \"exponential\",\n              \"scheme\": \"Oranges\",\n              \"steps\": 64\n            },\n            \"exemplars\": {\n              \"color\": \"rgba(255,0,255,0.7)\"\n            },\n            \"filterValues\": {\n              \"le\": 1e-9\n            },\n            \"legend\": {\n              \"show\": true\n            },\n            \"rowsFrame\": {\n              \"layout\": \"auto\"\n            },\n            \"tooltip\": {\n              \"mode\": \"single\",\n              \"showColorScale\": false,\n              \"yHistogram\": false\n            },\n            \"yAxis\": {\n              \"axisPlacement\": \"left\",\n              \"reverse\": false,\n              \"unit\": \"s\"\n            }\n          },\n          \"pluginVersion\": \"12.0.2\",\n          \"targets\": [\n            {\n              \"datasource\": {\n                \"type\": \"prometheus\",\n                \"uid\": \"$datasource\"\n              },\n              \"editorMode\": \"code\",\n              \"expr\": \"sum by (le) (rate(controller_runtime_webhook_latency_seconds_bucket{service=~\\\".*external-secrets.*\\\"}[$__rate_interval]))\",\n              \"format\": \"heatmap\",\n              \"legendFormat\": \"{{le}}\",\n              \"range\": true,\n              \"refId\": \"A\"\n            }\n          ],\n          \"title\": \"webhook latency\",\n          \"type\": \"heatmap\"\n        }\n      ],\n      \"title\": \"Admission Control Webhook\",\n      \"type\": \"row\"\n    },\n    {\n      \"collapsed\": true,\n      \"gridPos\": {\n        \"h\": 1,\n        \"w\": 24,\n        \"x\": 0,\n        \"y\": 23\n      },\n      \"id\": 17,\n      \"panels\": [\n        {\n          \"datasource\": {\n            \"type\": \"prometheus\",\n            \"uid\": \"$datasource\"\n          },\n          \"fieldConfig\": {\n            \"defaults\": {\n              \"color\": {\n                \"mode\": \"palette-classic\"\n              },\n              \"custom\": {\n                \"axisBorderShow\": false,\n                \"axisCenteredZero\": false,\n                \"axisColorMode\": \"text\",\n                \"axisLabel\": \"\",\n                \"axisPlacement\": \"auto\",\n                \"barAlignment\": 0,\n                \"barWidthFactor\": 0.6,\n                \"drawStyle\": \"line\",\n                \"fillOpacity\": 0,\n                \"gradientMode\": \"none\",\n                \"hideFrom\": {\n                  \"legend\": false,\n                  \"tooltip\": false,\n                  \"viz\": false\n                },\n                \"insertNulls\": false,\n                \"lineInterpolation\": \"linear\",\n                \"lineWidth\": 1,\n                \"pointSize\": 5,\n                \"scaleDistribution\": {\n                  \"type\": \"linear\"\n                },\n                \"showPoints\": \"auto\",\n                \"spanNulls\": false,\n                \"stacking\": {\n                  \"group\": \"A\",\n                  \"mode\": \"none\"\n                },\n                \"thresholdsStyle\": {\n                  \"mode\": \"off\"\n                }\n              },\n              \"mappings\": [],\n              \"thresholds\": {\n                \"mode\": \"absolute\",\n                \"steps\": [\n                  {\n                    \"color\": \"green\"\n                  },\n                  {\n                    \"color\": \"red\",\n                    \"value\": 80\n                  }\n                ]\n              }\n            },\n            \"overrides\": []\n          },\n          \"gridPos\": {\n            \"h\": 8,\n            \"w\": 7,\n            \"x\": 0,\n            \"y\": 40\n          },\n          \"id\": 2,\n          \"options\": {\n            \"legend\": {\n              \"calcs\": [],\n              \"displayMode\": \"list\",\n              \"placement\": \"bottom\",\n              \"showLegend\": true\n            },\n            \"tooltip\": {\n              \"hideZeros\": false,\n              \"mode\": \"single\",\n              \"sort\": \"none\"\n            }\n          },\n          \"pluginVersion\": \"12.0.2\",\n          \"targets\": [\n            {\n              \"datasource\": {\n                \"type\": \"prometheus\",\n                \"uid\": \"$datasource\"\n              },\n              \"editorMode\": \"code\",\n              \"expr\": \"sum(controller_runtime_active_workers{service=~\\\".*external-secrets.*\\\",controller=~\\\"$controller\\\"}) by (controller)\",\n              \"legendFormat\": \"__auto\",\n              \"range\": true,\n              \"refId\": \"A\"\n            }\n          ],\n          \"title\": \"active workers by controller\",\n          \"type\": \"timeseries\"\n        },\n        {\n          \"datasource\": {\n            \"type\": \"prometheus\",\n            \"uid\": \"$datasource\"\n          },\n          \"fieldConfig\": {\n            \"defaults\": {\n              \"color\": {\n                \"mode\": \"palette-classic\"\n              },\n              \"custom\": {\n                \"axisBorderShow\": false,\n                \"axisCenteredZero\": false,\n                \"axisColorMode\": \"text\",\n                \"axisLabel\": \"\",\n                \"axisPlacement\": \"auto\",\n                \"barAlignment\": 0,\n                \"barWidthFactor\": 0.6,\n                \"drawStyle\": \"line\",\n                \"fillOpacity\": 0,\n                \"gradientMode\": \"none\",\n                \"hideFrom\": {\n                  \"legend\": false,\n                  \"tooltip\": false,\n                  \"viz\": false\n                },\n                \"insertNulls\": false,\n                \"lineInterpolation\": \"linear\",\n                \"lineWidth\": 1,\n                \"pointSize\": 5,\n                \"scaleDistribution\": {\n                  \"type\": \"linear\"\n                },\n                \"showPoints\": \"auto\",\n                \"spanNulls\": false,\n                \"stacking\": {\n                  \"group\": \"A\",\n                  \"mode\": \"none\"\n                },\n                \"thresholdsStyle\": {\n                  \"mode\": \"off\"\n                }\n              },\n              \"mappings\": [],\n              \"thresholds\": {\n                \"mode\": \"absolute\",\n                \"steps\": [\n                  {\n                    \"color\": \"green\"\n                  },\n                  {\n                    \"color\": \"red\",\n                    \"value\": 80\n                  }\n                ]\n              }\n            },\n            \"overrides\": []\n          },\n          \"gridPos\": {\n            \"h\": 8,\n            \"w\": 8,\n            \"x\": 7,\n            \"y\": 40\n          },\n          \"id\": 37,\n          \"options\": {\n            \"legend\": {\n              \"calcs\": [],\n              \"displayMode\": \"list\",\n              \"placement\": \"bottom\",\n              \"showLegend\": true\n            },\n            \"tooltip\": {\n              \"hideZeros\": false,\n              \"mode\": \"single\",\n              \"sort\": \"none\"\n            }\n          },\n          \"pluginVersion\": \"12.0.2\",\n          \"targets\": [\n            {\n              \"datasource\": {\n                \"type\": \"prometheus\",\n                \"uid\": \"$datasource\"\n              },\n              \"editorMode\": \"code\",\n              \"expr\": \"sum(workqueue_depth{service=~\\\".*external-secrets.*\\\"}) by (name)\",\n              \"legendFormat\": \"__auto\",\n              \"range\": true,\n              \"refId\": \"A\"\n            }\n          ],\n          \"title\": \"workqueue depth\",\n          \"type\": \"timeseries\"\n        },\n        {\n          \"datasource\": {\n            \"type\": \"prometheus\",\n            \"uid\": \"$datasource\"\n          },\n          \"fieldConfig\": {\n            \"defaults\": {\n              \"color\": {\n                \"mode\": \"palette-classic\"\n              },\n              \"custom\": {\n                \"axisBorderShow\": false,\n                \"axisCenteredZero\": false,\n                \"axisColorMode\": \"text\",\n                \"axisLabel\": \"\",\n                \"axisPlacement\": \"auto\",\n                \"barAlignment\": 0,\n                \"barWidthFactor\": 0.6,\n                \"drawStyle\": \"line\",\n                \"fillOpacity\": 0,\n                \"gradientMode\": \"none\",\n                \"hideFrom\": {\n                  \"legend\": false,\n                  \"tooltip\": false,\n                  \"viz\": false\n                },\n                \"insertNulls\": false,\n                \"lineInterpolation\": \"linear\",\n                \"lineWidth\": 1,\n                \"pointSize\": 5,\n                \"scaleDistribution\": {\n                  \"type\": \"linear\"\n                },\n                \"showPoints\": \"auto\",\n                \"spanNulls\": false,\n                \"stacking\": {\n                  \"group\": \"A\",\n                  \"mode\": \"none\"\n                },\n                \"thresholdsStyle\": {\n                  \"mode\": \"off\"\n                }\n              },\n              \"mappings\": [],\n              \"thresholds\": {\n                \"mode\": \"absolute\",\n                \"steps\": [\n                  {\n                    \"color\": \"green\"\n                  },\n                  {\n                    \"color\": \"red\",\n                    \"value\": 80\n                  }\n                ]\n              }\n            },\n            \"overrides\": []\n          },\n          \"gridPos\": {\n            \"h\": 8,\n            \"w\": 9,\n            \"x\": 15,\n            \"y\": 40\n          },\n          \"id\": 15,\n          \"options\": {\n            \"legend\": {\n              \"calcs\": [],\n              \"displayMode\": \"list\",\n              \"placement\": \"bottom\",\n              \"showLegend\": true\n            },\n            \"tooltip\": {\n              \"hideZeros\": false,\n              \"mode\": \"single\",\n              \"sort\": \"none\"\n            }\n          },\n          \"pluginVersion\": \"12.0.2\",\n          \"targets\": [\n            {\n              \"datasource\": {\n                \"type\": \"prometheus\",\n                \"uid\": \"$datasource\"\n              },\n              \"editorMode\": \"code\",\n              \"expr\": \"sum(increase(externalsecret_provider_api_calls_count{service=~\\\".*external-secrets.*\\\"}[1m])) by(provider, call, status)\",\n              \"legendFormat\": \"{{provider}}/{{call}}={{status}}\",\n              \"range\": true,\n              \"refId\": \"A\"\n            }\n          ],\n          \"title\": \"API calls by provider\",\n          \"type\": \"timeseries\"\n        },\n        {\n          \"datasource\": {\n            \"type\": \"prometheus\",\n            \"uid\": \"$datasource\"\n          },\n          \"description\": \"\",\n          \"fieldConfig\": {\n            \"defaults\": {\n              \"color\": {\n                \"mode\": \"thresholds\"\n              },\n              \"mappings\": [],\n              \"thresholds\": {\n                \"mode\": \"absolute\",\n                \"steps\": [\n                  {\n                    \"color\": \"green\"\n                  },\n                  {\n                    \"color\": \"red\",\n                    \"value\": 80\n                  }\n                ]\n              }\n            },\n            \"overrides\": []\n          },\n          \"gridPos\": {\n            \"h\": 6,\n            \"w\": 24,\n            \"x\": 0,\n            \"y\": 48\n          },\n          \"id\": 5,\n          \"maxPerRow\": 12,\n          \"options\": {\n            \"colorMode\": \"value\",\n            \"graphMode\": \"area\",\n            \"justifyMode\": \"auto\",\n            \"orientation\": \"auto\",\n            \"reduceOptions\": {\n              \"calcs\": [\n                \"lastNotNull\"\n              ],\n              \"fields\": \"\",\n              \"values\": false\n            },\n            \"textMode\": \"auto\"\n          },\n          \"pluginVersion\": \"9.5.2\",\n          \"repeat\": \"controller\",\n          \"repeatDirection\": \"h\",\n          \"targets\": [\n            {\n              \"datasource\": {\n                \"type\": \"prometheus\",\n                \"uid\": \"$datasource\"\n              },\n              \"editorMode\": \"code\",\n              \"expr\": \"sum(controller_runtime_max_concurrent_reconciles{service=~\\\".*external-secrets.*\\\",controller=\\\"$controller\\\"}) by (controller)\",\n              \"legendFormat\": \"__auto\",\n              \"range\": true,\n              \"refId\": \"A\"\n            }\n          ],\n          \"title\": \"max concurrent: $controller\",\n          \"type\": \"stat\"\n        },\n        {\n          \"datasource\": {\n            \"type\": \"prometheus\",\n            \"uid\": \"$datasource\"\n          },\n          \"fieldConfig\": {\n            \"defaults\": {\n              \"color\": {\n                \"mode\": \"palette-classic\"\n              },\n              \"custom\": {\n                \"axisCenteredZero\": false,\n                \"axisColorMode\": \"text\",\n                \"axisLabel\": \"\",\n                \"axisPlacement\": \"auto\",\n                \"barAlignment\": 0,\n                \"drawStyle\": \"line\",\n                \"fillOpacity\": 0,\n                \"gradientMode\": \"none\",\n                \"hideFrom\": {\n                  \"legend\": false,\n                  \"tooltip\": false,\n                  \"viz\": false\n                },\n                \"lineInterpolation\": \"linear\",\n                \"lineWidth\": 1,\n                \"pointSize\": 5,\n                \"scaleDistribution\": {\n                  \"type\": \"linear\"\n                },\n                \"showPoints\": \"auto\",\n                \"spanNulls\": false,\n                \"stacking\": {\n                  \"group\": \"A\",\n                  \"mode\": \"none\"\n                },\n                \"thresholdsStyle\": {\n                  \"mode\": \"off\"\n                }\n              },\n              \"mappings\": [],\n              \"thresholds\": {\n                \"mode\": \"absolute\",\n                \"steps\": [\n                  {\n                    \"color\": \"green\"\n                  },\n                  {\n                    \"color\": \"red\",\n                    \"value\": 80\n                  }\n                ]\n              }\n            },\n            \"overrides\": []\n          },\n          \"gridPos\": {\n            \"h\": 8,\n            \"w\": 24,\n            \"x\": 0,\n            \"y\": 54\n          },\n          \"id\": 3,\n          \"maxPerRow\": 8,\n          \"options\": {\n            \"legend\": {\n              \"calcs\": [],\n              \"displayMode\": \"list\",\n              \"placement\": \"bottom\",\n              \"showLegend\": true\n            },\n            \"tooltip\": {\n              \"mode\": \"single\",\n              \"sort\": \"none\"\n            }\n          },\n          \"repeat\": \"controller\",\n          \"repeatDirection\": \"h\",\n          \"targets\": [\n            {\n              \"datasource\": {\n                \"type\": \"prometheus\",\n                \"uid\": \"$datasource\"\n              },\n              \"editorMode\": \"code\",\n              \"expr\": \"sum(increase(controller_runtime_reconcile_total{service=~\\\".*external-secrets.*\\\",controller=~\\\"$controller\\\"}[1m])) by (result)\",\n              \"legendFormat\": \"__auto\",\n              \"range\": true,\n              \"refId\": \"A\"\n            }\n          ],\n          \"title\": \"reconcile rate per minute: $controller\",\n          \"type\": \"timeseries\"\n        },\n        {\n          \"datasource\": {\n            \"type\": \"prometheus\",\n            \"uid\": \"$datasource\"\n          },\n          \"fieldConfig\": {\n            \"defaults\": {\n              \"custom\": {\n                \"hideFrom\": {\n                  \"legend\": false,\n                  \"tooltip\": false,\n                  \"viz\": false\n                },\n                \"scaleDistribution\": {\n                  \"type\": \"linear\"\n                }\n              }\n            },\n            \"overrides\": []\n          },\n          \"gridPos\": {\n            \"h\": 8,\n            \"w\": 24,\n            \"x\": 0,\n            \"y\": 62\n          },\n          \"id\": 39,\n          \"maxDataPoints\": 25,\n          \"maxPerRow\": 8,\n          \"options\": {\n            \"calculate\": false,\n            \"cellGap\": 1,\n            \"cellValues\": {\n              \"unit\": \"short\"\n            },\n            \"color\": {\n              \"exponent\": 0.5,\n              \"fill\": \"dark-orange\",\n              \"mode\": \"scheme\",\n              \"reverse\": false,\n              \"scale\": \"exponential\",\n              \"scheme\": \"Oranges\",\n              \"steps\": 10\n            },\n            \"exemplars\": {\n              \"color\": \"rgba(255,0,255,0.7)\"\n            },\n            \"filterValues\": {\n              \"le\": 1e-9\n            },\n            \"legend\": {\n              \"show\": true\n            },\n            \"rowsFrame\": {\n              \"layout\": \"auto\"\n            },\n            \"tooltip\": {\n              \"mode\": \"single\",\n              \"showColorScale\": false,\n              \"yHistogram\": false\n            },\n            \"yAxis\": {\n              \"axisPlacement\": \"left\",\n              \"max\": \"5\",\n              \"min\": 0,\n              \"reverse\": false,\n              \"unit\": \"s\"\n            }\n          },\n          \"pluginVersion\": \"12.0.2\",\n          \"repeat\": \"controller\",\n          \"repeatDirection\": \"h\",\n          \"targets\": [\n            {\n              \"datasource\": {\n                \"type\": \"prometheus\",\n                \"uid\": \"$datasource\"\n              },\n              \"editorMode\": \"code\",\n              \"expr\": \"sum by (le) (rate(controller_runtime_reconcile_time_seconds_bucket{service=~\\\".*external-secrets.*\\\",controller=~\\\"$controller\\\"}[$__rate_interval]))\",\n              \"format\": \"heatmap\",\n              \"legendFormat\": \"{{le}}\",\n              \"range\": true,\n              \"refId\": \"A\"\n            }\n          ],\n          \"title\": \"reconcile time latency: $controller\",\n          \"type\": \"heatmap\"\n        }\n      ],\n      \"title\": \"Controllers\",\n      \"type\": \"row\"\n    },\n    {\n      \"collapsed\": true,\n      \"gridPos\": {\n        \"h\": 1,\n        \"w\": 24,\n        \"x\": 0,\n        \"y\": 24\n      },\n      \"id\": 150,\n      \"panels\": [\n        {\n          \"datasource\": {\n            \"type\": \"prometheus\",\n            \"uid\": \"$datasource\"\n          },\n          \"fieldConfig\": {\n            \"defaults\": {\n              \"color\": {\n                \"mode\": \"palette-classic\"\n              },\n              \"custom\": {\n                \"axisBorderShow\": false,\n                \"axisCenteredZero\": false,\n                \"axisColorMode\": \"text\",\n                \"axisLabel\": \"\",\n                \"axisPlacement\": \"auto\",\n                \"barAlignment\": 0,\n                \"barWidthFactor\": 0.6,\n                \"drawStyle\": \"line\",\n                \"fillOpacity\": 0,\n                \"gradientMode\": \"none\",\n                \"hideFrom\": {\n                  \"legend\": false,\n                  \"tooltip\": false,\n                  \"viz\": false\n                },\n                \"insertNulls\": false,\n                \"lineInterpolation\": \"linear\",\n                \"lineWidth\": 1,\n                \"pointSize\": 5,\n                \"scaleDistribution\": {\n                  \"type\": \"linear\"\n                },\n                \"showPoints\": \"auto\",\n                \"spanNulls\": false,\n                \"stacking\": {\n                  \"group\": \"A\",\n                  \"mode\": \"none\"\n                },\n                \"thresholdsStyle\": {\n                  \"mode\": \"off\"\n                }\n              },\n              \"mappings\": [],\n              \"thresholds\": {\n                \"mode\": \"absolute\",\n                \"steps\": [\n                  {\n                    \"color\": \"green\"\n                  },\n                  {\n                    \"color\": \"red\",\n                    \"value\": 80\n                  }\n                ]\n              }\n            },\n            \"overrides\": []\n          },\n          \"gridPos\": {\n            \"h\": 9,\n            \"w\": 24,\n            \"x\": 0,\n            \"y\": 25\n          },\n          \"id\": 151,\n          \"options\": {\n            \"legend\": {\n              \"calcs\": [],\n              \"displayMode\": \"list\",\n              \"placement\": \"bottom\",\n              \"showLegend\": true\n            },\n            \"tooltip\": {\n              \"hideZeros\": false,\n              \"mode\": \"single\",\n              \"sort\": \"none\"\n            }\n          },\n          \"pluginVersion\": \"12.0.2\",\n          \"targets\": [\n            {\n              \"editorMode\": \"code\",\n              \"expr\": \"sum(externalsecret_status_condition{condition=\\\"Ready\\\", status=\\\"False\\\"})\",\n              \"legendFormat\": \"Not ready amount\",\n              \"range\": true,\n              \"refId\": \"A\",\n              \"datasource\": {\n                \"type\": \"prometheus\",\n                \"uid\": \"$datasource\"\n              }\n            }\n          ],\n          \"title\": \"Secrets not ready\",\n          \"type\": \"timeseries\"\n        }\n      ],\n      \"title\": \"Secrets\",\n      \"type\": \"row\"\n    }\n  ],\n  \"refresh\": \"\",\n  \"schemaVersion\": 41,\n  \"tags\": [],\n  \"templating\": {\n    \"list\": [\n      {\n        \"current\": {},\n        \"includeAll\": false,\n        \"name\": \"datasource\",\n        \"options\": [],\n        \"query\": \"prometheus\",\n        \"refresh\": 1,\n        \"regex\": \"\",\n        \"type\": \"datasource\"\n      },\n      {\n        \"allValue\": \".*\",\n        \"current\": {},\n        \"datasource\": {\n          \"type\": \"prometheus\",\n          \"uid\": \"$datasource\"\n        },\n        \"definition\": \"label_values(controller_runtime_active_workers{service=~\\\".*external-secrets.*\\\"},  controller)\",\n        \"includeAll\": true,\n        \"multi\": true,\n        \"name\": \"controller\",\n        \"options\": [],\n        \"query\": {\n          \"query\": \"label_values(controller_runtime_active_workers{service=~\\\".*external-secrets.*\\\"},  controller)\",\n          \"refId\": \"StandardVariableQuery\"\n        },\n        \"refresh\": 1,\n        \"regex\": \"\",\n        \"type\": \"query\"\n      }\n    ]\n  },\n  \"time\": {\n    \"from\": \"now-1h\",\n    \"to\": \"now\"\n  },\n  \"timepicker\": {},\n  \"timezone\": \"\",\n  \"title\": \"External Secrets Operator\",\n  \"uid\": \"n4IdKaJVk\",\n  \"version\": 11,\n  \"weekStart\": \"\"\n}\n"
@@ -74,10 +77,11 @@ kind: ClusterRole
 metadata:
   name: external-secrets-operator-cert-controller
   labels:
-    helm.sh/chart: external-secrets-0.19.2
+
+    helm.sh/chart: external-secrets-0.20.3
     app.kubernetes.io/name: external-secrets-cert-controller
     app.kubernetes.io/instance: external-secrets-operator
-    app.kubernetes.io/version: "v0.19.2"
+    app.kubernetes.io/version: "v0.20.3"
     app.kubernetes.io/managed-by: Helm
 rules:
   - apiGroups:
@@ -157,10 +161,10 @@ kind: ClusterRole
 metadata:
   name: external-secrets-operator-controller
   labels:
-    helm.sh/chart: external-secrets-0.19.2
+    helm.sh/chart: external-secrets-0.20.3
     app.kubernetes.io/name: external-secrets
     app.kubernetes.io/instance: external-secrets-operator
-    app.kubernetes.io/version: "v0.19.2"
+    app.kubernetes.io/version: "v0.20.3"
     app.kubernetes.io/managed-by: Helm
 rules:
   - apiGroups:
@@ -218,6 +222,7 @@ rules:
     - "generators.external-secrets.io"
     resources:
     - "acraccesstokens"
+    - "cloudsmithaccesstokens"
     - "clustergenerators"
     - "ecrauthorizationtokens"
     - "fakes"
@@ -245,6 +250,13 @@ rules:
     - "get"
     - "list"
     - "watch"
+  - apiGroups:
+    - ""
+    resources:
+    - "namespaces"
+    verbs:
+    - "update"
+    - "patch"
   - apiGroups:
     - ""
     resources:
@@ -301,10 +313,10 @@ kind: ClusterRole
 metadata:
   name: external-secrets-operator-view
   labels:
-    helm.sh/chart: external-secrets-0.19.2
+    helm.sh/chart: external-secrets-0.20.3
     app.kubernetes.io/name: external-secrets
     app.kubernetes.io/instance: external-secrets-operator
-    app.kubernetes.io/version: "v0.19.2"
+    app.kubernetes.io/version: "v0.20.3"
     app.kubernetes.io/managed-by: Helm
     rbac.authorization.k8s.io/aggregate-to-view: "true"
     rbac.authorization.k8s.io/aggregate-to-edit: "true"
@@ -326,6 +338,7 @@ rules:
     - "generators.external-secrets.io"
     resources:
     - "acraccesstokens"
+    - "cloudsmithaccesstokens"
     - "clustergenerators"
     - "ecrauthorizationtokens"
     - "fakes"
@@ -351,10 +364,10 @@ kind: ClusterRole
 metadata:
   name: external-secrets-operator-edit
   labels:
-    helm.sh/chart: external-secrets-0.19.2
+    helm.sh/chart: external-secrets-0.20.3
     app.kubernetes.io/name: external-secrets
     app.kubernetes.io/instance: external-secrets-operator
-    app.kubernetes.io/version: "v0.19.2"
+    app.kubernetes.io/version: "v0.20.3"
     app.kubernetes.io/managed-by: Helm
     rbac.authorization.k8s.io/aggregate-to-edit: "true"
     rbac.authorization.k8s.io/aggregate-to-admin: "true"
@@ -377,6 +390,7 @@ rules:
     - "generators.external-secrets.io"
     resources:
     - "acraccesstokens"
+    - "cloudsmithaccesstokens"
     - "clustergenerators"
     - "ecrauthorizationtokens"
     - "fakes"
@@ -405,10 +419,10 @@ metadata:
   name: external-secrets-operator-servicebindings
   labels:
     servicebinding.io/controller: "true"
-    helm.sh/chart: external-secrets-0.19.2
+    helm.sh/chart: external-secrets-0.20.3
     app.kubernetes.io/name: external-secrets
     app.kubernetes.io/instance: external-secrets-operator
-    app.kubernetes.io/version: "v0.19.2"
+    app.kubernetes.io/version: "v0.20.3"
     app.kubernetes.io/managed-by: Helm
 rules:
   - apiGroups:
@@ -427,10 +441,11 @@ kind: ClusterRoleBinding
 metadata:
   name: external-secrets-operator-cert-controller
   labels:
-    helm.sh/chart: external-secrets-0.19.2
+
+    helm.sh/chart: external-secrets-0.20.3
     app.kubernetes.io/name: external-secrets-cert-controller
     app.kubernetes.io/instance: external-secrets-operator
-    app.kubernetes.io/version: "v0.19.2"
+    app.kubernetes.io/version: "v0.20.3"
     app.kubernetes.io/managed-by: Helm
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -438,7 +453,7 @@ roleRef:
   name: external-secrets-operator-cert-controller
 subjects:
   - name: external-secrets-cert-controller
-    namespace: default
+    namespace: external-secrets-operator
     kind: ServiceAccount
 ---
 # Source: external-secrets/charts/external-secrets/templates/rbac.yaml
@@ -447,10 +462,10 @@ kind: ClusterRoleBinding
 metadata:
   name: external-secrets-operator-controller
   labels:
-    helm.sh/chart: external-secrets-0.19.2
+    helm.sh/chart: external-secrets-0.20.3
     app.kubernetes.io/name: external-secrets
     app.kubernetes.io/instance: external-secrets-operator
-    app.kubernetes.io/version: "v0.19.2"
+    app.kubernetes.io/version: "v0.20.3"
     app.kubernetes.io/managed-by: Helm
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -458,7 +473,7 @@ roleRef:
   name: external-secrets-operator-controller
 subjects:
   - name: external-secrets-operator
-    namespace: default
+    namespace: external-secrets-operator
     kind: ServiceAccount
 ---
 # Source: external-secrets/charts/external-secrets/templates/rbac.yaml
@@ -466,12 +481,12 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: external-secrets-operator-leaderelection
-  namespace: default
+  namespace: external-secrets-operator
   labels:
-    helm.sh/chart: external-secrets-0.19.2
+    helm.sh/chart: external-secrets-0.20.3
     app.kubernetes.io/name: external-secrets
     app.kubernetes.io/instance: external-secrets-operator
-    app.kubernetes.io/version: "v0.19.2"
+    app.kubernetes.io/version: "v0.20.3"
     app.kubernetes.io/managed-by: Helm
 rules:
   - apiGroups:
@@ -505,12 +520,12 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: external-secrets-operator-leaderelection
-  namespace: default
+  namespace: external-secrets-operator
   labels:
-    helm.sh/chart: external-secrets-0.19.2
+    helm.sh/chart: external-secrets-0.20.3
     app.kubernetes.io/name: external-secrets
     app.kubernetes.io/instance: external-secrets-operator
-    app.kubernetes.io/version: "v0.19.2"
+    app.kubernetes.io/version: "v0.20.3"
     app.kubernetes.io/managed-by: Helm
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -519,22 +534,23 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: external-secrets-operator
-    namespace: default
+    namespace: external-secrets-operator
 ---
 # Source: external-secrets/charts/external-secrets/templates/webhook-service.yaml
 apiVersion: v1
 kind: Service
 metadata:
   name: external-secrets-operator-webhook
-  namespace: default
+  namespace: external-secrets-operator
   labels:
-    helm.sh/chart: external-secrets-0.19.2
+
+    helm.sh/chart: external-secrets-0.20.3
     app.kubernetes.io/name: external-secrets-webhook
     app.kubernetes.io/instance: external-secrets-operator
-    app.kubernetes.io/version: "v0.19.2"
+    app.kubernetes.io/version: "v0.20.3"
     app.kubernetes.io/managed-by: Helm
     external-secrets.io/component: webhook
-  
+
 spec:
   type: ClusterIP
   ports:
@@ -551,12 +567,13 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: external-secrets-operator-cert-controller
-  namespace: default
+  namespace: external-secrets-operator
   labels:
-    helm.sh/chart: external-secrets-0.19.2
+
+    helm.sh/chart: external-secrets-0.20.3
     app.kubernetes.io/name: external-secrets-cert-controller
     app.kubernetes.io/instance: external-secrets-operator
-    app.kubernetes.io/version: "v0.19.2"
+    app.kubernetes.io/version: "v0.20.3"
     app.kubernetes.io/managed-by: Helm
 spec:
   replicas: 1
@@ -568,10 +585,11 @@ spec:
   template:
     metadata:
       labels:
-        helm.sh/chart: external-secrets-0.19.2
+
+        helm.sh/chart: external-secrets-0.20.3
         app.kubernetes.io/name: external-secrets-cert-controller
         app.kubernetes.io/instance: external-secrets-operator
-        app.kubernetes.io/version: "v0.19.2"
+        app.kubernetes.io/version: "v0.20.3"
         app.kubernetes.io/managed-by: Helm
     spec:
       serviceAccountName: external-secrets-cert-controller
@@ -589,15 +607,15 @@ spec:
             runAsUser: 1000
             seccompProfile:
               type: RuntimeDefault
-          image: oci.external-secrets.io/external-secrets/external-secrets:v0.19.2
+          image: oci.external-secrets.io/external-secrets/external-secrets:v0.20.3
           imagePullPolicy: IfNotPresent
           args:
           - certcontroller
           - --crd-requeue-interval=5m
           - --service-name=external-secrets-operator-webhook
-          - --service-namespace=default
+          - --service-namespace=external-secrets-operator
           - --secret-name=external-secrets-operator-webhook
-          - --secret-namespace=default
+          - --secret-namespace=external-secrets-operator
           - --metrics-addr=:8080
           - --healthz-addr=:8081
           - --loglevel=info
@@ -618,12 +636,12 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: external-secrets-operator
-  namespace: default
+  namespace: external-secrets-operator
   labels:
-    helm.sh/chart: external-secrets-0.19.2
+    helm.sh/chart: external-secrets-0.20.3
     app.kubernetes.io/name: external-secrets
     app.kubernetes.io/instance: external-secrets-operator
-    app.kubernetes.io/version: "v0.19.2"
+    app.kubernetes.io/version: "v0.20.3"
     app.kubernetes.io/managed-by: Helm
 spec:
   replicas: 1
@@ -635,10 +653,10 @@ spec:
   template:
     metadata:
       labels:
-        helm.sh/chart: external-secrets-0.19.2
+        helm.sh/chart: external-secrets-0.20.3
         app.kubernetes.io/name: external-secrets
         app.kubernetes.io/instance: external-secrets-operator
-        app.kubernetes.io/version: "v0.19.2"
+        app.kubernetes.io/version: "v0.20.3"
         app.kubernetes.io/managed-by: Helm
     spec:
       serviceAccountName: external-secrets-operator
@@ -656,7 +674,7 @@ spec:
             runAsUser: 1000
             seccompProfile:
               type: RuntimeDefault
-          image: oci.external-secrets.io/external-secrets/external-secrets:v0.19.2
+          image: oci.external-secrets.io/external-secrets/external-secrets:v0.20.3
           imagePullPolicy: IfNotPresent
           args:
           - --concurrent=1
@@ -674,12 +692,13 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: external-secrets-operator-webhook
-  namespace: default
+  namespace: external-secrets-operator
   labels:
-    helm.sh/chart: external-secrets-0.19.2
+
+    helm.sh/chart: external-secrets-0.20.3
     app.kubernetes.io/name: external-secrets-webhook
     app.kubernetes.io/instance: external-secrets-operator
-    app.kubernetes.io/version: "v0.19.2"
+    app.kubernetes.io/version: "v0.20.3"
     app.kubernetes.io/managed-by: Helm
 spec:
   replicas: 1
@@ -691,10 +710,11 @@ spec:
   template:
     metadata:
       labels:
-        helm.sh/chart: external-secrets-0.19.2
+
+        helm.sh/chart: external-secrets-0.20.3
         app.kubernetes.io/name: external-secrets-webhook
         app.kubernetes.io/instance: external-secrets-operator
-        app.kubernetes.io/version: "v0.19.2"
+        app.kubernetes.io/version: "v0.20.3"
         app.kubernetes.io/managed-by: Helm
     spec:
       hostNetwork: false
@@ -712,12 +732,12 @@ spec:
             runAsUser: 1000
             seccompProfile:
               type: RuntimeDefault
-          image: oci.external-secrets.io/external-secrets/external-secrets:v0.19.2
+          image: oci.external-secrets.io/external-secrets/external-secrets:v0.20.3
           imagePullPolicy: IfNotPresent
           args:
           - webhook
           - --port=10250
-          - --dns-name=external-secrets-operator-webhook.default.svc
+          - --dns-name=external-secrets-operator-webhook.external-secrets-operator.svc
           - --cert-dir=/tmp/certs
           - --check-interval=5m
           - --metrics-addr=:8080
@@ -752,10 +772,11 @@ kind: ValidatingWebhookConfiguration
 metadata:
   name: secretstore-validate
   labels:
-    helm.sh/chart: external-secrets-0.19.2
+
+    helm.sh/chart: external-secrets-0.20.3
     app.kubernetes.io/name: external-secrets-webhook
     app.kubernetes.io/instance: external-secrets-operator
-    app.kubernetes.io/version: "v0.19.2"
+    app.kubernetes.io/version: "v0.20.3"
     app.kubernetes.io/managed-by: Helm
     external-secrets.io/component: webhook
 webhooks:
@@ -768,7 +789,7 @@ webhooks:
     scope:       "Namespaced"
   clientConfig:
     service:
-      namespace: default
+      namespace: external-secrets-operator
       name: external-secrets-operator-webhook
       path: /validate-external-secrets-io-v1-secretstore
   admissionReviewVersions: ["v1", "v1beta1"]
@@ -784,7 +805,7 @@ webhooks:
     scope:       "Cluster"
   clientConfig:
     service:
-      namespace: default
+      namespace: external-secrets-operator
       name: external-secrets-operator-webhook
       path: /validate-external-secrets-io-v1-clustersecretstore
   admissionReviewVersions: ["v1", "v1beta1"]
@@ -797,10 +818,11 @@ kind: ValidatingWebhookConfiguration
 metadata:
   name: externalsecret-validate
   labels:
-    helm.sh/chart: external-secrets-0.19.2
+
+    helm.sh/chart: external-secrets-0.20.3
     app.kubernetes.io/name: external-secrets-webhook
     app.kubernetes.io/instance: external-secrets-operator
-    app.kubernetes.io/version: "v0.19.2"
+    app.kubernetes.io/version: "v0.20.3"
     app.kubernetes.io/managed-by: Helm
     external-secrets.io/component: webhook
 webhooks:
@@ -813,7 +835,7 @@ webhooks:
     scope:       "Namespaced"
   clientConfig:
     service:
-      namespace: default
+      namespace: external-secrets-operator
       name: external-secrets-operator-webhook
       path: /validate-external-secrets-io-v1-externalsecret
   admissionReviewVersions: ["v1", "v1beta1"]
