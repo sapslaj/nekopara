@@ -67,6 +67,7 @@ const chart = new kubernetes.helm.v4.Chart("renovate", {
   values: {
     cronjob: {
       schedule: "@hourly",
+      concurrencyPolicy: "Replace",
     },
     renovate: {
       config: jsonencode({
@@ -74,6 +75,13 @@ const chart = new kubernetes.helm.v4.Chart("renovate", {
         endpoint: "https://git.sapslaj.cloud/api/v1",
         platform: "gitea",
       }),
+      persistence: {
+        cache: {
+          enabled: true,
+          storageClass: "shortrack-mitsuru-red",
+          storageSize: "10Gi",
+        },
+      },
     },
     secrets: {
       RENOVATE_TOKEN: giteaToken,
