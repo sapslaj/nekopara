@@ -85,6 +85,20 @@ const env = {
                 },
               },
               {
+                uses: "actions/cache@v4",
+                with: {
+                  path: "~/.pulumi/dynamic_tf_plugins",
+                  key: "pulumi-dynamic-tf-plugins-${{ hashFiles('package-lock.json') }}",
+                },
+              },
+              {
+                uses: "actions/cache@v4",
+                with: {
+                  path: "~/.pulumi/plugins",
+                  key: "pulumi-plugins-${{ hashFiles('package-lock.json') }}",
+                },
+              },
+              {
                 run: "npm ci --ignore-scripts",
               },
               {
