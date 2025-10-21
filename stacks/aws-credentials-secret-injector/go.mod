@@ -4,7 +4,7 @@ go 1.25.1
 
 require (
 	github.com/aws/aws-sdk-go-v2/config v1.31.13
-	github.com/aws/aws-sdk-go-v2/service/iam v1.47.3
+	github.com/aws/aws-sdk-go-v2/service/iam v1.47.8
 	github.com/sapslaj/kooperslog v0.0.0-20250918112436-e93407f48c50
 	github.com/spotahome/kooper/v2 v2.9.0
 	k8s.io/api v0.33.0
