@@ -38,80 +38,80 @@ env:
   VYOS_USERNAME: ${{ secrets.VYOS_USERNAME }}
 jobs:
   deploy-stack-cluster:
-    uses: ./gitea/workflows/deploy-stack-cluster.yaml
+    uses: ./.gitea/workflows/deploy-stack-cluster.yaml
     needs: []
   deploy-stack-external-secrets-operator:
-    uses: ./gitea/workflows/deploy-stack-external-secrets-operator.yaml
+    uses: ./.gitea/workflows/deploy-stack-external-secrets-operator.yaml
     needs:
       - deploy-stack-cluster
       - deploy-stack-core
       - deploy-stack-crds
       - deploy-stack-nodegroups
   deploy-stack-crds:
-    uses: ./gitea/workflows/deploy-stack-crds.yaml
+    uses: ./.gitea/workflows/deploy-stack-crds.yaml
     needs:
       - deploy-stack-cluster
   deploy-stack-nodegroups:
-    uses: ./gitea/workflows/deploy-stack-nodegroups.yaml
+    uses: ./.gitea/workflows/deploy-stack-nodegroups.yaml
     needs:
       - deploy-stack-cluster
   deploy-stack-core:
-    uses: ./gitea/workflows/deploy-stack-core.yaml
+    uses: ./.gitea/workflows/deploy-stack-core.yaml
     needs:
       - deploy-stack-cluster
       - deploy-stack-crds
       - deploy-stack-nodegroups
   deploy-stack-adguardhome-sync:
-    uses: ./gitea/workflows/deploy-stack-adguardhome-sync.yaml
+    uses: ./.gitea/workflows/deploy-stack-adguardhome-sync.yaml
     needs:
       - deploy-stack-cluster
       - deploy-stack-core
       - deploy-stack-crds
       - deploy-stack-nodegroups
   deploy-stack-aws-credentials-secret-injector:
-    uses: ./gitea/workflows/deploy-stack-aws-credentials-secret-injector.yaml
+    uses: ./.gitea/workflows/deploy-stack-aws-credentials-secret-injector.yaml
     needs:
       - deploy-stack-cluster
       - deploy-stack-core
       - deploy-stack-crds
       - deploy-stack-nodegroups
   deploy-stack-cloudnative-pg:
-    uses: ./gitea/workflows/deploy-stack-cloudnative-pg.yaml
+    uses: ./.gitea/workflows/deploy-stack-cloudnative-pg.yaml
     needs:
       - deploy-stack-cluster
       - deploy-stack-core
       - deploy-stack-crds
       - deploy-stack-nodegroups
   deploy-stack-nfs-provisioner:
-    uses: ./gitea/workflows/deploy-stack-nfs-provisioner.yaml
+    uses: ./.gitea/workflows/deploy-stack-nfs-provisioner.yaml
     needs:
       - deploy-stack-cluster
       - deploy-stack-core
       - deploy-stack-crds
       - deploy-stack-nodegroups
   deploy-stack-opensearch-operator:
-    uses: ./gitea/workflows/deploy-stack-opensearch-operator.yaml
+    uses: ./.gitea/workflows/deploy-stack-opensearch-operator.yaml
     needs:
       - deploy-stack-cluster
       - deploy-stack-core
       - deploy-stack-crds
       - deploy-stack-nodegroups
   deploy-stack-reloader:
-    uses: ./gitea/workflows/deploy-stack-reloader.yaml
+    uses: ./.gitea/workflows/deploy-stack-reloader.yaml
     needs:
       - deploy-stack-cluster
       - deploy-stack-core
       - deploy-stack-crds
       - deploy-stack-nodegroups
   deploy-stack-shortrack:
-    uses: ./gitea/workflows/deploy-stack-shortrack.yaml
+    uses: ./.gitea/workflows/deploy-stack-shortrack.yaml
     needs:
       - deploy-stack-cluster
       - deploy-stack-core
       - deploy-stack-crds
       - deploy-stack-nodegroups
   deploy-stack-traefik:
-    uses: ./gitea/workflows/deploy-stack-traefik.yaml
+    uses: ./.gitea/workflows/deploy-stack-traefik.yaml
     needs:
       - deploy-stack-cluster
       - deploy-stack-core
@@ -119,7 +119,7 @@ jobs:
       - deploy-stack-nfs-provisioner
       - deploy-stack-nodegroups
   deploy-stack-victoria-metrics:
-    uses: ./gitea/workflows/deploy-stack-victoria-metrics.yaml
+    uses: ./.gitea/workflows/deploy-stack-victoria-metrics.yaml
     needs:
       - deploy-stack-cluster
       - deploy-stack-core
@@ -127,7 +127,7 @@ jobs:
       - deploy-stack-nfs-provisioner
       - deploy-stack-nodegroups
   deploy-stack-librenms:
-    uses: ./gitea/workflows/deploy-stack-librenms.yaml
+    uses: ./.gitea/workflows/deploy-stack-librenms.yaml
     needs:
       - deploy-stack-cluster
       - deploy-stack-core
@@ -135,7 +135,7 @@ jobs:
       - deploy-stack-nodegroups
       - deploy-stack-shortrack
   deploy-stack-netbox:
-    uses: ./gitea/workflows/deploy-stack-netbox.yaml
+    uses: ./.gitea/workflows/deploy-stack-netbox.yaml
     needs:
       - deploy-stack-cloudnative-pg
       - deploy-stack-cluster
@@ -144,7 +144,7 @@ jobs:
       - deploy-stack-nodegroups
       - deploy-stack-shortrack
   deploy-stack-authentik:
-    uses: ./gitea/workflows/deploy-stack-authentik.yaml
+    uses: ./.gitea/workflows/deploy-stack-authentik.yaml
     needs:
       - deploy-stack-cloudnative-pg
       - deploy-stack-cluster
@@ -155,7 +155,7 @@ jobs:
       - deploy-stack-shortrack
       - deploy-stack-traefik
   deploy-stack-traefik-failover:
-    uses: ./gitea/workflows/deploy-stack-traefik-failover.yaml
+    uses: ./.gitea/workflows/deploy-stack-traefik-failover.yaml
     needs:
       - deploy-stack-cluster
       - deploy-stack-core
@@ -163,7 +163,7 @@ jobs:
       - deploy-stack-nodegroups
       - deploy-stack-traefik
   deploy-stack-cnpg-pgdump:
-    uses: ./gitea/workflows/deploy-stack-cnpg-pgdump.yaml
+    uses: ./.gitea/workflows/deploy-stack-cnpg-pgdump.yaml
     needs:
       - deploy-stack-authentik
       - deploy-stack-cloudnative-pg
@@ -173,7 +173,7 @@ jobs:
       - deploy-stack-nodegroups
       - deploy-stack-shortrack
   deploy-stack-external-services:
-    uses: ./gitea/workflows/deploy-stack-external-services.yaml
+    uses: ./.gitea/workflows/deploy-stack-external-services.yaml
     needs:
       - deploy-stack-authentik
       - deploy-stack-cluster
@@ -181,7 +181,7 @@ jobs:
       - deploy-stack-crds
       - deploy-stack-traefik
   deploy-stack-gitea:
-    uses: ./gitea/workflows/deploy-stack-gitea.yaml
+    uses: ./.gitea/workflows/deploy-stack-gitea.yaml
     needs:
       - deploy-stack-authentik
       - deploy-stack-cloudnative-pg
@@ -192,7 +192,7 @@ jobs:
       - deploy-stack-nodegroups
       - deploy-stack-shortrack
   deploy-stack-grafana:
-    uses: ./gitea/workflows/deploy-stack-grafana.yaml
+    uses: ./.gitea/workflows/deploy-stack-grafana.yaml
     needs:
       - deploy-stack-authentik
       - deploy-stack-cluster
@@ -202,7 +202,7 @@ jobs:
       - deploy-stack-shortrack
       - deploy-stack-traefik
   deploy-stack-immich:
-    uses: ./gitea/workflows/deploy-stack-immich.yaml
+    uses: ./.gitea/workflows/deploy-stack-immich.yaml
     needs:
       - deploy-stack-authentik
       - deploy-stack-cloudnative-pg
@@ -213,7 +213,7 @@ jobs:
       - deploy-stack-nodegroups
       - deploy-stack-shortrack
   deploy-stack-infisical:
-    uses: ./gitea/workflows/deploy-stack-infisical.yaml
+    uses: ./.gitea/workflows/deploy-stack-infisical.yaml
     needs:
       - deploy-stack-authentik
       - deploy-stack-cloudnative-pg
@@ -224,7 +224,7 @@ jobs:
       - deploy-stack-nodegroups
       - deploy-stack-shortrack
   deploy-stack-jaeger:
-    uses: ./gitea/workflows/deploy-stack-jaeger.yaml
+    uses: ./.gitea/workflows/deploy-stack-jaeger.yaml
     needs:
       - deploy-stack-authentik
       - deploy-stack-cluster
@@ -234,7 +234,7 @@ jobs:
       - deploy-stack-opensearch-operator
       - deploy-stack-shortrack
   deploy-stack-nextcloud:
-    uses: ./gitea/workflows/deploy-stack-nextcloud.yaml
+    uses: ./.gitea/workflows/deploy-stack-nextcloud.yaml
     needs:
       - deploy-stack-authentik
       - deploy-stack-cloudnative-pg
@@ -245,7 +245,7 @@ jobs:
       - deploy-stack-nodegroups
       - deploy-stack-shortrack
   deploy-stack-oxidized:
-    uses: ./gitea/workflows/deploy-stack-oxidized.yaml
+    uses: ./.gitea/workflows/deploy-stack-oxidized.yaml
     needs:
       - deploy-stack-authentik
       - deploy-stack-cluster
@@ -254,7 +254,7 @@ jobs:
       - deploy-stack-nfs-provisioner
       - deploy-stack-nodegroups
   deploy-stack-planka:
-    uses: ./gitea/workflows/deploy-stack-planka.yaml
+    uses: ./.gitea/workflows/deploy-stack-planka.yaml
     needs:
       - deploy-stack-authentik
       - deploy-stack-cloudnative-pg
@@ -265,7 +265,7 @@ jobs:
       - deploy-stack-nodegroups
       - deploy-stack-shortrack
   deploy-stack-renovate:
-    uses: ./gitea/workflows/deploy-stack-renovate.yaml
+    uses: ./.gitea/workflows/deploy-stack-renovate.yaml
     needs:
       - deploy-stack-cluster
       - deploy-stack-core
@@ -274,7 +274,7 @@ jobs:
       - deploy-stack-nodegroups
       - deploy-stack-shortrack
   deploy-stack-infisical-secrets-operator:
-    uses: ./gitea/workflows/deploy-stack-infisical-secrets-operator.yaml
+    uses: ./.gitea/workflows/deploy-stack-infisical-secrets-operator.yaml
     needs:
       - deploy-stack-authentik
       - deploy-stack-cloudnative-pg
