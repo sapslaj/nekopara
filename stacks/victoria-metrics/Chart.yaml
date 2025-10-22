@@ -3,7 +3,7 @@ name: victoria-metrics
 version: 0.0.0
 dependencies:
   - name: victoria-metrics-operator
-    version: 0.51.3
+    version: 0.54.0
     repository: https://victoriametrics.github.io/helm-charts/
   - name: victoria-metrics-k8s-stack
     version: 0.61.10
