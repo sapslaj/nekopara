@@ -227,32 +227,40 @@ const chart = new kubernetes.helm.v4.Chart("immich", {
   namespace: namespace.metadata.name,
   skipCrds: true,
   values: {
-    env: {
-      DB_DATABASE_NAME: {
-        secretKeyRef: {
-          name: pulumi.interpolate`${postgresql.metadata.name}-app`,
-          key: "dbname",
+    controllers: {
+      main: {
+        containers: {
+          main: {
+            env: {
+              REDIS_HOSTNAME: valkey.readWriteService.metadata.name,
+              DB_DATABASE_NAME: {
+                secretKeyRef: {
+                  name: pulumi.interpolate`${postgresql.metadata.name}-app`,
+                  key: "dbname",
+                },
+              },
+              DB_HOSTNAME: {
+                secretKeyRef: {
+                  name: pulumi.interpolate`${postgresql.metadata.name}-app`,
+                  key: "host",
+                },
+              },
+              DB_PASSWORD: {
+                secretKeyRef: {
+                  name: pulumi.interpolate`${postgresql.metadata.name}-app`,
+                  key: "password",
+                },
+              },
+              DB_USERNAME: {
+                secretKeyRef: {
+                  name: pulumi.interpolate`${postgresql.metadata.name}-app`,
+                  key: "username",
+                },
+              },
+            },
+          },
         },
       },
-      DB_HOSTNAME: {
-        secretKeyRef: {
-          name: pulumi.interpolate`${postgresql.metadata.name}-app`,
-          key: "host",
-        },
-      },
-      DB_PASSWORD: {
-        secretKeyRef: {
-          name: pulumi.interpolate`${postgresql.metadata.name}-app`,
-          key: "password",
-        },
-      },
-      DB_USERNAME: {
-        secretKeyRef: {
-          name: pulumi.interpolate`${postgresql.metadata.name}-app`,
-          key: "username",
-        },
-      },
-      REDIS_HOSTNAME: valkey.readWriteService.metadata.name,
     },
     image: {
       tag: "v1.142.1",
@@ -287,8 +295,10 @@ const chart = new kubernetes.helm.v4.Chart("immich", {
           ],
         },
       },
-      controller: {
-        replicas: 2,
+      controllers: {
+        main: {
+          replicas: 2,
+        },
       },
     },
     "machine-learning": {
@@ -302,7 +312,9 @@ const chart = new kubernetes.helm.v4.Chart("immich", {
         },
       },
       controller: {
-        replicas: 2,
+        main: {
+          replicas: 2,
+        },
       },
     },
   },
