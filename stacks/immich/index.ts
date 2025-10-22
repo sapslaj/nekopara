@@ -267,12 +267,6 @@ const chart = new kubernetes.helm.v4.Chart("immich", {
         },
       },
     },
-    postgresql: {
-      enabled: false,
-    },
-    redis: {
-      enabled: false,
-    },
     server: {
       enabled: true,
       ingress: {
@@ -302,7 +296,7 @@ const chart = new kubernetes.helm.v4.Chart("immich", {
       persistence: {
         cache: {
           enabled: true,
-          type: "pvc",
+          type: "persistentVolumeClaim",
           accessMode: "ReadWriteMany",
           storageClass: "nfs",
         },
