@@ -3,7 +3,7 @@ name: core
 version: 0.0.0
 dependencies:
   - name: coredns
-    version: 1.43.0
+    version: 1.45.0
     repository: https://coredns.github.io/helm
   - name: metrics-server
     version: 3.12.2
