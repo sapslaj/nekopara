@@ -18,6 +18,7 @@ const env = {
   CLOUDFLARE_API_KEY: "${{ secrets.CLOUDFLARE_API_KEY }}",
   CLOUDFLARE_EMAIL: "${{ secrets.CLOUDFLARE_EMAIL }}",
   GH_ACTIONS_READ_TOKEN: "${{ secrets.GH_ACTIONS_READ_TOKEN }}",
+  GITHUB_TOKEN: "${{ secrets.GH_ACTIONS_ADMIN_GITHUB_TOKEN }}",
   INFISICAL_API_URL: "https://infisical.sapslaj.cloud/api",
   INFISICAL_CLIENT_ID: "${{ secrets.INFISICAL_CLIENT_ID }}",
   INFISICAL_CLIENT_SECRET: "${{ secrets.INFISICAL_CLIENT_SECRET }}",
@@ -88,14 +89,14 @@ const env = {
                 uses: "actions/cache@v4",
                 with: {
                   path: "~/.pulumi/dynamic_tf_plugins",
-                  key: "pulumi-dynamic-tf-plugins-${{ hashFiles('package-lock.json') }}",
+                  key: "pulumi-dynamic-tf-plugins",
                 },
               },
               {
                 uses: "actions/cache@v4",
                 with: {
                   path: "~/.pulumi/plugins",
-                  key: "pulumi-plugins-${{ hashFiles('package-lock.json') }}",
+                  key: "pulumi-plugins",
                 },
               },
               {
@@ -124,7 +125,6 @@ EOF
                   "stack-name": "prod",
                   "cloud-url": "s3://sapslaj-tf-state?region=us-east-1&awssdk=v2&profile=pulumi-state",
                   "work-dir": `./stacks/${stack}`,
-                  "github-token": "${{ env.GH_ACTIONS_READ_TOKEN }}",
                 },
               },
             ],
