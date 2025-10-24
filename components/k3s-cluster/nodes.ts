@@ -310,7 +310,7 @@ export class Node extends pulumi.ComponentResource {
   randomId: random.RandomId;
   service: mid.resource.SystemdService;
 
-  constructor(id: string, props: NodeProps, opts: pulumi.ComponentResourceOptions = {}) {
+  constructor(id: string, props: NodeProps & { otherNodes: Node[] }, opts: pulumi.ComponentResourceOptions = {}) {
     super("sapslaj:k3s:Node", id, {}, opts);
 
     this.randomId = new random.RandomId(id, {
@@ -377,7 +377,7 @@ export class Node extends pulumi.ComponentResource {
       ...(props.serverArgs ?? []),
     ];
 
-    new MidTarget(`${id}-mid-target`, {
+    const midTarget = new MidTarget(`${id}-mid-target`, {
       connection: this.vm.connection,
       triggers: {
         replace: [
@@ -407,6 +407,9 @@ export class Node extends pulumi.ComponentResource {
     }, {
       deletedWith: this.vm,
       parent: this,
+      dependsOn: [
+        midTarget,
+      ],
     });
 
     const openiscsi = new mid.resource.Apt(`${id}-open-iscsi`, {
@@ -415,6 +418,9 @@ export class Node extends pulumi.ComponentResource {
     }, {
       deletedWith: this.vm,
       parent: this,
+      dependsOn: [
+        midTarget,
+      ],
     });
 
     nodeServerArgs.push("--node-label", "topology.kubernetes.io/region=homelab");
@@ -575,7 +581,9 @@ export class Node extends pulumi.ComponentResource {
       parent: this,
       retainOnDelete: true,
       dependsOn: [
-        // nfsSetup,
+        midTarget,
+        nfsCommon,
+        openiscsi,
       ],
     });
 
@@ -591,6 +599,7 @@ export class Node extends pulumi.ComponentResource {
       parent: this,
       dependsOn: [
         this.service,
+        ...props.otherNodes,
       ],
     });
   }
@@ -598,6 +607,7 @@ export class Node extends pulumi.ComponentResource {
 
 export interface NodeGroupProps extends NodeProps {
   nodeCount: number;
+  skip?: number[];
 }
 
 export class NodeGroup extends pulumi.ComponentResource {
@@ -609,10 +619,16 @@ export class NodeGroup extends pulumi.ComponentResource {
     this.nodes = [];
 
     for (let i = 1; i <= props.nodeCount; i++) {
+      if (props.skip !== undefined && props.skip.includes(i)) {
+        continue;
+      }
       this.nodes.push(
         new Node(
           `${id}-${i}`,
-          props,
+          {
+            ...props,
+            otherNodes: this.nodes,
+          },
           pulumi.mergeOptions(opts, {
             parent: this,
           }),

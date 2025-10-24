@@ -17,7 +17,7 @@ const serverUri = getServerUri();
 
 // new NodeGroup("nga", {
 //   k3sProvider: provider,
-//   k3sVersion: "v1.32.7+k3s1",
+//   k3sVersion: "v1.32.9+k3s1",
 //   k3sToken,
 //   dnsHostName,
 //   dnsFullName,
@@ -27,7 +27,6 @@ const serverUri = getServerUri();
 //   nodeCount: 5,
 //   vmConfig: {
 //     cpu: {
-//       type: "qemu64",
 //       cores: 4,
 //     },
 //     memory: {
@@ -41,7 +40,7 @@ const serverUri = getServerUri();
 
 new NodeGroup("ngb", {
   k3sProvider: provider,
-  k3sVersion: "v1.32.7+k3s1",
+  k3sVersion: "v1.33.5+k3s1",
   k3sToken,
   dnsHostName,
   dnsFullName,
@@ -64,7 +63,7 @@ new NodeGroup("ngb", {
 
 // new NodeGroup("inga", {
 //   k3sProvider: provider,
-//   k3sVersion: "v1.32.7+k3s1",
+//   k3sVersion: "v1.32.9+k3s1",
 //   k3sToken,
 //   dnsHostName,
 //   dnsFullName,
@@ -74,7 +73,6 @@ new NodeGroup("ngb", {
 //   nodeCount: 3,
 //   vmConfig: {
 //     cpu: {
-//       type: "qemu64",
 //       cores: 4,
 //     },
 //     memory: {
@@ -99,7 +97,7 @@ new NodeGroup("ngb", {
 
 new NodeGroup("ingb", {
   k3sProvider: provider,
-  k3sVersion: "v1.32.7+k3s1",
+  k3sVersion: "v1.33.5+k3s1",
   k3sToken,
   dnsHostName,
   dnsFullName,
@@ -130,82 +128,3 @@ new NodeGroup("ingb", {
     },
   ],
 });
-
-// new NodeGroup("lha", {
-//   k3sProvider: provider,
-//   k3sVersion: "v1.31.5+k3s1",
-//   k3sToken,
-//   dnsHostName,
-//   dnsFullName,
-//   serverUri,
-//   privateKey,
-//   distro: Distro.UBUNTU_24_04,
-//   nodeCount: 3,
-//   vmConfig: {
-//     cpu: {
-//       cores: 4,
-//     },
-//     memory: {
-//       dedicated: 4 * 1024,
-//     },
-//   },
-//   diskConfig: {
-//     size: 128,
-//   },
-//   keepers: {
-//     serial: "1",
-//   },
-//   annotations: {
-//     "node.longhorn.io/default-node-tags": JSON.stringify(["storage"]),
-//   },
-//   labels: {
-//     "k3s.sapslaj.xyz/role": "longhorn",
-//     "topology.kubernetes.io/region": "homelab",
-//     "node.longhorn.io/create-default-disk": "true",
-//   },
-//   taints: [
-//     {
-//       key: "k3s.sapslaj.xyz/role",
-//       value: "longhorn",
-//       effect: "NoSchedule",
-//     },
-//   ],
-// });
-
-// new NodeGroup("lhb", {
-//   k3sProvider: provider,
-//   k3sVersion: "v1.31.5+k3s1",
-//   k3sToken,
-//   dnsHostName,
-//   dnsFullName,
-//   serverUri,
-//   privateKey,
-//   distro: Distro.UBUNTU_24_04,
-//   nodeCount: 3,
-//   vmConfig: {
-//     cpu: {
-//       cores: 4,
-//     },
-//     memory: {
-//       dedicated: 4 * 1024,
-//     },
-//   },
-//   diskConfig: {
-//     size: 128,
-//   },
-//   keepers: {
-//     serial: "1",
-//   },
-//   labels: {
-//     "k3s.sapslaj.xyz/role": "longhorn",
-//     "topology.kubernetes.io/region": "homelab",
-//     "node.longhorn.io/create-default-disk": "true",
-//   },
-//   taints: [
-//     {
-//       key: "k3s.sapslaj.xyz/role",
-//       value: "longhorn",
-//       effect: "NoSchedule",
-//     },
-//   ],
-// });

@@ -658,9 +658,9 @@ nodes["c1"] = new ControlPlaneNode("c1", {
   dnsHostName,
   dnsFullName,
   privateKey,
-  k3sVersion: "v1.32.7+k3s1",
+  k3sVersion: "v1.33.5+k3s1",
   distro: Distro.UBUNTU_24_04,
-  serverUri: pulumi.interpolate`https://nekopara-c2-cbnyjq.sapslaj.xyz:6443`,
+  serverUri: "https://nekopara-c3-4poega.sapslaj.xyz:6443",
   serverArgs: [],
   labels: {
     "k3s.sapslaj.xyz/role": "control-plane",
@@ -677,8 +677,6 @@ nodes["c1"] = new ControlPlaneNode("c1", {
       dedicated: 4096,
     },
   },
-}, {
-  dependsOn: [],
 });
 
 nodes["c2"] = new ControlPlaneNode("c2", {
@@ -686,9 +684,9 @@ nodes["c2"] = new ControlPlaneNode("c2", {
   dnsHostName,
   dnsFullName,
   privateKey,
-  k3sVersion: "v1.32.7+k3s1",
+  k3sVersion: "v1.33.5+k3s1",
   distro: Distro.UBUNTU_24_04,
-  serverUri: pulumi.interpolate`https://nekopara-c1-8symcg.sapslaj.xyz:6443`,
+  serverUri: "https://nekopara-c1-n5b5g.sapslaj.xyz:6443",
   serverArgs: [],
   labels: {
     "k3s.sapslaj.xyz/role": "control-plane",
@@ -705,8 +703,6 @@ nodes["c2"] = new ControlPlaneNode("c2", {
       dedicated: 4096,
     },
   },
-}, {
-  // dependsOn: nodes["c1"].service,
 });
 
 nodes["c3"] = new ControlPlaneNode("c3", {
@@ -714,9 +710,9 @@ nodes["c3"] = new ControlPlaneNode("c3", {
   dnsHostName,
   dnsFullName,
   privateKey,
-  k3sVersion: "v1.32.7+k3s1",
+  k3sVersion: "v1.33.5+k3s1",
   distro: Distro.UBUNTU_24_04,
-  serverUri: pulumi.interpolate`https://nekopara-c1-8symcg.sapslaj.xyz:6443`,
+  serverUri: "https://nekopara-c1-n5b5g.sapslaj.xyz:6443",
   serverArgs: [],
   labels: {
     "k3s.sapslaj.xyz/role": "control-plane",
@@ -733,8 +729,6 @@ nodes["c3"] = new ControlPlaneNode("c3", {
       dedicated: 4096,
     },
   },
-}, {
-  dependsOn: nodes["c2"].service,
 });
 
 const nlbs: Record<string, NLBNode> = {};
